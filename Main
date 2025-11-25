@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>AI Resume Editor</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Inter font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <!-- pdf.js (text extraction from PDF) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+
+  <!-- docx.js (DOCX text extraction) 
+       В реальном проекте можно заменить на конкретную версию/бандл.
+       Здесь используем mammoth как docx-парсер, он совместим по задаче. -->
+  <script src="https://unpkg.com/mammoth/mammoth.browser.min.js"></script>
+
+  <style>
+    :root {
+      --bg: #f5f6fa;
+      --bg-card: #ffffff;
+      --border-subtle: #e2e4ea;
+      --text-main: #1f2933;
+      --text-muted: #6b7280;
+      --accent: #2563eb;
+      --accent-soft: rgba(37, 99, 235, 0.08);
+      --danger: #dc2626;
+      --shadow-soft: 0 8px 24px rgba(15, 23, 42, 0.06);
+      --radius-lg: 18px;
+      --radius-md: 12px;
+      --radius-pill: 999px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      background: radial-gradient(circle at top left, #eef2ff, #f5f6fa 40%, #f9fafb);
+      color: var(--text-main);
+    }
+
+    .app-root {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 24px 16px 40px;
+    }
+
+    .app-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      gap: 12px;
+    }
+
+    .app-title-block {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .app-title {
+      font-size: 22px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+
+    .app-subtitle {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .header-controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .api-key-input {
+      min-width: 260px;
+      padding: 9px 12px;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--border-subtle);
+      background: rgba(255,255,255,0.9);
+      font-size: 13px;
+      outline: none;
+    }
+
+    .api-key-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px var(--accent-soft);
+    }
+
+    .pill-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      padding: 6px 10px;
+      border-radius: var(--radius-pill);
+      background: rgba(15,23,42,0.03);
+      border: 1px solid rgba(148,163,184,0.4);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: default;
+    }
+
+    .pill-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: #22c55e;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.08fr) minmax(0, 1fr);
+      gap: 18px;
+    }
+
+    @media (max-width: 900px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .panel {
+      background: rgba(255,255,255,0.96);
+      border-radius: var(--radius-lg);
+      padding: 16px 16px 18px;
+      box-shadow: var(--shadow-soft);
+      border: 1px solid rgba(148,163,184,0.25);
+      display: flex;
+      flex-direction: column;
+      min-height: 360px;
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .panel-title {
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .panel-tag {
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: var(--radius-pill);
+      background: rgba(15,23,42,0.03);
+      border: 1px solid rgba(148,163,184,0.4);
+      color: var(--text-muted);
+    }
+
+    .drop-zone {
+      border-radius: var(--radius-md);
+      border: 1px dashed #c7d2fe;
+      padding: 28px 16px;
+      text-align: center;
+      background: linear-gradient(135deg, rgba(219,234,254,0.5), rgba(248,250,252,0.9));
+      color: var(--text-muted);
+      font-size: 13px;
+      margin-bottom: 12px;
+      cursor: pointer;
+      transition: border-color 0.18s ease, background 0.18s ease, transform 0.08s ease;
+    }
+
+    .drop-zone.hover {
+      border-color: var(--accent);
+      background: linear-gradient(135deg, rgba(219,234,254,0.9), rgba(248,250,252,1));
+      transform: translateY(-1px);
+    }
+
+    .drop-zone-title {
+      font-weight: 500;
+      margin-bottom: 4px;
+      color: #111827;
+    }
+
+    .drop-zone-subtitle {
+      font-size: 11px;
+    }
+
+    .hidden-input {
+      display: none;
+    }
+
+    .textarea {
+      width: 100%;
+      min-height: 150px;
+      resize: vertical;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-subtle);
+      padding: 12px 11px;
+      font-size: 13px;
+      outline: none;
+      font-family: "Inter", system-ui, sans-serif;
+      color: var(--text-main);
+      background: #f9fafb;
+    }
+
+    .textarea:focus {
+      border-color: var(--accent);
+      background: #ffffff;
+      box-shadow: 0 0 0 1px var(--accent-soft);
+    }
+
+    .textarea::placeholder {
+      color: #9ca3af;
+    }
+
+    .prompt-row {
+      margin-top: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+    }
+
+    .prompt-input {
+      width: 100%;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--border-subtle);
+      padding: 9px 12px;
+      font-size: 13px;
+      outline: none;
+      background: #f9fafb;
+    }
+
+    .prompt-input::placeholder {
+      color: #9ca3af;
+    }
+
+    .prompt-input:focus {
+      border-color: var(--accent);
+      background: #ffffff;
+      box-shadow: 0 0 0 1px var(--accent-soft);
+    }
+
+    .prompt-presets {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .preset-chip {
+      font-size: 11px;
+      padding: 5px 10px;
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(148,163,184,0.6);
+      background: #f9fafb;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: background 0.12s ease, transform 0.06s ease, box-shadow 0.12s ease;
+    }
+
+    .preset-chip:hover {
+      background: #eef2ff;
+      box-shadow: 0 1px 4px rgba(148,163,184,0.4);
+      transform: translateY(-0.5px);
+    }
+
+    .panel-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 14px;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .button-group {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      border: none;
+      border-radius: var(--radius-pill);
+      padding: 9px 16px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.16s ease, transform 0.08s ease, box-shadow 0.18s ease;
+      white-space: nowrap;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #ffffff;
+      box-shadow: 0 8px 18px rgba(37, 99, 235, 0.35);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 24px rgba(37, 99, 235, 0.45);
+    }
+
+    .btn-secondary {
+      background: #111827;
+      color: #e5e7eb;
+      box-shadow: 0 8px 16px rgba(15,23,42,0.35);
+    }
+
+    .btn-secondary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 22px rgba(15,23,42,0.45);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--text-muted);
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 12px;
+    }
+
+    .btn-icon {
+      width: 30px;
+      height: 30px;
+      border-radius: 999px;
+      border: 1px solid var(--border-subtle);
+      background: #f9fafb;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.12s ease, transform 0.06s ease, box-shadow 0.12s ease;
+    }
+
+    .btn-icon:hover {
+      background: #eef2ff;
+      box-shadow: 0 1px 4px rgba(148,163,184,0.4);
+      transform: translateY(-0.5px);
+    }
+
+    .btn[disabled],
+    .btn:disabled,
+    .btn-icon:disabled {
+      opacity: 0.55;
+      cursor: default;
+      box-shadow: none;
+      transform: none;
+    }
+
+    .status-text {
+      font-size: 11px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: #22c55e;
+    }
+
+    .status-dot.loading {
+      background: #f59e0b;
+      animation: pulse 1s infinite alternate;
+    }
+
+    .status-dot.error {
+      background: var(--danger);
+    }
+
+    @keyframes pulse {
+      from { transform: scale(0.9); opacity: 0.6; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .result-toolbar {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .result-area {
+      flex: 1;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-subtle);
+      background: #f9fafb;
+      padding: 12px 11px;
+      font-size: 13px;
+      color: var(--text-main);
+      white-space: pre-wrap;
+      overflow-y: auto;
+    }
+
+    .result-placeholder {
+      color: #9ca3af;
+    }
+
+    .alert {
+      margin-top: 12px;
+      border-radius: var(--radius-md);
+      padding: 7px 10px;
+      font-size: 12px;
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+      border: 1px solid transparent;
+    }
+
+    .alert-error {
+      background: #fef2f2;
+      border-color: #fecaca;
+      color: #b91c1c;
+    }
+
+    .alert-info {
+      background: #eff6ff;
+      border-color: #bfdbfe;
+      color: #1d4ed8;
+    }
+
+    .alert-icon {
+      font-size: 14px;
+      line-height: 1;
+    }
+
+    .mono {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    }
+  </style>
+</head>
+
+<body>
+<div class="app-root">
+  <header class="app-header">
+    <div class="app-title-block">
+      <div class="app-title">AI Resume Editor</div>
+      <div class="app-subtitle">Drag &amp; drop your resume · Improve it with AI · ATS-friendly output</div>
+    </div>
+    <div class="header-controls">
+      <span class="pill-label">
+        <span class="pill-dot"></span>
+        Student-friendly · Simple ATS text only
+      </span>
+      <input id="apiKeyInput" class="api-key-input" type="password" placeholder="Enter OpenAI API key" />
+    </div>
+  </header>
+
+  <main class="layout">
+    <!-- LEFT PANEL -->
+    <section class="panel" aria-label="Source resume">
+      <div class="panel-header">
+        <div class="panel-title">Source Resume</div>
+        <div class="panel-tag">ATS Scan View</div>
+      </div>
+
+      <!-- Drop zone -->
+      <div id="dropZone" class="drop-zone">
+        <div class="drop-zone-title">Drag &amp; Drop PDF, DOCX, TXT</div>
+        <div class="drop-zone-subtitle">Max: PDF 5MB, DOCX 3MB · Or click to choose a file</div>
+      </div>
+      <input id="fileInput" class="hidden-input" type="file" accept=".pdf,.docx,.txt,.text" />
+
+      <!-- Text area with extracted resume -->
+      <textarea id="sourceText" class="textarea" placeholder="Extracted resume text will appear here... You can also paste text directly."></textarea>
+
+      <!-- Prompt row -->
+      <div class="prompt-row">
+        <input
+          id="promptInput"
+          class="prompt-input"
+          type="text"
+          placeholder="Как изменить резюме?"
+        />
+        <div class="prompt-presets">
+          <button type="button" class="preset-chip" data-preset="Fix grammar, punctuation and clarity while keeping the same meaning.">
+            Fix Grammar
+          </button>
+          <button type="button" class="preset-chip" data-preset="Rewrite for a professional tone suitable for mid-level roles.">
+            Professional Tone
+          </button>
+          <button type="button" class="preset-chip" data-preset="Add metrics and concrete achievements, making impact more visible.">
+            Add Metrics
+          </button>
+          <button type="button" class="preset-chip" data-preset="Optimize structure and formatting for ATS, using clear section headings and bullet points.">
+            ATS Optimize
+          </button>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="panel-footer">
+        <div class="button-group">
+          <button id="analyzeBtn" class="btn btn-secondary" type="button">
+            🔍 Analyze
+          </button>
+          <button id="generateBtn" class="btn btn-primary" type="button">
+            ✨ Generate
+          </button>
+        </div>
+        <div id="statusText" class="status-text">
+          <span id="statusDot" class="status-dot"></span>
+          <span id="statusMessage">Ready to process your resume.</span>
+        </div>
+      </div>
+
+      <div id="errorBox" class="alert alert-error" style="display:none;">
+        <span class="alert-icon">!</span>
+        <span id="errorMessage"></span>
+      </div>
+      <div id="infoBox" class="alert alert-info" style="display:none;">
+        <span class="alert-icon">ℹ</span>
+        <span id="infoMessage"></span>
+      </div>
+    </section>
+
+    <!-- RIGHT PANEL -->
+    <section class="panel" aria-label="AI result">
+      <div class="panel-header">
+        <div class="panel-title">AI Result</div>
+        <div class="result-toolbar">
+          <button id="copyBtn" class="btn-icon" type="button" title="Copy to clipboard">
+            📋
+          </button>
+          <button id="downloadBtn" class="btn-icon" type="button" title="Download as .txt">
+            ⬇️
+          </button>
+          <button id="clearResultBtn" class="btn-icon" type="button" title="Clear result">
+            🧹
+          </button>
+        </div>
+      </div>
+
+      <div id="resultArea" class="result-area">
+        <span id="resultPlaceholder" class="result-placeholder">
+          AI generated content will appear here...
+        </span>
+      </div>
+
+      <div id="aiInfoBox" class="alert alert-info" style="margin-top: 10px; display:none;">
+        <span class="alert-icon">💡</span>
+        <span id="aiInfoMessage"></span>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script>
+  // ====== BASIC DOM HELPERS ======
+  const $ = (id) => document.getElementById(id);
+
+  const dropZone = $("dropZone");
+  const fileInput = $("fileInput");
+  const sourceText = $("sourceText");
+  const promptInput = $("promptInput");
+  const apiKeyInput = $("apiKeyInput");
+  const analyzeBtn = $("analyzeBtn");
+  const generateBtn = $("generateBtn");
+  const statusText = $("statusText");
+  const statusDot = $("statusDot");
+  const statusMessage = $("statusMessage");
+  const errorBox = $("errorBox");
+  const errorMessage = $("errorMessage");
+  const infoBox = $("infoBox");
+  const infoMessage = $("infoMessage");
+  const resultArea = $("resultArea");
+  const resultPlaceholder = $("resultPlaceholder");
+  const aiInfoBox = $("aiInfoBox");
+  const aiInfoMessage = $("aiInfoMessage");
+  const copyBtn = $("copyBtn");
+  const downloadBtn = $("downloadBtn");
+  const clearResultBtn = $("clearResultBtn");
+
+  // ====== STATE ======
+  let isBusy = false;
+
+  function setBusy(busy, message) {
+    isBusy = busy;
+    analyzeBtn.disabled = busy;
+    generateBtn.disabled = busy;
+    if (busy) {
+      statusDot.classList.add("loading");
+      statusMessage.textContent = message || "Processing...";
+    } else {
+      statusDot.classList.remove("loading");
+      statusMessage.textContent = message || "Ready to process your resume.";
+    }
+  }
+
+  function showError(msg) {
+    errorMessage.textContent = msg;
+    errorBox.style.display = "flex";
+    statusDot.classList.add("error");
+  }
+
+  function clearError() {
+    errorBox.style.display = "none";
+    statusDot.classList.remove("error");
+  }
+
+  function showInfo(msg) {
+    infoMessage.textContent = msg;
+    infoBox.style.display = "flex";
+  }
+
+  function clearInfo() {
+    infoBox.style.display = "none";
+  }
+
+  function setResultText(text) {
+    resultArea.textContent = text;
+    resultPlaceholder.style.display = text.trim() ? "none" : "inline";
+  }
+
+  // ====== CLEAN EXTRACTED TEXT ======
+  function cleanExtractedText(raw) {
+    if (!raw) return "";
+    let text = raw.replace(/\r/g, "");
+    // Убираем переносы строк внутри абзацев, оставляя пустые строки как разделители
+    text = text.replace(/([^\n])\n(?!\n)/g, "$1 ");
+    // Нормализуем пробелы
+    text = text.replace(/[ \t]+/g, " ");
+    // Убираем лишние пустые строки
+    text = text.replace(/\n{3,}/g, "\n\n");
+    return text.trim();
+  }
+
+  // ====== FILE HANDLING ======
+  function handleFiles(files) {
+    clearError();
+    clearInfo();
+    const file = files && files[0];
+    if (!file) return;
+
+    const ext = file.name.split(".").pop().toLowerCase();
+    if (!["pdf", "docx", "txt", "text"].includes(ext)) {
+      showError("Unsupported file type. Please upload PDF, DOCX, or TXT.");
+      return;
+    }
+
+    // simple size checks
+    if (ext === "pdf" && file.size > 5 * 1024 * 1024) {
+      showError("PDF is larger than 5MB. Please upload a smaller file.");
+      return;
+    }
+    if (ext === "docx" && file.size > 3 * 1024 * 1024) {
+      showError("DOCX is larger than 3MB. Please upload a smaller file.");
+      return;
+    }
+
+    setBusy(true, "Extracting text from file...");
+    sourceText.value = "";
+
+    if (ext === "txt" || ext === "text") {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const cleaned = cleanExtractedText(e.target.result);
+        sourceText.value = cleaned;
+        setBusy(false, "Text extracted. You can edit it before sending to AI.");
+      };
+      reader.onerror = () => {
+        setBusy(false, "Ready to process your resume.");
+        showError("Failed to read text file.");
+      };
+      reader.readAsText(file);
+    } else if (ext === "pdf") {
+      extractPdfText(file)
+        .then((text) => {
+          sourceText.value = cleanExtractedText(text);
+          setBusy(false, "PDF extracted. Review and edit if needed.");
+        })
+        .catch((err) => {
+          console.error(err);
+          setBusy(false, "Ready to process your resume.");
+          showError("Failed to extract text from PDF.");
+        });
+    } else if (ext === "docx") {
+      extractDocxText(file)
+        .then((text) => {
+          sourceText.value = cleanExtractedText(text);
+          setBusy(false, "DOCX extracted. Review and edit if needed.");
+        })
+        .catch((err) => {
+          console.error(err);
+          setBusy(false, "Ready to process your resume.");
+          showError("Failed to extract text from DOCX.");
+        });
+    }
+  }
+
+  // ====== PDF TEXT EXTRACTION (pdf.js) ======
+  async function extractPdfText(file) {
+    const arrayBuffer = await file.arrayBuffer();
+    // pdf.js config
+    if (window["pdfjsLib"]) {
+      pdfjsLib.GlobalWorkerOptions.workerSrc =
+        "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+    }
+    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+    let text = "";
+    for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+      const page = await pdf.getPage(pageNum);
+      const content = await page.getTextContent();
+      const strings = content.items.map((item) => item.str);
+      text += strings.join(" ") + "\n\n";
+    }
+    return text;
+  }
+
+  // ====== DOCX TEXT EXTRACTION (mammoth as docx.js) ======
+  async function extractDocxText(file) {
+    const arrayBuffer = await file.arrayBuffer();
+    const result = await window.mammoth.extractRawText({ arrayBuffer });
+    return result.value || "";
+  }
+
+  // ====== DRAG & DROP BINDINGS ======
+  dropZone.addEventListener("click", () => fileInput.click());
+
+  dropZone.addEventListener("dragover", (e) => {
+    e.preventDefault();
+    dropZone.classList.add("hover");
+  });
+  dropZone.addEventListener("dragleave", () => {
+    dropZone.classList.remove("hover");
+  });
+  dropZone.addEventListener("drop", (e) => {
+    e.preventDefault();
+    dropZone.classList.remove("hover");
+    if (e.dataTransfer.files && e.dataTransfer.files.length) {
+      handleFiles(e.dataTransfer.files);
+    }
+  });
+
+  fileInput.addEventListener("change", (e) => {
+    if (e.target.files && e.target.files.length) {
+      handleFiles(e.target.files);
+      // reset selection so re-upload of same file works
+      e.target.value = "";
+    }
+  });
+
+  // ====== PROMPT PRESETS ======
+  document.querySelectorAll(".preset-chip").forEach((chip) => {
+    chip.addEventListener("click", () => {
+      const preset = chip.getAttribute("data-preset") || "";
+      if (!preset) return;
+      if (!promptInput.value.trim()) {
+        promptInput.value = preset;
+      } else {
+        promptInput.value = promptInput.value.trim().replace(/\s+$/,"") + " " + preset;
+      }
+      promptInput.focus();
+    });
+  });
+
+  // ====== OPENAI API CALL ======
+  async function callOpenAI({ mode }) {
+    clearError();
+    clearInfo();
+    aiInfoBox.style.display = "none";
+
+    const apiKey = apiKeyInput.value.trim();
+    const resumeText = sourceText.value.trim();
+    const customPrompt = promptInput.value.trim();
+
+    if (!apiKey) {
+      showError("Please enter your OpenAI API key.");
+      return;
+    }
+    if (!resumeText) {
+      showError("Resume text is empty. Upload a file or paste your resume.");
+      return;
+    }
+
+    const basePromptAnalyze = `
+You are an expert resume reviewer and career coach.
+Analyze the following resume and provide a structured critique:
+- Overall structure and clarity
+- Professional tone
+- Impact and achievements (are there measurable results?)
+- ATS compatibility (keywords, sections, formatting)
+- Specific, actionable suggestions to improve each section
+Return your answer in clear bullet points. Resume text:
+`;
+
+    const basePromptRewrite = `
+You are an expert resume writer.
+Rewrite the following resume to make it more professional, ATS-friendly, and impact-focused.
+Rules:
+- Keep all factual information, but improve wording and structure.
+- Use strong action verbs and measurable achievements where possible.
+- Use clear section headers (SUMMARY, EXPERIENCE, EDUCATION, SKILLS, PROJECTS, ADDITIONAL).
+- Format as plain text suitable for ATS (no tables, no fancy characters).
+Here is the resume:
+`;
+
+    const extraUserInstruction = customPrompt
+      ? `\nAdditional user instruction:\n${customPrompt}\n`
+      : "";
+
+    const inputPrompt =
+      (mode === "analyze" ? basePromptAnalyze : basePromptRewrite) +
+      extraUserInstruction +
+      "\n---\n" +
+      resumeText;
+
+    setBusy(
+      true,
+      mode === "analyze"
+        ? "Analyzing resume with AI..."
+        : "Generating improved resume with AI..."
+    );
+
+    try {
+      const response = await fetch("https://api.openai.com/v1/responses", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${apiKey}`,
+        },
+        body: JSON.stringify({
+          model: "gpt-4.1-mini", // при необходимости поменяй на нужную модель
+          input: inputPrompt,
+        }),
+      });
+
+      if (!response.ok) {
+        const errText = await response.text();
+        console.error("OpenAI error:", errText);
+        throw new Error("OpenAI API returned non-OK status.");
+      }
+
+      const data = await response.json();
+      const output =
+        data.output && data.output[0] && data.output[0].content
+          ? data.output[0].content[0].text
+          : JSON.stringify(data, null, 2);
+
+      setResultText(output);
+      setBusy(false, "AI result received.");
+
+      aiInfoMessage.textContent =
+        mode === "analyze"
+          ? "Analysis completed. Use these insights to adjust your resume or click Generate for a rewritten version."
+          : "Generated a rewritten resume. Review it carefully before using.";
+      aiInfoBox.style.display = "flex";
+    } catch (err) {
+      console.error(err);
+      setBusy(false, "Ready to process your resume.");
+      showError("Failed to call OpenAI API. Check your key and network connection.");
+    }
+  }
+
+  analyzeBtn.addEventListener("click", () => {
+    if (isBusy) return;
+    callOpenAI({ mode: "analyze" });
+  });
+
+  generateBtn.addEventListener("click", () => {
+    if (isBusy) return;
+    callOpenAI({ mode: "generate" });
+  });
+
+  // ====== RESULT TOOLBAR ======
+  copyBtn.addEventListener("click", async () => {
+    const text = resultArea.textContent.trim();
+    if (!text) return;
+    try {
+      await navigator.clipboard.writeText(text);
+      showInfo("AI result copied to clipboard.");
+      setTimeout(clearInfo, 2500);
+    } catch {
+      showError("Failed to copy to clipboard.");
+    }
+  });
+
+  downloadBtn.addEventListener("click", () => {
+    const text = resultArea.textContent.trim();
+    if (!text) return;
+    const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "ai-resume.txt";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  });
+
+  clearResultBtn.addEventListener("click", () => {
+    setResultText("");
+    aiInfoBox.style.display = "none";
+  });
+
+  // ====== INITIAL INFO ======
+  showInfo("Tip: upload your resume as PDF/DOCX or paste the text, then use Analyze or Generate with a custom prompt.");
+</script>
+
+</body>
+</html>
