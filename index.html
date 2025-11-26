@@ -769,23 +769,59 @@
   });
 
   // ====== OPENAI API CALL ======
-  async function callOpenAI({ mode }) {
-    clearError();
-    clearInfo();
-    aiInfoBox.style.display = "none";
+  async function callOpenAI(mode) {
+  const resume = sourceText.value.trim();
+  const userPrompt = promptInput.value.trim();
+  const extra = buildAdvancedInstructions();
+  const basePrompt =
+    mode === "analyze"
+      ? "Сначала проанализируй сильные и слабые стороны этого резюме, затем предложи улучшенную версию."
+      : MASTER_PROMPT;
 
-    const apiKey = apiKeyInput.value.trim();
-    const resumeText = sourceText.value.trim();
-    const customPrompt = promptInput.value.trim();
+  const prompt =
+    (userPrompt || basePrompt) +
+    (extra ? `\n\nAdditional requirements:\n${extra}` : "");
 
-    if (!apiKey) {
-      showError("Please enter your OpenAI API key.");
-      return;
+  if (!resume) {
+    alert("Please paste or upload your resume text first.");
+    return;
+  }
+
+  const activeBtn = mode === "analyze" ? analyzeBtn : generateBtn;
+  activeBtn.disabled = true;
+  activeBtn.textContent =
+    mode === "analyze" ? "Analyzing..." : "Generating...";
+
+  aiOutput.textContent =
+    mode === "analyze"
+      ? "AI is analyzing your resume..."
+      : "AI is rewriting your resume...";
+
+  try {
+    const response = await fetch("http://localhost:3000/api/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ resume, prompt })
+    });
+
+    if (!response.ok) {
+      const errText = await response.text();
+      throw new Error(errText || "Request failed");
     }
-    if (!resumeText) {
-      showError("Resume text is empty. Upload a file or paste your resume.");
-      return;
-    }
+
+    const data = await response.json();
+    aiOutput.textContent = data.text || "No response from backend.";
+  } catch (err) {
+    console.error(err);
+    aiOutput.textContent =
+      "Backend error. Check server or network connection.";
+  } finally {
+    activeBtn.disabled = false;
+    activeBtn.textContent =
+      mode === "analyze" ? "🔍 Analyze" : "✨ Generate";
+  }
+}
+
 
     const basePromptAnalyze = `
 You are an expert resume reviewer and career coach.
