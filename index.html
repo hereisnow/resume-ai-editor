@@ -31,6 +31,7 @@
       min-height: 100vh;
       display: flex;
       flex-direction: column;
+      overflow-x: hidden; /* чтобы ничего не вылезало по горизонтали */
     }
 
     .app-shell {
@@ -81,6 +82,7 @@
       display: flex;
       flex-direction: column;
       gap: 14px;
+      min-height: 420px; /* чтобы высота сильно не прыгала */
     }
 
     .card-header {
@@ -303,6 +305,8 @@
       font-size: 13px;
       color: var(--text-sub);
       white-space: pre-wrap;
+      overflow-y: auto;        /* скролл только внутри результата */
+      max-height: 360px;       /* не даём правой карте разрастись до бесконечности */
     }
 
     .right-header-extra {
@@ -355,7 +359,7 @@
           <div class="hint">Make sure the text looks clean before sending it to AI.</div>
 
           <div class="prompt-input-row">
-            <input id="prompt" class="prompt-input" type="text" placeholder="E.g., Rewrite for a Senior Developer role, focusing on leadership..." />
+            <input id="prompt" class="prompt-input" type="text" placeholder="E.g., Rewrite for a Product Manager role in Germany. Focus on achievements..." />
             <div class="chips-row">
               <button type="button" class="chip" id="chipGrammar">Fix Grammar</button>
               <button type="button" class="chip" id="chipTone">Professional Tone</button>
@@ -386,7 +390,7 @@
               </div>
               <div>
                 <div class="advanced-label">Target role (optional)</div>
-                <input id="advRole" class="advanced-control" type="text" placeholder="e.g. Frontend Developer" />
+                <input id="advRole" class="advanced-control" type="text" placeholder="e.g. Product Manager" />
               </div>
               <div>
                 <div class="advanced-label">Tone</div>
@@ -427,152 +431,96 @@
 
     const BACKEND_URL = "https://resume-ai-editor-backend.onrender.com";
 
-    const dropzone = document.getElementById("dropzone");
-    const fileInput = document.getElementById("fileInput");
-    const sourceText = document.getElementById("sourceText");
-    const promptInput = document.getElementById("prompt");
-    const aiOutput = document.getElementById("aiOutput");
-    const analyzeBtn = document.getElementById("analyzeBtn");
-    const generateBtn = document.getElementById("generateBtn");
+    const dropzone = document.getElementById('dropzone');
+    const fileInput = document.getElementById('fileInput');
+    const sourceText = document.getElementById('sourceText');
+    const promptInput = document.getElementById('prompt');
+    const aiOutput = document.getElementById('aiOutput');
+    const analyzeBtn = document.getElementById('analyzeBtn');
+    const generateBtn = document.getElementById('generateBtn');
 
-    const advancedBody = document.getElementById("advancedBody");
-    const advancedToggle = document.getElementById("advancedToggle");
-    const advancedToggleLabel = document.getElementById("advancedToggleLabel");
-    const advLanguage = document.getElementById("advLanguage");
-    const advLevel = document.getElementById("advLevel");
-    const advRole = document.getElementById("advRole");
-    const advTone = document.getElementById("advTone");
+    const advancedBody = document.getElementById('advancedBody');
+    const advancedToggle = document.getElementById('advancedToggle');
+    const advancedToggleLabel = document.getElementById('advancedToggleLabel');
+    const advLanguage = document.getElementById('advLanguage');
+    const advLevel = document.getElementById('advLevel');
+    const advRole = document.getElementById('advRole');
+    const advTone = document.getElementById('advTone');
 
-    const chipGrammar = document.getElementById("chipGrammar");
-    const chipTone = document.getElementById("chipTone");
-    const chipMetrics = document.getElementById("chipMetrics");
+    const chipGrammar = document.getElementById('chipGrammar');
+    const chipTone = document.getElementById('chipTone');
+    const chipMetrics = document.getElementById('chipMetrics');
 
-    const btnCopy = document.getElementById("btnCopy");
-    const btnDownload = document.getElementById("btnDownload");
-    const btnEditToSource = document.getElementById("btnEditToSource");
+    const btnCopy = document.getElementById('btnCopy');
+    const btnDownload = document.getElementById('btnDownload');
+    const btnEditToSource = document.getElementById('btnEditToSource');
 
-    const MASTER_PROMPT = `Переработай моё резюме по следующему высокодетализированному техническому заданию.
-Работай строго по пунктам.
+    /* СУПЕР-КОРОТКИЙ PROMPT, чтобы не ловить MAX_TOKENS */
+    const MASTER_PROMPT = `
+Rewrite the resume in a professional, concise, ATS-friendly style.
+- Convert responsibilities into measurable achievements.
+- Add realistic metrics where possible.
+- Use strong action verbs and clear structure.
+- Keep sections: Summary, Skills, Experience, Education (and Projects if useful).
+Output only the final resume text, without comments or analysis.
+`;
 
-## 1. Общие требования к стилю и качеству текста
-* Приведи текст к профессиональному деловому стилю.
-* Пиши ясно, лаконично, без воды и без общих фраз.
-* Убирай пассивный залог, используй активный.
-* Начинай каждый буллет с сильного глагола действия (Led, Delivered, Designed, Optimized и др.).
-* Избегай повторяющихся слов и клише.
-* Делай текст ориентированным на результат и пользу для работодателя.
-
-## 2. Улучшение содержания и достижений
-* Для каждого места работы:
-  - Преобразуй обязанности в достижения.
-  - Добавь метрики и результаты (предложи типичные KPI, если они не указаны).
-  - Отвечай на три вопроса: какую задачу я решал, что сделал, какой результат обеспечил.
-  - Укажи масштабы: бюджеты, команды, объёмы, сроки, рост, снижение потерь, производительность.
-
-## 3. ATS-оптимизация
-* Используй только чистый текст, без сложной вёрстки.
-* Применяй релевантные ключевые слова моей сферы: навыки, инструменты, методы, технологии, роли.
-* Структура:
-  - Summary
-  - Skills
-  - Experience
-  - Education
-  - Certifications
-  - Tools/Tech
-  - Projects
-  - Additional info
-* Исключи таблицы, столбцы, декоративные символы и эмодзи.
-
-## 4. Структура итогового резюме
-* Professional Summary (3–4 строки) — позиционирование, ключевые компетенции, ценность.
-* Core Skills / Technical Skills — навыки по категориям.
-* Experience — должность, компания, даты + 4–6 буллетов достижений по схеме глагол → действие → результат → цифры.
-* Education — только значимое.
-* Projects (опционально) — что сделал и какой эффект.
-* Certifications / Courses / Tech Stack — только подтверждённые навыки.
-* Additional Information — языки, инструменты, soft skills (кратко и проверяемо).
-
-## 5. Улучшение читабельности
-* Разбивай длинные предложения.
-* Делай логичный порядок навыков и опыта.
-* Убирай нерелевантные детали и личные данные, не нужные работодателю.
-
-## 6. Аналитика и рекомендации
-* После переработки резюме:
-  1. Перечисли основные проблемы исходного текста.
-  2. Укажи, что именно ты улучшил.
-  3. Предложи, что ещё можно добавить.
-  4. Дай примеры навыков и метрик, типичных для моей отрасли.
-
-## 7. Формат вывода
-* Выведи итоговое резюме в ATS-ready текстовом виде.
-* Не добавляй визуальный дизайн.
-* Сохрани чёткую структуру, списки и читаемость.`;
-
-    // Advanced settings toggle
-    advancedToggle.addEventListener("click", () => {
-      const hidden = advancedBody.classList.toggle("hidden");
-      advancedToggleLabel.textContent = hidden ? "Show" : "Hide";
+    // Advanced UI
+    advancedToggle.addEventListener('click', () => {
+      const hidden = advancedBody.classList.toggle('hidden');
+      advancedToggleLabel.textContent = hidden ? 'Show' : 'Hide';
     });
 
     function appendPrompt(text) {
       const current = promptInput.value.trim();
-      promptInput.value = current ? current + " · " + text : text;
+      promptInput.value = current ? current + ' · ' + text : text;
       promptInput.focus();
     }
 
-    chipGrammar.addEventListener("click", () =>
-      appendPrompt("Fix grammar and clarity.")
-    );
-    chipTone.addEventListener("click", () =>
-      appendPrompt("Use a confident, professional tone.")
-    );
-    chipMetrics.addEventListener("click", () =>
-      appendPrompt("Add concrete metrics and impact (%, $, time saved).")
-    );
+    chipGrammar.addEventListener('click', () => appendPrompt('Fix grammar and clarity.'));
+    chipTone.addEventListener('click', () => appendPrompt('Use a confident, professional tone.'));
+    chipMetrics.addEventListener('click', () => appendPrompt('Add concrete metrics and impact (%, $, time saved).'));
 
     // Drag & drop
-    ["dragenter", "dragover"].forEach((evt) => {
-      dropzone.addEventListener(evt, (e) => {
+    ['dragenter','dragover'].forEach(evt => {
+      dropzone.addEventListener(evt, e => {
         e.preventDefault();
         e.stopPropagation();
-        dropzone.classList.add("dragover");
+        dropzone.classList.add('dragover');
       });
     });
-    ["dragleave", "drop"].forEach((evt) => {
-      dropzone.addEventListener(evt, (e) => {
+    ['dragleave','drop'].forEach(evt => {
+      dropzone.addEventListener(evt, e => {
         e.preventDefault();
         e.stopPropagation();
-        dropzone.classList.remove("dragover");
+        dropzone.classList.remove('dragover');
       });
     });
 
-    dropzone.addEventListener("click", () => fileInput.click());
+    dropzone.addEventListener('click', () => fileInput.click());
 
-    dropzone.addEventListener("drop", (e) => {
+    dropzone.addEventListener('drop', e => {
       const file = e.dataTransfer.files?.[0];
       if (file) handleFile(file);
     });
 
-    fileInput.addEventListener("change", (e) => {
+    fileInput.addEventListener('change', e => {
       const file = e.target.files?.[0];
       if (file) handleFile(file);
     });
 
     function handleFile(file) {
-      const ext = file.name.split(".").pop().toLowerCase();
-      if (ext === "txt") {
+      const ext = file.name.split('.').pop().toLowerCase();
+      if (ext === 'txt') {
         const reader = new FileReader();
-        reader.onload = (e) => {
-          sourceText.value = e.target.result;
-        };
+        reader.onload = e => { sourceText.value = e.target.result; };
         reader.readAsText(file);
-      } else if (ext === "pdf") {
+      } else if (ext === 'pdf') {
         extractPdf(file);
-      } else if (ext === "docx" || ext === "doc") {
+      } else if (ext === 'docx' || ext === 'doc') {
         extractDocx(file);
       } else {
-        alert("Unsupported file type. Please upload PDF, DOCX, or TXT.");
+        alert('Unsupported file type. Please upload PDF, DOCX, or TXT.');
       }
     }
 
@@ -580,34 +528,30 @@
       try {
         const arrayBuffer = await file.arrayBuffer();
         const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-        let text = "";
+        let text = '';
         for (let i = 1; i <= pdf.numPages; i++) {
           const page = await pdf.getPage(i);
           const content = await page.getTextContent();
-          const strings = content.items.map((it) => it.str);
-          text += strings.join(" ") + "\n";
+          const strings = content.items.map(it => it.str);
+          text += strings.join(' ') + "\\n";
         }
         sourceText.value = text.trim();
       } catch (err) {
         console.error(err);
-        alert(
-          "Error extracting text from PDF. You can convert it to TXT and upload again."
-        );
+        alert('Error extracting text from PDF. You can convert it to TXT and upload again.');
       }
     }
 
     function extractDocx(file) {
       const reader = new FileReader();
-      reader.onload = async (e) => {
+      reader.onload = async e => {
         try {
           const arrayBuffer = e.target.result;
           const result = await window.mammoth.extractRawText({ arrayBuffer });
           sourceText.value = result.value.trim();
         } catch (err) {
           console.error(err);
-          alert(
-            "Error extracting text from DOCX. You can convert it to TXT and upload again."
-          );
+          alert('Error extracting text from DOCX. You can convert it to TXT and upload again.');
         }
       };
       reader.readAsArrayBuffer(file);
@@ -620,48 +564,38 @@
       const role = advRole.value.trim();
       const tone = advTone.value;
 
-      if (lang === "en") parts.push("Write the resume in English.");
-      if (lang === "ru") parts.push("Write the resume in Russian.");
+      if (lang === 'en') parts.push('Write the resume in English.');
+      if (lang === 'ru') parts.push('Write the resume in Russian.');
 
-      if (level === "student")
-        parts.push(
-          "Position the candidate as a student or entry-level specialist."
-        );
-      else if (level === "mid")
-        parts.push("Position the candidate as a mid-level professional.");
-      else if (level === "senior")
-        parts.push(
-          "Position the candidate as a senior-level professional with leadership responsibilities."
-        );
+      if (level === 'student') parts.push('Position the candidate as a student or entry-level specialist.');
+      else if (level === 'mid') parts.push('Position the candidate as a mid-level professional.');
+      else if (level === 'senior') parts.push('Position the candidate as a senior-level professional with leadership responsibilities.');
 
-      if (role)
-        parts.push(
-          `Optimize the resume for the target role: "${role}" and include relevant keywords.`
-        );
+      if (role) parts.push(`Optimize the resume for the target role: "${role}" and include relevant keywords.`);
 
-      if (tone === "formal") parts.push("Use a formal corporate tone.");
-      else if (tone === "concise")
-        parts.push(
-          "Make the writing extra concise and remove everything that does not add clear value."
-        );
-      else if (tone === "neutral")
-        parts.push("Use a neutral, modern professional tone.");
+      if (tone === 'formal') parts.push('Use a formal corporate tone.');
+      else if (tone === 'concise') parts.push('Make the writing extra concise and remove everything that does not add clear value.');
+      else if (tone === 'neutral') parts.push('Use a neutral, modern professional tone.');
 
-      return parts.join(" ");
+      return parts.join(' ');
     }
 
     async function callOpenAI(mode) {
       const resume = sourceText.value.trim();
       const userPrompt = promptInput.value.trim();
       const extra = buildAdvancedInstructions();
+
       const basePrompt =
         mode === "analyze"
-          ? "Сначала проанализируй сильные и слабые стороны этого резюме, затем предложи улучшенную версию."
+          ? "First briefly analyze strengths and weaknesses of this resume. Then provide an improved version following the rules below."
           : MASTER_PROMPT;
 
-      const prompt =
-        (userPrompt || basePrompt) +
-        (extra ? `\n\nAdditional requirements:\n${extra}` : "");
+      let fullPrompt = (userPrompt || basePrompt) +
+        (extra ? `\\n\\nAdditional requirements:\\n${extra}` : "");
+
+      if (mode === "analyze") {
+        fullPrompt += "\\n\\nAfter the analysis, output the improved resume as final text.";
+      }
 
       if (!resume) {
         alert("Please paste or upload your resume text first.");
@@ -678,33 +612,24 @@
           ? "AI is analyzing your resume..."
           : "AI is rewriting your resume...";
 
-      console.log("BACKEND_URL =", BACKEND_URL);
-      console.log("Calling:", `${BACKEND_URL}/api/chat`);
-
       try {
         const response = await fetch(`${BACKEND_URL}/api/chat`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ resume, prompt }),
+          body: JSON.stringify({ resume, prompt: fullPrompt }),
         });
-
-        console.log("Response status:", response.status);
 
         if (!response.ok) {
           const errText = await response.text();
-          console.error("Backend error text:", errText);
-          aiOutput.textContent =
-            "Backend returned an error:\n\n" + errText;
+          console.error("Backend error:", errText);
+          aiOutput.textContent = "Backend returned an error:\\n\\n" + errText;
           return;
         }
 
         const data = await response.json();
-        console.log("Response JSON:", data);
-
-        aiOutput.textContent =
-          data.text || "No text field in backend response.";
+        aiOutput.textContent = data.text || "No text field in backend response.";
       } catch (err) {
         console.error("callOpenAI exception:", err);
         aiOutput.textContent =
@@ -716,39 +641,40 @@
       }
     }
 
-    analyzeBtn.addEventListener("click", () => callOpenAI("analyze"));
-    generateBtn.addEventListener("click", () => callOpenAI("generate"));
+    analyzeBtn.addEventListener('click', () => callOpenAI('analyze'));
+    generateBtn.addEventListener('click', () => callOpenAI('generate'));
 
-    btnCopy.addEventListener("click", async () => {
-      const text = aiOutput.textContent || "";
+    // Result actions
+    btnCopy.addEventListener('click', async () => {
+      const text = aiOutput.textContent || '';
       if (!text) return;
       try {
         await navigator.clipboard.writeText(text);
-        alert("Copied to clipboard.");
+        alert('Copied to clipboard.');
       } catch (_) {
-        alert("Could not copy. Select and copy manually.");
+        alert('Could not copy. Select and copy manually.');
       }
     });
 
-    btnDownload.addEventListener("click", () => {
-      const text = aiOutput.textContent || "";
-      const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+    btnDownload.addEventListener('click', () => {
+      const text = aiOutput.textContent || '';
+      const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
       const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
+      const a = document.createElement('a');
       a.href = url;
-      a.download = "ai-resume.txt";
+      a.download = 'ai-resume.txt';
       document.body.appendChild(a);
       a.click();
       a.remove();
       URL.revokeObjectURL(url);
     });
 
-    btnEditToSource.addEventListener("click", () => {
-      const text = aiOutput.textContent || "";
+    btnEditToSource.addEventListener('click', () => {
+      const text = aiOutput.textContent || '';
       if (!text) return;
       sourceText.value = text;
       sourceText.focus();
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      // без scrollTo, чтобы экран меньше "скакал"
     });
   </script>
 </body>
