@@ -654,10 +654,10 @@
 
       try {
         const response = await fetch(`${BACKEND_URL}/api/chat`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ resume, prompt })
-        });
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ resume, prompt })
+});
 
         if (!response.ok) {
           const errText = await response.text();
