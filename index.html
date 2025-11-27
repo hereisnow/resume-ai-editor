@@ -295,17 +295,18 @@
       opacity: 0.7;
       cursor: default;
     }
+.result-inner {
+  background: var(--panel-soft);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  height: 340px;             /* такая же фиксированная высота, как слева */
+  padding: 16px 14px;
+  font-size: 13px;
+  color: var(--text-sub);
+  white-space: pre-wrap;
+  overflow-y: auto;          /* прокрутка результата, без роста блока */
+}
 
-    .result-inner {
-      background: var(--panel-soft);
-      border-radius: var(--radius-lg);
-      border: 1px solid var(--border);
-      min-height: 260px;
-      padding: 16px 14px;
-      font-size: 13px;
-      color: var(--text-sub);
-      white-space: pre-wrap;
-    }
 
     .right-header-extra {
       display: flex;
