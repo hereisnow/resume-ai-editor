@@ -146,17 +146,18 @@
     }
 
     .textarea {
-      width: 100%;
-      min-height: 180px;            /* выше textarea */
-      resize: vertical;
-      padding: 10px 12px;
-      border-radius: var(--radius-lg);
-      border: 1px solid var(--border);
-      font-size: 13px;
-      background: var(--panel);
-      outline: none;
-      line-height: 1.45;
-    }
+  width: 100%;
+  height: 340px;              /* фиксированная большая высота */
+  resize: none;               /* пользователь не растягивает блок */
+  overflow-y: auto;           /* прокрутка внутри */
+  padding: 10px 12px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  font-size: 13px;
+  background: var(--panel);
+  outline: none;
+  line-height: 1.45;
+}
 
     .textarea:focus {
       border-color: var(--accent-blue);
