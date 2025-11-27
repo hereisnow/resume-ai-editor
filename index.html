@@ -5,381 +5,352 @@
   <title>AI Resume Editor</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- Скрываем страницу до полной загрузки -->
+  <!-- Скрываем страницу, пока всё не загрузится, чтобы не было "узкого" состояния -->
   <style>
     html.app-loading {
-      visibility: hidden;  /* Ничего не видно, нет “узкого” состояния */
+      visibility: hidden;
     }
   </style>
   <script>
-    // Помечаем документ как "загружается"
     document.documentElement.classList.add('app-loading');
-    // Как только всё (CSS, JS, шрифты) загрузилось — показываем
     window.addEventListener('load', function () {
       document.documentElement.classList.remove('app-loading');
     });
   </script>
 
-  <!-- дальше твой основной <style> со всеми карточками -->
-  ...
-</head>
-
-  <meta charset="UTF-8" />
-  <title>AI Resume Editor</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
+  <style>
+    :root {
+      --bg: #f3f4f6;
+      --panel: #ffffff;
+      --panel-soft: #f9fafb;
+      --border: #e5e7eb;
+      --border-strong: #d1d5db;
+      --text-main: #0f172a;
+      --text-sub: #6b7280;
+      --accent-blue: #2563eb;
+      --accent-purple: #4f46e5;
+      --radius-xl: 18px;
+      --radius-lg: 14px;
+      --radius-md: 10px;
+      --shadow-soft: 0 18px 45px rgba(15, 23, 42, 0.12);
     }
-<style>
-  :root {
-    --bg: #f3f4f6;
-    --panel: #ffffff;
-    --panel-soft: #f9fafb;
-    --border: #e5e7eb;
-    --border-strong: #d1d5db;
-    --text-main: #0f172a;
-    --text-sub: #6b7280;
-    --accent-blue: #2563eb;
-    --accent-purple: #4f46e5;
-    --radius-xl: 18px;
-    --radius-lg: 14px;
-    --radius-md: 10px;
-    --shadow-soft: 0 18px 45px rgba(15, 23, 42, 0.12);
-  }
 
-  * {
-    box-sizing: border-box;
-  }
+    * { box-sizing: border-box; }
 
-  body {
-    margin: 0;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
-      "Segoe UI", sans-serif;
-    background: var(--bg);
-    color: var(--text-main);
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-  }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
 
-  .app-shell {
-    max-width: 1400px;        /* шире общий контейнер */
-    margin: 0 auto;
-    padding: 24px 16px 40px;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-  }
+    .app-shell {
+      max-width: 1360px;   /* фиксированная широкая область, всегда одна и та же */
+      margin: 0 auto;
+      padding: 32px 20px 48px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
 
-  .topbar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-  }
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
 
-  .title {
-    font-size: 22px;
-    font-weight: 800;
-    letter-spacing: -0.02em;
-    margin-bottom: 4px;
-  }
+    .title {
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 4px;
+    }
 
-  .subtitle {
-    font-size: 13px;
-    color: var(--text-sub);
-  }
+    .subtitle {
+      font-size: 13px;
+      color: var(--text-sub);
+    }
 
-  .main-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;  /* ровно два широких столбца */
-    gap: 24px;
-    margin-top: 32px;
-  }
-
-  @media (max-width: 960px) {
     .main-grid {
-      grid-template-columns: minmax(0, 1fr);
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); /* две равные широкие колонки */
+      gap: 24px;
+      margin-top: 24px;
     }
-  }
 
-  .card {
-    background: var(--panel);
-    border-radius: var(--radius-xl);
-    box-shadow: var(--shadow-soft);
-    border: 1px solid var(--border);
-    padding: 18px 18px 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-  }
+    @media (max-width: 960px) {
+      .main-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
 
-  .card-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-size: 13px;
-    color: var(--text-sub);
-    padding-bottom: 6px;
-  }
+    .card {
+      background: var(--panel);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-soft);
+      border: 1px solid var(--border);
+      padding: 20px 20px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
 
-  .card-title {
-    font-size: 14px;
-    font-weight: 600;
-    letter-spacing: 0.02em;
-  }
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 13px;
+      color: var(--text-sub);
+      padding-bottom: 6px;
+    }
 
-  .card-tag-link {
-    font-size: 11px;
-    color: var(--accent-blue);
-    cursor: pointer;
-  }
+    .card-title {
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
 
-  .card-body {
-    background: #f5f7fb;
-    border-radius: var(--radius-lg);
-    border: 1px solid var(--border);
-    padding: 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
+    .card-tag-link {
+      font-size: 11px;
+      color: var(--accent-blue);
+      cursor: pointer;
+    }
 
-  .dropzone {
-    border-radius: var(--radius-lg);
-    border: 2px dashed var(--border);
-    background: var(--panel);
-    padding: 30px 16px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    cursor: pointer;
-    transition: 0.15s ease;
-    gap: 6px;
-  }
+    .card-body {
+      background: #f5f7fb;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
 
-  .dropzone.dragover {
-    border-color: var(--accent-blue);
-    background: #eff6ff;
-  }
+    .dropzone {
+      border-radius: var(--radius-lg);
+      border: 2px dashed var(--border);
+      background: var(--panel);
+      padding: 30px 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      cursor: pointer;
+      transition: 0.15s ease;
+      gap: 6px;
+    }
 
-  .dropzone-title {
-    font-size: 14px;
-    font-weight: 600;
-  }
+    .dropzone.dragover {
+      border-color: var(--accent-blue);
+      background: #eff6ff;
+    }
 
-  .dropzone-sub {
-    font-size: 11px;
-    color: var(--text-sub);
-  }
+    .dropzone-title {
+      font-size: 14px;
+      font-weight: 600;
+    }
 
-  /* ЛЕВЫЙ textarea — фиксированная большая высота */
+    .dropzone-sub {
+      font-size: 11px;
+      color: var(--text-sub);
+    }
 
-  .textarea {
-    width: 100%;
-    height: 360px;          /* фикс, больше, не прыгает */
-    resize: none;           /* нельзя растянуть мышкой */
-    overflow-y: auto;       /* прокрутка внутри */
-    padding: 10px 12px;
-    border-radius: var(--radius-lg);
-    border: 1px solid var(--border);
-    font-size: 13px;
-    background: var(--panel);
-    outline: none;
-    line-height: 1.45;
-  }
+    .textarea {
+      width: 100%;
+      height: 260px;          /* фиксированная большая высота сразу */
+      resize: vertical;
+      padding: 10px 12px;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+      font-size: 13px;
+      background: var(--panel);
+      outline: none;
+      line-height: 1.45;
+    }
 
-  .textarea:focus {
-    border-color: var(--accent-blue);
-    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.22);
-    background: #ffffff;
-  }
+    .textarea:focus {
+      border-color: var(--accent-blue);
+      box-shadow: 0 0 0 2px rgba(37,99,235,0.22);
+      background: #ffffff;
+    }
 
-  .hint {
-    font-size: 11px;
-    color: var(--text-sub);
-  }
+    .hint {
+      font-size: 11px;
+      color: var(--text-sub);
+    }
 
-  .prompt-input-row {
-    margin-top: 6px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
+    .prompt-input-row {
+      margin-top: 6px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
 
-  .prompt-input {
-    width: 100%;
-    padding: 10px 14px;
-    border-radius: 9999px;
-    border: 1px solid var(--border);
-    font-size: 13px;
-    background: var(--panel);
-    outline: none;
-  }
+    .prompt-input {
+      width: 100%;
+      padding: 10px 14px;
+      border-radius: 9999px;
+      border: 1px solid var(--border);
+      font-size: 13px;
+      background: var(--panel);
+      outline: none;
+    }
 
-  .prompt-input:focus {
-    border-color: var(--accent-blue);
-    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.22);
-    background: #ffffff;
-  }
+    .prompt-input:focus {
+      border-color: var(--accent-blue);
+      box-shadow: 0 0 0 2px rgba(37,99,235,0.22);
+      background: #ffffff;
+    }
 
-  .chips-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-  }
+    .chips-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
 
-  .chip {
-    font-size: 11px;
-    padding: 6px 10px;
-    border-radius: 9999px;
-    background: #e5e7eb;
-    color: #374151;
-    border: none;
-    cursor: pointer;
-    white-space: nowrap;
-  }
+    .chip {
+      font-size: 11px;
+      padding: 6px 10px;
+      border-radius: 9999px;
+      background: #e5e7eb;
+      color: #374151;
+      border: none;
+      cursor: pointer;
+      white-space: nowrap;
+    }
 
-  .chip:hover {
-    background: #d1d5db;
-  }
+    .chip:hover {
+      background: #d1d5db;
+    }
 
-  .advanced {
-    margin-top: 4px;
-    border-radius: var(--radius-md);
-    border: 1px dashed var(--border);
-    padding: 8px 10px;
-    background: #f9fafb;
-  }
+    .advanced {
+      margin-top: 4px;
+      border-radius: var(--radius-md);
+      border: 1px dashed var(--border);
+      padding: 8px 10px;
+      background: #f9fafb;
+    }
 
-  .advanced-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-size: 11px;
-    color: var(--text-sub);
-    cursor: pointer;
-  }
+    .advanced-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 11px;
+      color: var(--text-sub);
+      cursor: pointer;
+    }
 
-  .advanced-title {
-    font-weight: 600;
-  }
+    .advanced-title { font-weight: 600; }
 
-  .advanced-body {
-    margin-top: 8px;
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    gap: 8px;
-  }
-
-  @media (max-width: 640px) {
     .advanced-body {
-      grid-template-columns: minmax(0, 1fr);
+      margin-top: 8px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 8px;
     }
-  }
 
-  .advanced-body.hidden {
-    display: none;
-  }
+    @media (max-width: 640px) {
+      .advanced-body { grid-template-columns: minmax(0, 1fr); }
+    }
 
-  .advanced-label {
-    font-size: 11px;
-    color: var(--text-sub);
-    margin-bottom: 4px;
-  }
+    .advanced-body.hidden { display: none; }
 
-  .advanced-control {
-    width: 100%;
-    padding: 6px 10px;
-    border-radius: 9999px;
-    border: 1px solid var(--border);
-    font-size: 12px;
-    background: #ffffff;
-    outline: none;
-  }
+    .advanced-label {
+      font-size: 11px;
+      color: var(--text-sub);
+      margin-bottom: 4px;
+    }
 
-  .advanced-control:focus {
-    border-color: var(--accent-blue);
-    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
-  }
+    .advanced-control {
+      width: 100%;
+      padding: 6px 10px;
+      border-radius: 9999px;
+      border: 1px solid var(--border);
+      font-size: 12px;
+      background: #ffffff;
+      outline: none;
+    }
 
-  .actions-row {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-    margin-top: 10px;
-  }
+    .advanced-control:focus {
+      border-color: var(--accent-blue);
+      box-shadow: 0 0 0 2px rgba(37,99,235,0.20);
+    }
 
-  .btn {
-    border-radius: 9999px;
-    border: none;
-    padding: 10px 22px;
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-    color: #ffffff;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-  }
+    .actions-row {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 10px;
+    }
 
-  .btn-analyze {
-    background: var(--accent-purple);
-  }
+    .btn {
+      border-radius: 9999px;
+      border: none;
+      padding: 10px 22px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      color: #ffffff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
 
-  .btn-generate {
-    background: var(--accent-blue);
-  }
+    .btn-analyze { background: var(--accent-purple); }
+    .btn-generate { background: var(--accent-blue); }
 
-  .btn:disabled {
-    opacity: 0.7;
-    cursor: default;
-  }
+    .btn:disabled {
+      opacity: 0.7;
+      cursor: default;
+    }
 
-  /* ПРАВЫЙ блок результата — тоже фиксированная высота */
+    .result-inner {
+      background: var(--panel-soft);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+      min-height: 260px;         /* тоже фиксированная большая высота */
+      padding: 16px 14px;
+      font-size: 13px;
+      color: var(--text-sub);
+      white-space: pre-wrap;
+      overflow-y: auto;
+    }
 
-  .result-inner {
-    background: var(--panel-soft);
-    border-radius: var(--radius-lg);
-    border: 1px solid var(--border);
-    height: 360px;          /* фикс, как слева */
-    padding: 16px 14px;
-    font-size: 13px;
-    color: var(--text-sub);
-    white-space: pre-wrap;
-    overflow-y: auto;       /* прокрутка текста */
-  }
+    .right-header-extra {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      font-size: 14px;
+    }
 
-  .right-header-extra {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-    font-size: 14px;
-  }
-
-  .icon-btn {
-    width: 26px;
-    height: 26px;
-    border-radius: 9999px;
-    border: 1px solid var(--border);
-    background: #f9fafb;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 14px;
-    cursor: pointer;
-  }
-</style>
-
+    .icon-btn {
+      width: 26px;
+      height: 26px;
+      border-radius: 9999px;
+      border: 1px solid var(--border);
+      background: #f9fafb;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
   <div class="app-shell">
     <header class="topbar">
-      <div class="title">AI Resume Editor</div>
-      <div class="subtitle">
-        Based on real needs of Reddit users · Drag &amp; drop your existing resume and improve it with AI.
+      <div>
+        <div class="title">AI Resume Editor</div>
+        <div class="subtitle">
+          Based on real needs of Reddit users · Drag &amp; drop your existing resume and improve it with AI.
+        </div>
       </div>
     </header>
 
@@ -401,8 +372,7 @@
           <div class="hint">Make sure the text looks clean before sending it to AI.</div>
 
           <div class="prompt-input-row">
-            <input id="prompt" class="prompt-input" type="text"
-                   placeholder="E.g., Rewrite for a Senior Developer role, focusing on leadership..." />
+            <input id="prompt" class="prompt-input" type="text" placeholder="E.g., Rewrite for a Senior Developer role, focusing on leadership..." />
             <div class="chips-row">
               <button type="button" class="chip" id="chipGrammar">Fix Grammar</button>
               <button type="button" class="chip" id="chipTone">Professional Tone</button>
@@ -428,18 +398,17 @@
                 <select id="advLevel" class="advanced-control">
                   <option value="student">Student / Entry</option>
                   <option value="mid">Mid-level</option>
-                  <option value="senior" selected>Senior</option>
+                  <option value="senior">Senior</option>
                 </select>
               </div>
               <div>
                 <div class="advanced-label">Target role (optional)</div>
-                <input id="advRole" class="advanced-control" type="text"
-                       placeholder="e.g. Frontend Developer" />
+                <input id="advRole" class="advanced-control" type="text" placeholder="e.g. Frontend Developer" />
               </div>
               <div>
                 <div class="advanced-label">Tone</div>
                 <select id="advTone" class="advanced-control">
-                  <option value="neutral" selected>Neutral professional</option>
+                  <option value="neutral">Neutral professional</option>
                   <option value="formal">Formal</option>
                   <option value="concise">Extra concise</option>
                 </select>
@@ -469,14 +438,12 @@
     </main>
   </div>
 
-  <!-- DOCX extractor -->
+  <!-- DOCX -->
   <script src="https://unpkg.com/mammoth/mammoth.browser.min.js"></script>
-
-  <!-- MAIN SCRIPT -->
+  <!-- PDF -->
   <script type="module">
     import * as pdfjsLib from "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.2.67/pdf.min.mjs";
 
-    // URL твоего backend на Render (Gemini-версия)
     const BACKEND_URL = "https://resume-ai-editor-backend.onrender.com";
 
     const dropzone = document.getElementById('dropzone');
@@ -503,11 +470,65 @@
     const btnDownload = document.getElementById('btnDownload');
     const btnEditToSource = document.getElementById('btnEditToSource');
 
-    const MASTER_PROMPT = `Переработай моё резюме по следующему ТЗ.
-Пиши максимально кратко, избегай воды. Начинай буллеты с сильных глаголов действия.
-Сфокусируйся на достижениях, цифрах и понятной структуре (Summary, Skills, Experience, Education).`;
+    const MASTER_PROMPT = `Переработай моё резюме по следующему высокодетализированному техническому заданию.
+Работай строго по пунктам.
 
-    // ----- Advanced UI -----
+## 1. Общие требования к стилю и качеству текста
+* Приведи текст к профессиональному деловому стилю.
+* Пиши ясно, лаконично, без воды и без общих фраз.
+* Убирай пассивный залог, используй активный.
+* Начинай каждый буллет с сильного глагола действия (Led, Delivered, Designed, Optimized и др.).
+* Избегай повторяющихся слов и клише.
+* Делай текст ориентированным на результат и пользу для работодателя.
+
+## 2. Улучшение содержания и достижений
+* Для каждого места работы:
+  - Преобразуй обязанности в достижения.
+  - Добавь метрики и результаты (предложи типичные KPI, если они не указаны).
+  - Отвечай на три вопроса: какую задачу я решал, что сделал, какой результат обеспечил.
+  - Укажи масштабы: бюджеты, команды, объёмы, сроки, рост, снижение потерь, производительность.
+
+## 3. ATS-оптимизация
+* Используй только чистый текст, без сложной вёрстки.
+* Применяй релевантные ключевые слова моей сферы: навыки, инструменты, методы, технологии, роли.
+* Структура:
+  - Summary
+  - Skills
+  - Experience
+  - Education
+  - Certifications
+  - Tools/Tech
+  - Projects
+  - Additional info
+* Исключи таблицы, столбцы, декоративные символы и эмодзи.
+
+## 4. Структура итогового резюме
+* Professional Summary (3–4 строки) — позиционирование, ключевые компетенции, ценность.
+* Core Skills / Technical Skills — навыки по категориям.
+* Experience — должность, компания, даты + 4–6 буллетов достижений по схеме глагол → действие → результат → цифры.
+* Education — только значимое.
+* Projects (опционально) — что сделал и какой эффект.
+* Certifications / Courses / Tech Stack — только подтверждённые навыки.
+* Additional Information — языки, инструменты, soft skills (кратко и проверяемо).
+
+## 5. Улучшение читабельности
+* Разбивай длинные предложения.
+* Делай логичный порядок навыков и опыта.
+* Убирай нерелевантные детали и личные данные, не нужные работодателю.
+
+## 6. Аналитика и рекомендации
+* После переработки резюме:
+  1. Перечисли основные проблемы исходного текста.
+  2. Укажи, что именно ты улучшил.
+  3. Предложи, что ещё можно добавить.
+  4. Дай примеры навыков и метрик, типичных для моей отрасли.
+
+## 7. Формат вывода
+* Выведи итоговое резюме в ATS-ready текстовом виде.
+* Не добавляй визуальный дизайн.
+* Сохрани чёткую структуру, списки и читаемость.`;
+
+    // Advanced UI
     advancedToggle.addEventListener('click', () => {
       const hidden = advancedBody.classList.toggle('hidden');
       advancedToggleLabel.textContent = hidden ? 'Show' : 'Hide';
@@ -523,7 +544,7 @@
     chipTone.addEventListener('click', () => appendPrompt('Use a confident, professional tone.'));
     chipMetrics.addEventListener('click', () => appendPrompt('Add concrete metrics and impact (%, $, time saved).'));
 
-    // ----- Drag & Drop -----
+    // Drag & drop
     ['dragenter','dragover'].forEach(evt => {
       dropzone.addEventListener(evt, e => {
         e.preventDefault();
@@ -622,14 +643,13 @@
       return parts.join(' ');
     }
 
-    async function callAI(mode) {
+    async function callBackend(mode) {
       const resume = sourceText.value.trim();
       const userPrompt = promptInput.value.trim();
       const extra = buildAdvancedInstructions();
-
       const basePrompt =
         mode === "analyze"
-          ? "Сначала коротко проанализируй сильные и слабые стороны этого резюме, затем предложи улучшенную версию."
+          ? "Сначала проанализируй сильные и слабые стороны этого резюме, затем предложи улучшенную версию."
           : MASTER_PROMPT;
 
       const prompt =
@@ -643,7 +663,8 @@
 
       const activeBtn = mode === "analyze" ? analyzeBtn : generateBtn;
       activeBtn.disabled = true;
-      activeBtn.textContent = mode === "analyze" ? "Analyzing..." : "Generating...";
+      activeBtn.textContent =
+        mode === "analyze" ? "Analyzing..." : "Generating...";
 
       aiOutput.textContent =
         mode === "analyze"
@@ -653,29 +674,34 @@
       try {
         const response = await fetch(`${BACKEND_URL}/api/chat`, {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ resume, prompt })
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ resume, prompt }),
         });
 
         if (!response.ok) {
           const errText = await response.text();
-          aiOutput.textContent = "Backend returned an error:\n\n" + errText;
+          aiOutput.textContent =
+            "Backend returned an error:\n\n" + errText;
           return;
         }
 
         const data = await response.json();
         aiOutput.textContent = data.text || "No text field in backend response.";
       } catch (err) {
-        console.error("callAI exception:", err);
-        aiOutput.textContent = "Network or CORS error. Try again later.";
+        console.error("Backend call error:", err);
+        aiOutput.textContent =
+          "Backend error. Check server or network connection.";
       } finally {
         activeBtn.disabled = false;
-        activeBtn.textContent = mode === "analyze" ? "🔍 Analyze" : "✨ Generate";
+        activeBtn.textContent =
+          mode === "analyze" ? "🔍 Analyze" : "✨ Generate";
       }
     }
 
-    analyzeBtn.addEventListener('click', () => callAI('analyze'));
-    generateBtn.addEventListener('click', () => callAI('generate'));
+    analyzeBtn.addEventListener('click', () => callBackend('analyze'));
+    generateBtn.addEventListener('click', () => callBackend('generate'));
 
     // Result actions
     btnCopy.addEventListener('click', async () => {
