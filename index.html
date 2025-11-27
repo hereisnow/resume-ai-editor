@@ -5,470 +5,542 @@
   <title>AI Resume Editor</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- Скрываем страницу, пока всё не загрузится, чтобы не было "узкого" состояния -->
-  <style>
-    html.app-loading {
-      visibility: hidden;
-    }
-  </style>
-  <script>
-    document.documentElement.classList.add('app-loading');
-    window.addEventListener('load', function () {
-      document.documentElement.classList.remove('app-loading');
-    });
-  </script>
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
 
   <style>
-    :root {
-      --bg: #f3f4f6;
-      --panel: #ffffff;
-      --panel-soft: #f9fafb;
-      --border: #e5e7eb;
-      --border-strong: #d1d5db;
-      --text-main: #0f172a;
-      --text-sub: #6b7280;
-      --accent-blue: #2563eb;
-      --accent-purple: #4f46e5;
-      --radius-xl: 18px;
-      --radius-lg: 14px;
-      --radius-md: 10px;
-      --shadow-soft: 0 18px 45px rgba(15, 23, 42, 0.12);
-    }
-
-    * { box-sizing: border-box; }
-
     body {
-      margin: 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
-      background: var(--bg);
-      color: var(--text-main);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+        "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #eef2ff 0, #f8fafc 45%, #e2e8f0 100%);
     }
 
-    .app-shell {
-      max-width: 1360px;   /* фиксированная широкая область, всегда одна и та же */
-      margin: 0 auto;
-      padding: 32px 20px 48px;
-      display: flex;
-      flex-direction: column;
-      gap: 24px;
+    /* фиксируем высоту «рабочих» блоков, чтобы не прыгали */
+    .panel-shell {
+      min-height: 560px;
     }
 
-    .topbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-    }
-
-    .title {
-      font-size: 24px;
-      font-weight: 800;
-      letter-spacing: -0.02em;
-      margin-bottom: 4px;
-    }
-
-    .subtitle {
-      font-size: 13px;
-      color: var(--text-sub);
-    }
-
-    .main-grid {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); /* две равные широкие колонки */
-      gap: 24px;
-      margin-top: 24px;
-    }
-
-    @media (max-width: 960px) {
-      .main-grid {
-        grid-template-columns: minmax(0, 1fr);
-      }
-    }
-
-    .card {
-      background: var(--panel);
-      border-radius: var(--radius-xl);
-      box-shadow: var(--shadow-soft);
-      border: 1px solid var(--border);
-      padding: 20px 20px 18px;
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-    }
-
-    .card-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      font-size: 13px;
-      color: var(--text-sub);
-      padding-bottom: 6px;
-    }
-
-    .card-title {
-      font-size: 14px;
-      font-weight: 600;
-      letter-spacing: 0.02em;
-    }
-
-    .card-tag-link {
-      font-size: 11px;
-      color: var(--accent-blue);
-      cursor: pointer;
-    }
-
-    .card-body {
-      background: #f5f7fb;
-      border-radius: var(--radius-lg);
-      border: 1px solid var(--border);
-      padding: 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .dropzone {
-      border-radius: var(--radius-lg);
-      border: 2px dashed var(--border);
-      background: var(--panel);
-      padding: 30px 16px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      cursor: pointer;
-      transition: 0.15s ease;
-      gap: 6px;
-    }
-
-    .dropzone.dragover {
-      border-color: var(--accent-blue);
-      background: #eff6ff;
-    }
-
-    .dropzone-title {
-      font-size: 14px;
-      font-weight: 600;
-    }
-
-    .dropzone-sub {
-      font-size: 11px;
-      color: var(--text-sub);
-    }
-
-    .textarea {
-      width: 100%;
-      height: 260px;          /* фиксированная большая высота сразу */
+    textarea {
       resize: vertical;
-      padding: 10px 12px;
-      border-radius: var(--radius-lg);
-      border: 1px solid var(--border);
-      font-size: 13px;
-      background: var(--panel);
-      outline: none;
-      line-height: 1.45;
     }
 
-    .textarea:focus {
-      border-color: var(--accent-blue);
-      box-shadow: 0 0 0 2px rgba(37,99,235,0.22);
-      background: #ffffff;
-    }
-
-    .hint {
-      font-size: 11px;
-      color: var(--text-sub);
-    }
-
-    .prompt-input-row {
-      margin-top: 6px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .prompt-input {
-      width: 100%;
-      padding: 10px 14px;
-      border-radius: 9999px;
-      border: 1px solid var(--border);
-      font-size: 13px;
-      background: var(--panel);
-      outline: none;
-    }
-
-    .prompt-input:focus {
-      border-color: var(--accent-blue);
-      box-shadow: 0 0 0 2px rgba(37,99,235,0.22);
-      background: #ffffff;
-    }
-
-    .chips-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    .chip {
-      font-size: 11px;
-      padding: 6px 10px;
-      border-radius: 9999px;
-      background: #e5e7eb;
-      color: #374151;
-      border: none;
-      cursor: pointer;
-      white-space: nowrap;
-    }
-
-    .chip:hover {
-      background: #d1d5db;
-    }
-
-    .advanced {
-      margin-top: 4px;
-      border-radius: var(--radius-md);
-      border: 1px dashed var(--border);
-      padding: 8px 10px;
-      background: #f9fafb;
-    }
-
-    .advanced-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      font-size: 11px;
-      color: var(--text-sub);
-      cursor: pointer;
-    }
-
-    .advanced-title { font-weight: 600; }
-
-    .advanced-body {
-      margin-top: 8px;
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-      gap: 8px;
-    }
-
-    @media (max-width: 640px) {
-      .advanced-body { grid-template-columns: minmax(0, 1fr); }
-    }
-
-    .advanced-body.hidden { display: none; }
-
-    .advanced-label {
-      font-size: 11px;
-      color: var(--text-sub);
-      margin-bottom: 4px;
-    }
-
-    .advanced-control {
-      width: 100%;
-      padding: 6px 10px;
-      border-radius: 9999px;
-      border: 1px solid var(--border);
-      font-size: 12px;
-      background: #ffffff;
-      outline: none;
-    }
-
-    .advanced-control:focus {
-      border-color: var(--accent-blue);
-      box-shadow: 0 0 0 2px rgba(37,99,235,0.20);
-    }
-
-    .actions-row {
-      display: flex;
-      justify-content: flex-end;
-      gap: 10px;
-      margin-top: 10px;
-    }
-
-    .btn {
-      border-radius: 9999px;
-      border: none;
-      padding: 10px 22px;
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-      color: #ffffff;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-    }
-
-    .btn-analyze { background: var(--accent-purple); }
-    .btn-generate { background: var(--accent-blue); }
-
-    .btn:disabled {
-      opacity: 0.7;
-      cursor: default;
-    }
-
-    .result-inner {
-      background: var(--panel-soft);
-      border-radius: var(--radius-lg);
-      border: 1px solid var(--border);
-      min-height: 260px;         /* тоже фиксированная большая высота */
-      padding: 16px 14px;
-      font-size: 13px;
-      color: var(--text-sub);
-      white-space: pre-wrap;
-      overflow-y: auto;
-    }
-
-    .right-header-extra {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-      font-size: 14px;
-    }
-
-    .icon-btn {
-      width: 26px;
-      height: 26px;
-      border-radius: 9999px;
-      border: 1px solid var(--border);
-      background: #f9fafb;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 14px;
-      cursor: pointer;
+    /* небольшая тень */
+    .card-elevated {
+      box-shadow: 0 18px 45px rgba(15, 23, 42, 0.12);
     }
   </style>
 </head>
-<body>
-  <div class="app-shell">
-    <header class="topbar">
-      <div>
-        <div class="title">AI Resume Editor</div>
-        <div class="subtitle">
-          Based on real needs of Reddit users · Drag &amp; drop your existing resume and improve it with AI.
+<body class="min-h-screen">
+
+  <div id="root" class="min-h-screen flex flex-col">
+    <header class="w-full border-b border-slate-200 bg-white/80 backdrop-blur">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
+        <div>
+          <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">
+            AI Resume Editor
+          </h1>
+          <p class="mt-1 text-sm text-slate-500">
+            Based on real needs of Reddit users · Analyze an existing resume or generate a new one with AI.
+          </p>
+        </div>
+
+        <!-- маленький «лейбл» про backend -->
+        <div class="hidden sm:flex items-center gap-2 text-xs text-slate-500 bg-slate-100 px-3 py-1 rounded-full">
+          <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+          <span>Gemini backend · Render</span>
         </div>
       </div>
     </header>
 
-    <main class="main-grid">
-      <!-- LEFT: SOURCE RESUME -->
-      <section class="card">
-        <div class="card-header">
-          <span class="card-title">Source Resume</span>
-          <span class="card-tag-link">ATS Scan View</span>
-        </div>
-        <div class="card-body">
-          <div id="dropzone" class="dropzone">
-            <div class="dropzone-title">Drag &amp; Drop PDF, DOCX, TXT</div>
-            <div class="dropzone-sub">Max: PDF 5MB, DOCX 3MB · or click to browse</div>
+    <main class="flex-1">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 py-8">
+
+        <!-- ============ VIEW: LANDING (две карточки) ============ -->
+        <section id="viewLanding" class="space-y-6">
+          <h2 class="text-3xl sm:text-4xl font-bold text-slate-900">
+            Choose your path
+          </h2>
+          <p class="text-slate-500 text-sm sm:text-base max-w-2xl">
+            Upload your existing resume for a deep analysis, or generate a brand new ATS-friendly resume from a simple form.
+          </p>
+
+          <div class="grid md:grid-cols-2 gap-6 mt-4">
+            <!-- Analyze card -->
+            <button
+              id="btnGoAnalyze"
+              class="group relative w-full text-left p-6 sm:p-8 rounded-2xl border border-slate-200 bg-white card-elevated transition-all duration-200 hover:border-violet-300 hover:shadow-xl focus:outline-none"
+            >
+              <div class="flex items-start justify-between gap-4">
+                <div>
+                  <div class="inline-flex items-center justify-center rounded-xl bg-violet-100 text-violet-700 w-10 h-10 mb-3">
+                    <!-- icon -->
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none"
+                      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M15 13a3 3 0 1 0-6 0a3 3 0 0 0 6 0"/>
+                      <path d="M5 7h4l2 -3l2 3h4a2 2 0 0 1 2 2v9a2 2 0 0 1 -2 2H5a2 2 0 0 1 -2-2V9a2 2 0 0 1 2-2Z"/>
+                    </svg>
+                  </div>
+                  <h3 class="text-xl font-semibold text-slate-900">
+                    Analyze Resume
+                  </h3>
+                  <p class="mt-2 text-sm text-slate-500 leading-relaxed">
+                    Upload your existing resume for a detailed analysis of strengths, weaknesses, ATS-compatibility,
+                    and improvement suggestions with concrete metrics.
+                  </p>
+                </div>
+                <div class="mt-1 text-slate-400 group-hover:text-violet-500 transition-transform group-hover:translate-x-0.5">
+                  <!-- arrow -->
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M5 12h14"/>
+                    <path d="M13 18l6-6l-6-6"/>
+                  </svg>
+                </div>
+              </div>
+
+              <div class="mt-4 flex flex-wrap gap-2">
+                <span class="px-2.5 py-1 text-xs font-medium bg-slate-100 text-slate-600 rounded-full">
+                  PDF / DOCX / TXT
+                </span>
+                <span class="px-2.5 py-1 text-xs font-medium bg-slate-100 text-slate-600 rounded-full">
+                  ATS Check
+                </span>
+                <span class="px-2.5 py-1 text-xs font-medium bg-slate-100 text-slate-600 rounded-full">
+                  Grammar &amp; Achievements
+                </span>
+              </div>
+            </button>
+
+            <!-- Generate card -->
+            <button
+              id="btnGoGenerate"
+              class="group relative w-full text-left p-6 sm:p-8 rounded-2xl border border-slate-200 bg-white card-elevated transition-all duration-200 hover:border-sky-300 hover:shadow-xl focus:outline-none"
+            >
+              <div class="flex items-start justify-between gap-4">
+                <div>
+                  <div class="inline-flex items-center justify-center rounded-xl bg-sky-100 text-sky-700 w-10 h-10 mb-3">
+                    <!-- icon -->
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none"
+                      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M12 3v18"/>
+                      <path d="M5 10h7"/>
+                      <path d="M5 14h7"/>
+                      <path d="M15 7h4"/>
+                      <path d="M15 11h4"/>
+                      <path d="M15 15h4"/>
+                    </svg>
+                  </div>
+                  <h3 class="text-xl font-semibold text-slate-900">
+                    Generate Resume
+                  </h3>
+                  <p class="mt-2 text-sm text-slate-500 leading-relaxed">
+                    Fill in a few fields (target role, skills, experience notes), and let AI build a clean,
+                    ATS-friendly resume from scratch.
+                  </p>
+                </div>
+                <div class="mt-1 text-slate-400 group-hover:text-sky-500 transition-transform group-hover:translate-x-0.5">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M5 12h14"/>
+                    <path d="M13 18l6-6l-6-6"/>
+                  </svg>
+                </div>
+              </div>
+
+              <div class="mt-4 flex flex-wrap gap-2">
+                <span class="px-2.5 py-1 text-xs font-medium bg-slate-100 text-slate-600 rounded-full">
+                  Simple form
+                </span>
+                <span class="px-2.5 py-1 text-xs font-medium bg-slate-100 text-slate-600 rounded-full">
+                  AI-Powered
+                </span>
+              </div>
+            </button>
           </div>
-          <input id="fileInput" type="file" accept=".pdf,.doc,.docx,.txt" style="display:none" />
+        </section>
 
-          <textarea id="sourceText" class="textarea" placeholder="Extracted resume text will appear here... You can also paste text directly."></textarea>
-          <div class="hint">Make sure the text looks clean before sending it to AI.</div>
-
-          <div class="prompt-input-row">
-            <input id="prompt" class="prompt-input" type="text" placeholder="E.g., Rewrite for a Senior Developer role, focusing on leadership..." />
-            <div class="chips-row">
-              <button type="button" class="chip" id="chipGrammar">Fix Grammar</button>
-              <button type="button" class="chip" id="chipTone">Professional Tone</button>
-              <button type="button" class="chip" id="chipMetrics">Add Metrics</button>
+        <!-- ============ VIEW: ANALYZE ============ -->
+        <section id="viewAnalyze" class="hidden mt-4">
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <h2 class="text-2xl font-semibold text-slate-900">Analyze Resume</h2>
+              <p class="text-sm text-slate-500">
+                Upload or paste your resume, configure options, then click <span class="font-medium">Analyze</span> or
+                <span class="font-medium">Generate</span>.
+              </p>
             </div>
+            <button
+              id="btnBackFromAnalyze"
+              class="inline-flex items-center gap-1 text-xs text-slate-500 hover:text-slate-700 px-3 py-1.5 rounded-full border border-slate-200 bg-white"
+            >
+              <span>← Back</span>
+            </button>
           </div>
 
-          <div class="advanced" id="advancedBox">
-            <div class="advanced-header" id="advancedToggle">
-              <span class="advanced-title">Advanced settings</span>
-              <span id="advancedToggleLabel">Show</span>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- LEFT -->
+            <section class="bg-white rounded-2xl border border-slate-200 card-elevated panel-shell flex flex-col">
+              <header class="flex items-center justify-between px-5 pt-4 pb-3 border-b border-slate-100">
+                <div>
+                  <h3 class="text-sm font-semibold text-slate-900">Source Resume</h3>
+                  <p class="text-xs text-slate-500">
+                    Drag &amp; drop PDF / DOCX / TXT or paste text below.
+                  </p>
+                </div>
+                <button
+                  id="btnToggleATS"
+                  class="text-[11px] font-medium text-violet-600 bg-violet-50 border border-violet-100 px-2.5 py-1 rounded-full"
+                >
+                  ATS Scan View
+                </button>
+              </header>
+
+              <div class="p-5 space-y-3 flex-1 flex flex-col">
+                <!-- dropzone -->
+                <div
+                  id="dropzone"
+                  class="border-2 border-dashed border-slate-200 rounded-xl bg-slate-50 px-4 py-6 text-center text-xs text-slate-500 cursor-pointer hover:border-violet-300 hover:bg-violet-50 transition-colors"
+                >
+                  <div class="font-medium text-slate-700 mb-1">Drag &amp; Drop PDF, DOCX, TXT</div>
+                  <div>Max: PDF 5MB, DOCX 3MB · or click to browse</div>
+                </div>
+                <input id="fileInput" type="file" accept=".pdf,.doc,.docx,.txt" class="hidden" />
+
+                <!-- textarea -->
+                <textarea
+                  id="sourceText"
+                  class="mt-2 w-full flex-1 min-h-[220px] text-xs sm:text-sm border border-slate-200 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-violet-300 focus:border-violet-400"
+                  placeholder="Extracted resume text will appear here... You can also paste text directly."
+                ></textarea>
+
+                <p class="text-[11px] text-slate-500">
+                  Make sure the text looks clean before sending it to AI.
+                </p>
+
+                <!-- prompt + chips -->
+                <div class="space-y-2">
+                  <input
+                    id="prompt"
+                    type="text"
+                    class="w-full text-xs sm:text-sm border border-slate-200 rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-violet-300 focus:border-violet-400"
+                    placeholder="E.g., Rewrite for a Product Manager role in Germany. Focus on achievements and metrics."
+                  />
+                  <div class="flex flex-wrap gap-2">
+                    <button
+                      id="chipGrammar"
+                      type="button"
+                      class="px-3 py-1 text-[11px] rounded-full bg-slate-100 text-slate-700"
+                    >
+                      Fix Grammar
+                    </button>
+                    <button
+                      id="chipTone"
+                      type="button"
+                      class="px-3 py-1 text-[11px] rounded-full bg-slate-100 text-slate-700"
+                    >
+                      Professional Tone
+                    </button>
+                    <button
+                      id="chipMetrics"
+                      type="button"
+                      class="px-3 py-1 text-[11px] rounded-full bg-slate-100 text-slate-700"
+                    >
+                      Add Metrics
+                    </button>
+                  </div>
+                </div>
+
+                <!-- advanced -->
+                <details class="mt-2 text-xs text-slate-600 border border-dashed border-slate-200 rounded-xl px-3 py-2">
+                  <summary class="cursor-pointer select-none text-[11px] font-semibold text-slate-500">
+                    Advanced settings
+                  </summary>
+                  <div class="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div class="space-y-1">
+                      <label class="text-[11px] text-slate-500">Target language</label>
+                      <select
+                        id="advLanguage"
+                        class="w-full border border-slate-200 rounded-full px-3 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-violet-300 focus:border-violet-400"
+                      >
+                        <option value="en" selected>English</option>
+                        <option value="ru">Russian</option>
+                      </select>
+                    </div>
+                    <div class="space-y-1">
+                      <label class="text-[11px] text-slate-500">Career level</label>
+                      <select
+                        id="advLevel"
+                        class="w-full border border-slate-200 rounded-full px-3 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-violet-300 focus:border-violet-400"
+                      >
+                        <option value="student">Student / Entry</option>
+                        <option value="mid">Mid-level</option>
+                        <option value="senior" selected>Senior</option>
+                      </select>
+                    </div>
+                    <div class="space-y-1">
+                      <label class="text-[11px] text-slate-500">Target role (optional)</label>
+                      <input
+                        id="advRole"
+                        type="text"
+                        class="w-full border border-slate-200 rounded-full px-3 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-violet-300 focus:border-violet-400"
+                        placeholder="e.g. Product Manager"
+                      />
+                    </div>
+                    <div class="space-y-1">
+                      <label class="text-[11px] text-slate-500">Tone</label>
+                      <select
+                        id="advTone"
+                        class="w-full border border-slate-200 rounded-full px-3 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-violet-300 focus:border-violet-400"
+                      >
+                        <option value="neutral" selected>Neutral professional</option>
+                        <option value="formal">Formal</option>
+                        <option value="concise">Extra concise</option>
+                      </select>
+                    </div>
+                  </div>
+                </details>
+
+                <!-- buttons -->
+                <div class="mt-3 flex justify-end gap-3">
+                  <button
+                    id="analyzeBtn"
+                    type="button"
+                    class="inline-flex items-center justify-center gap-1 rounded-full bg-violet-600 text-white text-sm px-5 py-2 shadow hover:bg-violet-700 disabled:opacity-70"
+                  >
+                    🔍 Analyze
+                  </button>
+                  <button
+                    id="generateBtn"
+                    type="button"
+                    class="inline-flex items-center justify-center gap-1 rounded-full bg-sky-600 text-white text-sm px-5 py-2 shadow hover:bg-sky-700 disabled:opacity-70"
+                  >
+                    ✨ Generate
+                  </button>
+                </div>
+              </div>
+            </section>
+
+            <!-- RIGHT -->
+            <section class="bg-white rounded-2xl border border-slate-200 card-elevated panel-shell flex flex-col">
+              <header class="flex items-center justify-between px-5 pt-4 pb-3 border-b border-slate-100">
+                <h3 class="text-sm font-semibold text-slate-900">AI Result</h3>
+                <div class="flex items-center gap-2">
+                  <button
+                    id="btnCopy"
+                    type="button"
+                    class="w-7 h-7 flex items-center justify-center rounded-full border border-slate-200 text-slate-500 hover:bg-slate-50 text-xs"
+                    title="Copy to clipboard"
+                  >
+                    📋
+                  </button>
+                  <button
+                    id="btnDownload"
+                    type="button"
+                    class="w-7 h-7 flex items-center justify-center rounded-full border border-slate-200 text-slate-500 hover:bg-slate-50 text-xs"
+                    title="Download TXT"
+                  >
+                    📄
+                  </button>
+                  <button
+                    id="btnEditToSource"
+                    type="button"
+                    class="w-7 h-7 flex items-center justify-center rounded-full border border-slate-200 text-slate-500 hover:bg-slate-50 text-xs"
+                    title="Send back to source"
+                  >
+                    ✏️
+                  </button>
+                </div>
+              </header>
+              <div
+                id="aiOutput"
+                class="flex-1 text-xs sm:text-sm text-slate-700 px-5 py-4 whitespace-pre-wrap overflow-auto bg-slate-50 rounded-b-2xl"
+              >
+                AI generated content will appear here...
+              </div>
+            </section>
+          </div>
+        </section>
+
+        <!-- ============ VIEW: GENERATE ============ -->
+        <section id="viewGenerate" class="hidden mt-4">
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <h2 class="text-2xl font-semibold text-slate-900">Generate Resume</h2>
+              <p class="text-sm text-slate-500">
+                Fill in the basics, hit <span class="font-medium">Generate Resume</span>, and AI will craft an ATS-ready resume.
+              </p>
             </div>
-            <div class="advanced-body hidden" id="advancedBody">
-              <div>
-                <div class="advanced-label">Target language</div>
-                <select id="advLanguage" class="advanced-control">
-                  <option value="en" selected>English</option>
-                  <option value="ru">Russian</option>
-                </select>
-              </div>
-              <div>
-                <div class="advanced-label">Career level</div>
-                <select id="advLevel" class="advanced-control">
-                  <option value="student">Student / Entry</option>
-                  <option value="mid">Mid-level</option>
-                  <option value="senior">Senior</option>
-                </select>
-              </div>
-              <div>
-                <div class="advanced-label">Target role (optional)</div>
-                <input id="advRole" class="advanced-control" type="text" placeholder="e.g. Frontend Developer" />
-              </div>
-              <div>
-                <div class="advanced-label">Tone</div>
-                <select id="advTone" class="advanced-control">
-                  <option value="neutral">Neutral professional</option>
-                  <option value="formal">Formal</option>
-                  <option value="concise">Extra concise</option>
-                </select>
-              </div>
-            </div>
+            <button
+              id="btnBackFromGenerate"
+              class="inline-flex items-center gap-1 text-xs text-slate-500 hover:text-slate-700 px-3 py-1.5 rounded-full border border-slate-200 bg-white"
+            >
+              <span>← Back</span>
+            </button>
           </div>
 
-          <div class="actions-row">
-            <button id="analyzeBtn" class="btn btn-analyze" type="button">🔍 Analyze</button>
-            <button id="generateBtn" class="btn btn-generate" type="button">✨ Generate</button>
-          </div>
-        </div>
-      </section>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- LEFT: simple form -->
+            <section class="bg-white rounded-2xl border border-slate-200 card-elevated panel-shell flex flex-col">
+              <header class="px-5 pt-4 pb-3 border-b border-slate-100">
+                <h3 class="text-sm font-semibold text-slate-900">Generate Resume</h3>
+                <p class="text-xs text-slate-500">
+                  Just a lightweight form — you can refine the result later in the Analyze tab.
+                </p>
+              </header>
 
-      <!-- RIGHT: AI RESULT -->
-      <section class="card">
-        <div class="card-header">
-          <span class="card-title">AI Result</span>
-          <div class="right-header-extra">
-            <button type="button" class="icon-btn" id="btnCopy" title="Copy to clipboard">📋</button>
-            <button type="button" class="icon-btn" id="btnDownload" title="Download TXT">📄</button>
-            <button type="button" class="icon-btn" id="btnEditToSource" title="Send back to source">✏️</button>
+              <div class="p-5 space-y-4 flex-1 flex flex-col">
+                <div class="space-y-1">
+                  <label class="text-[11px] text-slate-500">Target Role *</label>
+                  <input
+                    id="genRole"
+                    type="text"
+                    class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-sky-300 focus:border-sky-400"
+                    placeholder="e.g. Product Manager"
+                  />
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div class="space-y-1">
+                    <label class="text-[11px] text-slate-500">Level</label>
+                    <select
+                      id="genLevel"
+                      class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-sky-300 focus:border-sky-400"
+                    >
+                      <option value="entry">Entry level</option>
+                      <option value="mid" selected>Mid-level</option>
+                      <option value="senior">Senior</option>
+                    </select>
+                  </div>
+                  <div class="space-y-1">
+                    <label class="text-[11px] text-slate-500">Location (optional)</label>
+                    <input
+                      id="genLocation"
+                      type="text"
+                      class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-sky-300 focus:border-sky-400"
+                      placeholder="e.g. Berlin, Germany"
+                    />
+                  </div>
+                </div>
+
+                <div class="space-y-1">
+                  <label class="text-[11px] text-slate-500">Skills</label>
+                  <textarea
+                    id="genSkills"
+                    class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-sky-300 focus:border-sky-400 min-h-[70px]"
+                    placeholder="e.g. Product discovery, A/B testing, SQL, Google Analytics, UX research..."
+                  ></textarea>
+                </div>
+
+                <div class="space-y-1">
+                  <label class="text-[11px] text-slate-500">Experience (brief notes)</label>
+                  <textarea
+                    id="genExperience"
+                    class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-sky-300 focus:border-sky-400 min-h-[80px]"
+                    placeholder="e.g. 3 years as Head of Customer Support, improved CSAT by 15%, launched new payment product..."
+                  ></textarea>
+                </div>
+
+                <div class="space-y-1">
+                  <label class="text-[11px] text-slate-500">Education</label>
+                  <input
+                    id="genEducation"
+                    type="text"
+                    class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-sky-300 focus:border-sky-400"
+                    placeholder="e.g. Bachelor’s Degree in Project Management, Vilnius University, 2016"
+                  />
+                </div>
+
+                <div class="pt-2 flex justify-end">
+                  <button
+                    id="btnGenerateResume"
+                    type="button"
+                    class="inline-flex items-center justify-center gap-1 rounded-full bg-sky-600 text-white text-sm px-5 py-2 shadow hover:bg-sky-700 disabled:opacity-70"
+                  >
+                    ⚡ Generate Resume
+                  </button>
+                </div>
+              </div>
+            </section>
+
+            <!-- RIGHT: result -->
+            <section class="bg-white rounded-2xl border border-slate-200 card-elevated panel-shell flex flex-col">
+              <header class="flex items-center justify-between px-5 pt-4 pb-3 border-b border-slate-100">
+                <h3 class="text-sm font-semibold text-slate-900">Generated Resume</h3>
+                <button
+                  id="btnCopyGenerated"
+                  type="button"
+                  class="w-7 h-7 flex items-center justify-center rounded-full border border-slate-200 text-slate-500 hover:bg-slate-50 text-xs"
+                >
+                  📋
+                </button>
+              </header>
+              <div
+                id="generatedOutput"
+                class="flex-1 text-xs sm:text-sm text-slate-700 px-5 py-4 whitespace-pre-wrap overflow-auto bg-slate-50 rounded-b-2xl"
+              >
+                Generated resume will appear here. Fill the form and click “Generate Resume”.
+              </div>
+            </section>
           </div>
-        </div>
-        <div class="result-inner" id="aiOutput">AI generated content will appear here...</div>
-      </section>
+        </section>
+      </div>
     </main>
   </div>
 
-  <!-- DOCX -->
+  <!-- pdf.js + mammoth for PDF/DOCX -->
   <script src="https://unpkg.com/mammoth/mammoth.browser.min.js"></script>
-  <!-- PDF -->
   <script type="module">
     import * as pdfjsLib from "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.2.67/pdf.min.mjs";
 
     const BACKEND_URL = "https://resume-ai-editor-backend.onrender.com";
 
-    const dropzone = document.getElementById('dropzone');
-    const fileInput = document.getElementById('fileInput');
-    const sourceText = document.getElementById('sourceText');
-    const promptInput = document.getElementById('prompt');
-    const aiOutput = document.getElementById('aiOutput');
-    const analyzeBtn = document.getElementById('analyzeBtn');
-    const generateBtn = document.getElementById('generateBtn');
+    // --------- View switching ---------
+    const viewLanding = document.getElementById("viewLanding");
+    const viewAnalyze = document.getElementById("viewAnalyze");
+    const viewGenerate = document.getElementById("viewGenerate");
 
-    const advancedBody = document.getElementById('advancedBody');
-    const advancedToggle = document.getElementById('advancedToggle');
-    const advancedToggleLabel = document.getElementById('advancedToggleLabel');
-    const advLanguage = document.getElementById('advLanguage');
-    const advLevel = document.getElementById('advLevel');
-    const advRole = document.getElementById('advRole');
-    const advTone = document.getElementById('advTone');
+    const btnGoAnalyze = document.getElementById("btnGoAnalyze");
+    const btnGoGenerate = document.getElementById("btnGoGenerate");
+    const btnBackFromAnalyze = document.getElementById("btnBackFromAnalyze");
+    const btnBackFromGenerate = document.getElementById("btnBackFromGenerate");
 
-    const chipGrammar = document.getElementById('chipGrammar');
-    const chipTone = document.getElementById('chipTone');
-    const chipMetrics = document.getElementById('chipMetrics');
+    function showView(name) {
+      viewLanding.classList.add("hidden");
+      viewAnalyze.classList.add("hidden");
+      viewGenerate.classList.add("hidden");
 
-    const btnCopy = document.getElementById('btnCopy');
-    const btnDownload = document.getElementById('btnDownload');
-    const btnEditToSource = document.getElementById('btnEditToSource');
+      if (name === "landing") viewLanding.classList.remove("hidden");
+      if (name === "analyze") viewAnalyze.classList.remove("hidden");
+      if (name === "generate") viewGenerate.classList.remove("hidden");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    btnGoAnalyze.addEventListener("click", () => showView("analyze"));
+    btnGoGenerate.addEventListener("click", () => showView("generate"));
+    btnBackFromAnalyze.addEventListener("click", () => showView("landing"));
+    btnBackFromGenerate.addEventListener("click", () => showView("landing"));
+
+    // --------- Analyze view logic ---------
+    const dropzone = document.getElementById("dropzone");
+    const fileInput = document.getElementById("fileInput");
+    const sourceText = document.getElementById("sourceText");
+    const promptInput = document.getElementById("prompt");
+    const aiOutput = document.getElementById("aiOutput");
+    const analyzeBtn = document.getElementById("analyzeBtn");
+    const generateBtn = document.getElementById("generateBtn");
+
+    const advLanguage = document.getElementById("advLanguage");
+    const advLevel = document.getElementById("advLevel");
+    const advRole = document.getElementById("advRole");
+    const advTone = document.getElementById("advTone");
+
+    const chipGrammar = document.getElementById("chipGrammar");
+    const chipTone = document.getElementById("chipTone");
+    const chipMetrics = document.getElementById("chipMetrics");
+
+    const btnCopy = document.getElementById("btnCopy");
+    const btnDownload = document.getElementById("btnDownload");
+    const btnEditToSource = document.getElementById("btnEditToSource");
 
     const MASTER_PROMPT = `Переработай моё резюме по следующему высокодетализированному техническому заданию.
 Работай строго по пунктам.
@@ -503,87 +575,67 @@
 * Исключи таблицы, столбцы, декоративные символы и эмодзи.
 
 ## 4. Структура итогового резюме
-* Professional Summary (3–4 строки) — позиционирование, ключевые компетенции, ценность.
+* Professional Summary (3–4 строки).
 * Core Skills / Technical Skills — навыки по категориям.
-* Experience — должность, компания, даты + 4–6 буллетов достижений по схеме глагол → действие → результат → цифры.
+* Experience — должность, компания, даты + 4–6 буллетов достижений.
 * Education — только значимое.
-* Projects (опционально) — что сделал и какой эффект.
-* Certifications / Courses / Tech Stack — только подтверждённые навыки.
-* Additional Information — языки, инструменты, soft skills (кратко и проверяемо).
+* Projects (опционально).
+* Certifications / Courses / Tech Stack.
+* Additional Information — языки, инструменты, soft skills.
 
-## 5. Улучшение читабельности
-* Разбивай длинные предложения.
-* Делай логичный порядок навыков и опыта.
-* Убирай нерелевантные детали и личные данные, не нужные работодателю.
-
-## 6. Аналитика и рекомендации
-* После переработки резюме:
-  1. Перечисли основные проблемы исходного текста.
-  2. Укажи, что именно ты улучшил.
-  3. Предложи, что ещё можно добавить.
-  4. Дай примеры навыков и метрик, типичных для моей отрасли.
-
-## 7. Формат вывода
-* Выведи итоговое резюме в ATS-ready текстовом виде.
-* Не добавляй визуальный дизайн.
-* Сохрани чёткую структуру, списки и читаемость.`;
-
-    // Advanced UI
-    advancedToggle.addEventListener('click', () => {
-      const hidden = advancedBody.classList.toggle('hidden');
-      advancedToggleLabel.textContent = hidden ? 'Show' : 'Hide';
-    });
+## 5. Аналитика
+* В конце кратко опиши, что было плохо в исходном тексте и что ты улучшил.`;
 
     function appendPrompt(text) {
       const current = promptInput.value.trim();
-      promptInput.value = current ? current + ' · ' + text : text;
+      promptInput.value = current ? current + " · " + text : text;
       promptInput.focus();
     }
 
-    chipGrammar.addEventListener('click', () => appendPrompt('Fix grammar and clarity.'));
-    chipTone.addEventListener('click', () => appendPrompt('Use a confident, professional tone.'));
-    chipMetrics.addEventListener('click', () => appendPrompt('Add concrete metrics and impact (%, $, time saved).'));
+    chipGrammar.addEventListener("click", () => appendPrompt("Fix grammar and clarity."));
+    chipTone.addEventListener("click", () => appendPrompt("Use a confident, professional tone."));
+    chipMetrics.addEventListener("click", () => appendPrompt("Add concrete metrics and impact (%, $, time saved)."));
 
-    // Drag & drop
-    ['dragenter','dragover'].forEach(evt => {
+    // drag & drop
+    ["dragenter", "dragover"].forEach(evt => {
       dropzone.addEventListener(evt, e => {
         e.preventDefault();
         e.stopPropagation();
-        dropzone.classList.add('dragover');
+        dropzone.classList.add("border-violet-400", "bg-violet-50");
       });
     });
-    ['dragleave','drop'].forEach(evt => {
+    ["dragleave", "drop"].forEach(evt => {
       dropzone.addEventListener(evt, e => {
         e.preventDefault();
         e.stopPropagation();
-        dropzone.classList.remove('dragover');
+        dropzone.classList.remove("border-violet-400", "bg-violet-50");
       });
     });
 
-    dropzone.addEventListener('click', () => fileInput.click());
-
-    dropzone.addEventListener('drop', e => {
+    dropzone.addEventListener("click", () => fileInput.click());
+    dropzone.addEventListener("drop", e => {
       const file = e.dataTransfer.files?.[0];
       if (file) handleFile(file);
     });
-
-    fileInput.addEventListener('change', e => {
+    fileInput.addEventListener("change", e => {
       const file = e.target.files?.[0];
       if (file) handleFile(file);
     });
 
     function handleFile(file) {
-      const ext = file.name.split('.').pop().toLowerCase();
-      if (ext === 'txt') {
+      const ext = file.name.split(".").pop().toLowerCase();
+      if (ext === "txt") {
         const reader = new FileReader();
-        reader.onload = e => { sourceText.value = e.target.result; };
+        reader.onload = e => {
+          sourceText.value = e.target.result;
+        };
         reader.readAsText(file);
-      } else if (ext === 'pdf') {
+      } else if (ext === "pdf") {
         extractPdf(file);
-      } else if (ext === 'docx' || ext === 'doc') {
+      } else if (ext === "docx" || ext === "doc") {
         extractDocx(file);
       } else {
-        alert('Unsupported file type. Please upload PDF, DOCX, or TXT.');
+        alert("Unsupported file type. Please upload PDF, DOCX, or TXT.");
       }
     }
 
@@ -591,17 +643,17 @@
       try {
         const arrayBuffer = await file.arrayBuffer();
         const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-        let text = '';
+        let text = "";
         for (let i = 1; i <= pdf.numPages; i++) {
           const page = await pdf.getPage(i);
           const content = await page.getTextContent();
           const strings = content.items.map(it => it.str);
-          text += strings.join(' ') + "\n";
+          text += strings.join(" ") + "\n";
         }
         sourceText.value = text.trim();
       } catch (err) {
         console.error(err);
-        alert('Error extracting text from PDF. You can convert it to TXT and upload again.');
+        alert("Error extracting text from PDF. You can convert it to TXT and upload again.");
       }
     }
 
@@ -614,7 +666,7 @@
           sourceText.value = result.value.trim();
         } catch (err) {
           console.error(err);
-          alert('Error extracting text from DOCX. You can convert it to TXT and upload again.');
+          alert("Error extracting text from DOCX. You can convert it to TXT and upload again.");
         }
       };
       reader.readAsArrayBuffer(file);
@@ -627,24 +679,63 @@
       const role = advRole.value.trim();
       const tone = advTone.value;
 
-      if (lang === 'en') parts.push('Write the resume in English.');
-      if (lang === 'ru') parts.push('Write the resume in Russian.');
+      if (lang === "en") parts.push("Write the resume in English.");
+      if (lang === "ru") parts.push("Write the resume in Russian.");
 
-      if (level === 'student') parts.push('Position the candidate as a student or entry-level specialist.');
-      else if (level === 'mid') parts.push('Position the candidate as a mid-level professional.');
-      else if (level === 'senior') parts.push('Position the candidate as a senior-level professional with leadership responsibilities.');
+      if (level === "student") parts.push("Position the candidate as a student or entry-level specialist.");
+      else if (level === "mid") parts.push("Position the candidate as a mid-level professional.");
+      else if (level === "senior")
+        parts.push("Position the candidate as a senior-level professional with leadership responsibilities.");
 
       if (role) parts.push(`Optimize the resume for the target role: "${role}" and include relevant keywords.`);
 
-      if (tone === 'formal') parts.push('Use a formal corporate tone.');
-      else if (tone === 'concise') parts.push('Make the writing extra concise and remove everything that does not add clear value.');
-      else if (tone === 'neutral') parts.push('Use a neutral, modern professional tone.');
+      if (tone === "formal") parts.push("Use a formal corporate tone.");
+      else if (tone === "concise")
+        parts.push("Make the writing extra concise and remove everything that does not add clear value.");
+      else if (tone === "neutral") parts.push("Use a neutral, modern professional tone.");
 
-      return parts.join(' ');
+      return parts.join(" ");
     }
 
-    async function callBackend(mode) {
+    async function callBackend(mode, payload, targetElement, button) {
+      try {
+        button.disabled = true;
+        targetElement.textContent =
+          mode === "generate"
+            ? "AI is rewriting your resume..."
+            : mode === "gen-resume"
+            ? "AI is generating a new resume..."
+            : "AI is analyzing your resume...";
+
+        const response = await fetch(`${BACKEND_URL}/api/chat`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+
+        if (!response.ok) {
+          const errText = await response.text();
+          targetElement.textContent = "Backend returned an error:\n\n" + errText;
+          return;
+        }
+
+        const data = await response.json();
+        targetElement.textContent = data.text || "No text field in backend response.";
+      } catch (err) {
+        console.error(err);
+        targetElement.textContent = "Network or backend error. Try again later.";
+      } finally {
+        button.disabled = false;
+      }
+    }
+
+    async function runAnalyze(mode) {
       const resume = sourceText.value.trim();
+      if (!resume) {
+        alert("Please paste or upload your resume text first.");
+        return;
+      }
+
       const userPrompt = promptInput.value.trim();
       const extra = buildAdvancedInstructions();
       const basePrompt =
@@ -652,89 +743,120 @@
           ? "Сначала проанализируй сильные и слабые стороны этого резюме, затем предложи улучшенную версию."
           : MASTER_PROMPT;
 
-      const prompt =
-        (userPrompt || basePrompt) +
-        (extra ? `\n\nAdditional requirements:\n${extra}` : "");
-
-      if (!resume) {
-        alert("Please paste or upload your resume text first.");
-        return;
-      }
+      const finalPrompt =
+        (userPrompt || basePrompt) + (extra ? `\n\nAdditional requirements:\n${extra}` : "");
 
       const activeBtn = mode === "analyze" ? analyzeBtn : generateBtn;
-      activeBtn.disabled = true;
-      activeBtn.textContent =
-        mode === "analyze" ? "Analyzing..." : "Generating...";
-
-      aiOutput.textContent =
-        mode === "analyze"
-          ? "AI is analyzing your resume..."
-          : "AI is rewriting your resume...";
-
-      try {
-        const response = await fetch(`${BACKEND_URL}/api/chat`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ resume, prompt }),
-        });
-
-        if (!response.ok) {
-          const errText = await response.text();
-          aiOutput.textContent =
-            "Backend returned an error:\n\n" + errText;
-          return;
-        }
-
-        const data = await response.json();
-        aiOutput.textContent = data.text || "No text field in backend response.";
-      } catch (err) {
-        console.error("Backend call error:", err);
-        aiOutput.textContent =
-          "Backend error. Check server or network connection.";
-      } finally {
-        activeBtn.disabled = false;
-        activeBtn.textContent =
-          mode === "analyze" ? "🔍 Analyze" : "✨ Generate";
-      }
+      await callBackend(
+        mode,
+        { resume, prompt: finalPrompt },
+        aiOutput,
+        activeBtn
+      );
     }
 
-    analyzeBtn.addEventListener('click', () => callBackend('analyze'));
-    generateBtn.addEventListener('click', () => callBackend('generate'));
+    analyzeBtn.addEventListener("click", () => runAnalyze("analyze"));
+    generateBtn.addEventListener("click", () => runAnalyze("generate"));
 
-    // Result actions
-    btnCopy.addEventListener('click', async () => {
-      const text = aiOutput.textContent || '';
+    // result actions
+    btnCopy.addEventListener("click", async () => {
+      const text = aiOutput.textContent || "";
       if (!text) return;
       try {
         await navigator.clipboard.writeText(text);
-        alert('Copied to clipboard.');
-      } catch (_) {
-        alert('Could not copy. Select and copy manually.');
+        alert("Copied to clipboard.");
+      } catch {
+        alert("Could not copy. Select and copy manually.");
       }
     });
 
-    btnDownload.addEventListener('click', () => {
-      const text = aiOutput.textContent || '';
-      const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+    btnDownload.addEventListener("click", () => {
+      const text = aiOutput.textContent || "";
+      const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
       const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
+      const a = document.createElement("a");
       a.href = url;
-      a.download = 'ai-resume.txt';
+      a.download = "ai-resume.txt";
       document.body.appendChild(a);
       a.click();
       a.remove();
       URL.revokeObjectURL(url);
     });
 
-    btnEditToSource.addEventListener('click', () => {
-      const text = aiOutput.textContent || '';
+    btnEditToSource.addEventListener("click", () => {
+      const text = aiOutput.textContent || "";
       if (!text) return;
       sourceText.value = text;
+      showView("analyze");
       sourceText.focus();
-      window.scrollTo({ top: 0, behavior: 'smooth' });
     });
+
+    // --------- Generate view logic ---------
+    const genRole = document.getElementById("genRole");
+    const genLevel = document.getElementById("genLevel");
+    const genLocation = document.getElementById("genLocation");
+    const genSkills = document.getElementById("genSkills");
+    const genExperience = document.getElementById("genExperience");
+    const genEducation = document.getElementById("genEducation");
+    const btnGenerateResume = document.getElementById("btnGenerateResume");
+    const generatedOutput = document.getElementById("generatedOutput");
+    const btnCopyGenerated = document.getElementById("btnCopyGenerated");
+
+    btnGenerateResume.addEventListener("click", async () => {
+      const role = genRole.value.trim();
+      if (!role) {
+        alert("Please specify target role at least.");
+        return;
+      }
+
+      const formSummary = `
+Target role: ${role}
+Level: ${genLevel.value}
+Location: ${genLocation.value || "N/A"}
+
+Skills:
+${genSkills.value.trim() || "N/A"}
+
+Experience notes:
+${genExperience.value.trim() || "N/A"}
+
+Education:
+${genEducation.value.trim() || "N/A"}
+`.trim();
+
+      const promptForGeneration = `
+You are an expert resume writer.
+
+Using ONLY the structured information below, generate a full, ATS-friendly resume from scratch.
+Write in clear, concise English, with strong action verbs and metrics where reasonable.
+
+Return the resume in plain text with sections:
+Summary, Skills, Experience, Education, Additional info (optional).
+
+${formSummary}
+`.trim();
+
+      await callBackend(
+        "gen-resume",
+        { resume: formSummary, prompt: promptForGeneration },
+        generatedOutput,
+        btnGenerateResume
+      );
+    });
+
+    btnCopyGenerated.addEventListener("click", async () => {
+      const text = generatedOutput.textContent || "";
+      if (!text) return;
+      try {
+        await navigator.clipboard.writeText(text);
+        alert("Copied generated resume.");
+      } catch {
+        alert("Could not copy. Select and copy manually.");
+      }
+    });
+
+    // стартовый экран
+    showView("landing");
   </script>
 </body>
 </html>
