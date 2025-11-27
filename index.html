@@ -1,220 +1,163 @@
-import React, { useState } from "react";
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>AI Resume Editor</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- Tailwind via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 text-slate-900">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
+    <!-- HEADER -->
+    <header class="mb-6 sm:mb-8 flex items-center justify-between gap-4">
+      <div>
+        <h1 class="text-xl sm:text-2xl font-bold tracking-tight">
+          AI Resume Editor
+        </h1>
+        <p class="text-xs sm:text-sm text-slate-500">
+          Analyze an existing resume or generate a new one in three simple steps.
+        </p>
+      </div>
+    </header>
 
-/* ---------- STEPPER ---------- */
-
-function Stepper({ step }) {
-  const items = [
-    { n: 1, label: "Choose mode" },
-    { n: 2, label: "Fill details" },
-    { n: 3, label: "Review & export" },
-  ];
-
-  return (
-    <nav aria-label="Progress" className="mb-6">
-      <ol className="flex items-center gap-4 text-[11px] sm:text-xs font-medium text-slate-500">
-        {items.map((item, i) => {
-          const active =
-            item.n < step
-              ? "bg-slate-900 border-slate-900 text-white"
-              : item.n === step
-              ? "bg-indigo-500 border-indigo-500 text-white"
-              : "bg-white border-slate-300 text-slate-500";
-          return (
-            <React.Fragment key={item.n}>
-              <li className="flex items-center gap-2">
-                <span
-                  className={`flex items-center justify-center w-6 h-6 rounded-full border text-[11px] ${active}`}
-                >
-                  {item.n}
-                </span>
-                <span>{item.label}</span>
-              </li>
-              {i < items.length - 1 && (
-                <li className="flex-1 h-px bg-slate-200" />
-              )}
-            </React.Fragment>
-          );
-        })}
+    <!-- STEPPER -->
+    <nav aria-label="Progress" class="mb-6">
+      <ol class="flex items-center gap-4 text-[11px] sm:text-xs font-medium text-slate-500">
+        <li class="flex items-center gap-2" data-step="1">
+          <span class="step-circle flex items-center justify-center w-6 h-6 rounded-full border text-[11px] bg-indigo-500 border-indigo-500 text-white">
+            1
+          </span>
+          <span class="step-label">Choose mode</span>
+        </li>
+        <li class="flex-1 h-px bg-slate-200"></li>
+        <li class="flex items-center gap-2" data-step="2">
+          <span class="step-circle flex items-center justify-center w-6 h-6 rounded-full border text-[11px] bg-white border-slate-300 text-slate-500">
+            2
+          </span>
+          <span class="step-label">Fill details</span>
+        </li>
+        <li class="flex-1 h-px bg-slate-200"></li>
+        <li class="flex items-center gap-2" data-step="3">
+          <span class="step-circle flex items-center justify-center w-6 h-6 rounded-full border text-[11px] bg-white border-slate-300 text-slate-500">
+            3
+          </span>
+          <span class="step-label">Review &amp; export</span>
+        </li>
       </ol>
     </nav>
-  );
-}
 
-/* ---------- MODE PICKER (STEP 1) ---------- */
-
-function ModePicker({ onSelect }) {
-  return (
-    <section className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+    <!-- MODE PICKER (STEP 1) -->
+    <section id="mode-picker" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+      <!-- Generate card -->
       <button
         type="button"
-        onClick={() => onSelect("generate")}
-        className="group relative flex flex-col items-start gap-2 rounded-2xl border border-slate-200 bg-white/80 px-4 py-4 text-left shadow-sm hover:shadow-md hover:border-indigo-200 transition"
+        data-mode="generate"
+        class="mode-card group relative flex flex-col items-start gap-2 rounded-2xl border border-slate-200 bg-white/80 px-4 py-4 text-left shadow-sm hover:shadow-md hover:border-indigo-200 transition"
       >
-        <div className="inline-flex items-center gap-2 rounded-full bg-indigo-50 px-2.5 py-1 text-[11px] text-indigo-600">
+        <div class="inline-flex items-center gap-2 rounded-full bg-indigo-50 px-2.5 py-1 text-[11px] text-indigo-600">
           <span>✨</span>
           <span>Generate Resume</span>
         </div>
-        <h2 className="text-sm sm:text-base font-semibold text-slate-900">
+        <h2 class="text-sm sm:text-base font-semibold text-slate-900">
           Create a new professional resume
         </h2>
-        <p className="text-xs sm:text-[13px] text-slate-500">
+        <p class="text-xs sm:text-[13px] text-slate-500">
           Fill a short form and let AI create a clean, ATS-friendly resume.
         </p>
-        <div className="mt-2 flex flex-wrap gap-2 text-[10px] text-slate-600">
-          <span className="rounded-full bg-indigo-50 px-2 py-1">AI-assisted</span>
-          <span className="rounded-full bg-slate-100 px-2 py-1">Best for starting from scratch</span>
+        <div class="mt-2 flex flex-wrap gap-2 text-[10px] text-slate-600">
+          <span class="rounded-full bg-indigo-50 px-2 py-1">AI-assisted</span>
+          <span class="rounded-full bg-slate-100 px-2 py-1">Best for starting from scratch</span>
         </div>
-        <span className="absolute right-3 top-3 text-xs text-indigo-400 group-hover:translate-x-0.5 transition">
+        <span class="absolute right-3 top-3 text-xs text-indigo-400 group-hover:translate-x-0.5 transition">
           Start →
         </span>
       </button>
 
+      <!-- Analyze card -->
       <button
         type="button"
-        onClick={() => onSelect("analyze")}
-        className="group relative flex flex-col items-start gap-2 rounded-2xl border border-slate-200 bg-white/80 px-4 py-4 text-left shadow-sm hover:shadow-md hover:border-indigo-200 transition"
+        data-mode="analyze"
+        class="mode-card group relative flex flex-col items-start gap-2 rounded-2xl border border-slate-200 bg-white/80 px-4 py-4 text-left shadow-sm hover:shadow-md hover:border-indigo-200 transition"
       >
-        <div className="inline-flex items-center gap-2 rounded-full bg-slate-900 px-2.5 py-1 text-[11px] text-slate-50">
+        <div class="inline-flex items-center gap-2 rounded-full bg-slate-900 px-2.5 py-1 text-[11px] text-slate-50">
           <span>🔍</span>
           <span>Analyze Resume</span>
         </div>
-        <h2 className="text-sm sm:text-base font-semibold text-slate-900">
+        <h2 class="text-sm sm:text-base font-semibold text-slate-900">
           Improve an existing resume
         </h2>
-        <p className="text-xs sm:text-[13px] text-slate-500">
-          Upload or paste your resume to get an AI review and concrete suggestions.
+        <p class="text-xs sm:text-[13px] text-slate-500">
+          Upload or paste your resume to get a review and concrete suggestions.
         </p>
-        <div className="mt-2 flex flex-wrap gap-2 text-[10px] text-slate-600">
-          <span className="rounded-full bg-slate-100 px-2 py-1">ATS check</span>
-          <span className="rounded-full bg-slate-100 px-2 py-1">Grammar & style</span>
-          <span className="rounded-full bg-slate-100 px-2 py-1">Impact & metrics</span>
+        <div class="mt-2 flex flex-wrap gap-2 text-[10px] text-slate-600">
+          <span class="rounded-full bg-slate-100 px-2 py-1">ATS check</span>
+          <span class="rounded-full bg-slate-100 px-2 py-1">Grammar &amp; style</span>
+          <span class="rounded-full bg-slate-100 px-2 py-1">Impact &amp; metrics</span>
         </div>
-        <span className="absolute right-3 top-3 text-xs text-slate-400 group-hover:translate-x-0.5 transition">
+        <span class="absolute right-3 top-3 text-xs text-slate-400 group-hover:translate-x-0.5 transition">
           Start →
         </span>
       </button>
     </section>
-  );
-}
 
-/* ---------- GENERATE WORKSPACE (STEP 2/3) ---------- */
-
-function GenerateWorkspace({ onStepChange }) {
-  const [fullName, setFullName] = useState("");
-  const [contact, setContact] = useState("");
-  const [role, setRole] = useState("");
-  const [level, setLevel] = useState("Mid-level");
-  const [summary, setSummary] = useState("");
-  const [experience, setExperience] = useState("");
-  const [education, setEducation] = useState("");
-  const [skills, setSkills] = useState(["JavaScript", "React", "SQL"]);
-  const [skillInput, setSkillInput] = useState("");
-
-  function handleGenerate(e) {
-    e.preventDefault();
-    onStepChange(3);
-  }
-
-  function clearForm() {
-    setFullName("");
-    setContact("");
-    setRole("");
-    setLevel("Mid-level");
-    setSummary("");
-    setExperience("");
-    setEducation("");
-    setSkills([]);
-    setSkillInput("");
-    onStepChange(2);
-  }
-
-  function addSkillFromInput(e) {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      const value = skillInput.trim();
-      if (!value) return;
-      if (!skills.includes(value)) {
-        setSkills((prev) => [...prev, value]);
-      }
-      setSkillInput("");
-    }
-    if (e.key === "Backspace" && !skillInput) {
-      setSkills((prev) => prev.slice(0, -1));
-    }
-  }
-
-  function removeSkill(name) {
-    setSkills((prev) => prev.filter((s) => s !== name));
-  }
-
-  const previewName = fullName.trim() || "Your Name";
-  const previewRole = role.trim() || "Target Role";
-
-  return (
-    <section className="mb-8">
-      <div className="mb-4 flex items-center justify-between gap-3">
+    <!-- GENERATE WORKSPACE -->
+    <section id="generate-panel" class="mb-8 hidden">
+      <div class="mb-4 flex items-center justify-between gap-3">
         <div>
-          <h2 className="text-sm sm:text-base font-semibold text-slate-900">
+          <h2 class="text-sm sm:text-base font-semibold text-slate-900">
             Generate Resume
           </h2>
-          <p className="text-xs sm:text-[13px] text-slate-500">
-            Fill the form on the left. The live preview on the right updates after you click
-            “Generate resume”.
+          <p class="text-xs sm:text-[13px] text-slate-500">
+            Fill the form on the left. Click “Generate resume” to update the preview on the right.
           </p>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-        {/* FORM */}
-        <form
-          onSubmit={handleGenerate}
-          className="space-y-4 bg-white/80 border border-slate-200 rounded-2xl p-4 shadow-sm"
-        >
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+        <!-- FORM -->
+        <form id="generate-form" class="space-y-4 bg-white/80 border border-slate-200 rounded-2xl p-4 shadow-sm">
           <div>
-            <label className="flex items-center justify-between text-xs font-medium text-slate-700 mb-1">
+            <label class="flex items-center justify-between text-xs font-medium text-slate-700 mb-1">
               <span>Contact info</span>
-              <span className="text-[11px] text-slate-400">Name, email, LinkedIn</span>
+              <span class="text-[11px] text-slate-400">Name, email, LinkedIn</span>
             </label>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
               <input
-                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none"
+                id="g-fullname"
+                class="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none"
                 placeholder="John Doe"
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
               />
               <input
-                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none"
+                id="g-contact"
+                class="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none"
                 placeholder="john@example.com · linkedin.com/in/john"
-                value={contact}
-                onChange={(e) => setContact(e.target.value)}
               />
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
             <div>
-              <label className="flex items-center justify-between text-xs font-medium text-slate-700 mb-1">
+              <label class="flex items-center justify-between text-xs font-medium text-slate-700 mb-1">
                 <span>Target role *</span>
               </label>
               <input
+                id="g-role"
                 required
-                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none"
+                class="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none"
                 placeholder="e.g. Product Manager"
-                value={role}
-                onChange={(e) => setRole(e.target.value)}
               />
             </div>
             <div>
-              <label className="flex items-center justify-between text-xs font-medium text-slate-700 mb-1">
+              <label class="flex items-center justify-between text-xs font-medium text-slate-700 mb-1">
                 <span>Level</span>
               </label>
               <select
-                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none"
-                value={level}
-                onChange={(e) => setLevel(e.target.value)}
+                id="g-level"
+                class="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none"
               >
                 <option>Junior</option>
-                <option>Mid-level</option>
+                <option selected>Mid-level</option>
                 <option>Senior</option>
                 <option>Lead</option>
               </select>
@@ -222,427 +165,451 @@ function GenerateWorkspace({ onStepChange }) {
           </div>
 
           <div>
-            <label className="flex items-center justify-between text-xs font-medium text-slate-700 mb-1">
+            <label class="flex items-center justify-between text-xs font-medium text-slate-700 mb-1">
               <span>Professional summary</span>
             </label>
             <textarea
-              rows={3}
-              className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none"
+              id="g-summary"
+              rows="3"
+              class="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none"
               placeholder="Short 2–3 sentence summary about your background and goals."
-              value={summary}
-              onChange={(e) => setSummary(e.target.value)}
-            />
+            ></textarea>
           </div>
 
           <div>
-            <label className="flex items-center justify-between text-xs font-medium text-slate-700 mb-1">
+            <label class="flex items-center justify-between text-xs font-medium text-slate-700 mb-1">
               <span>Skills</span>
-              <span className="text-[11px] text-slate-400">Press Enter to add a skill</span>
+              <span class="text-[11px] text-slate-400">Press Enter to add a skill</span>
             </label>
             <div
-              className="flex flex-wrap items-center gap-1 rounded-xl border border-slate-200 bg-slate-50 px-2 py-1"
-              onClick={() => {
-                const el = document.getElementById("skills-input");
-                if (el) el.focus();
-              }}
+              id="g-skills-wrapper"
+              class="flex flex-wrap items-center gap-1 rounded-xl border border-slate-200 bg-slate-50 px-2 py-1 cursor-text"
             >
-              {skills.map((s) => (
-                <span
-                  key={s}
-                  className="inline-flex items-center gap-1 rounded-full bg-slate-200/80 px-2 py-0.5 text-[11px] text-slate-700"
-                >
-                  <span>{s}</span>
-                  <button
-                    type="button"
-                    className="ml-1 text-[11px] text-slate-500 hover:text-slate-800"
-                    onClick={() => removeSkill(s)}
-                  >
-                    ×
-                  </button>
-                </span>
-              ))}
+              <!-- default tags -->
+              <span class="skill-tag inline-flex items-center gap-1 rounded-full bg-slate-200/80 px-2 py-0.5 text-[11px] text-slate-700">
+                <span>JavaScript</span>
+                <button type="button" class="skill-remove ml-1 text-[11px] text-slate-500 hover:text-slate-800">×</button>
+              </span>
+              <span class="skill-tag inline-flex items-center gap-1 rounded-full bg-slate-200/80 px-2 py-0.5 text-[11px] text-slate-700">
+                <span>React</span>
+                <button type="button" class="skill-remove ml-1 text-[11px] text-slate-500 hover:text-slate-800">×</button>
+              </span>
+              <span class="skill-tag inline-flex items-center gap-1 rounded-full bg-slate-200/80 px-2 py-0.5 text-[11px] text-slate-700">
+                <span>SQL</span>
+                <button type="button" class="skill-remove ml-1 text-[11px] text-slate-500 hover:text-slate-800">×</button>
+              </span>
               <input
-                id="skills-input"
-                className="flex-1 min-w-[80px] bg-transparent border-none text-xs outline-none px-1 py-1"
+                id="g-skills-input"
+                class="flex-1 min-w-[80px] bg-transparent border-none text-xs outline-none px-1 py-1"
                 placeholder="Add a skill…"
-                value={skillInput}
-                onChange={(e) => setSkillInput(e.target.value)}
-                onKeyDown={addSkillFromInput}
               />
             </div>
           </div>
 
           <div>
-            <label className="flex items-center justify-between text-xs font-medium text-slate-700 mb-1">
+            <label class="flex items-center justify-between text-xs font-medium text-slate-700 mb-1">
               <span>Experience (brief notes)</span>
             </label>
             <textarea
-              rows={4}
-              className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none"
-              placeholder="Companies, roles, main responsibilities and key achievements."
-              value={experience}
-              onChange={(e) => setExperience(e.target.value)}
-            />
+              id="g-experience"
+              rows="4"
+              class="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none"
+              placeholder="Companies, roles, responsibilities and key achievements."
+            ></textarea>
           </div>
 
           <div>
-            <label className="flex items-center justify-between text-xs font-medium text-slate-700 mb-1">
+            <label class="flex items-center justify-between text-xs font-medium text-slate-700 mb-1">
               <span>Education</span>
             </label>
             <input
-              className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none"
+              id="g-education"
+              class="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none"
               placeholder="e.g. BSc Computer Science, University, 2024"
-              value={education}
-              onChange={(e) => setEducation(e.target.value)}
             />
           </div>
 
-          <div className="flex flex-wrap items-center gap-3 pt-1">
+          <div class="flex flex-wrap items-center gap-3 pt-1">
             <button
               type="submit"
-              className="inline-flex items-center gap-1 rounded-full bg-indigo-600 px-4 py-2 text-xs font-semibold text-white shadow-md hover:bg-indigo-700 hover:shadow-lg transition"
+              class="inline-flex items-center gap-1 rounded-full bg-indigo-600 px-4 py-2 text-xs font-semibold text-white shadow-md hover:bg-indigo-700 hover:shadow-lg transition"
             >
-              Generate resume <span className="-mr-1">↻</span>
+              Generate resume <span class="-mr-1">↻</span>
             </button>
             <button
               type="button"
-              onClick={clearForm}
-              className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-3 py-2 text-[11px] text-slate-700 hover:bg-slate-200 transition"
+              id="g-clear"
+              class="inline-flex items-center gap-1 rounded-full bg-slate-100 px-3 py-2 text-[11px] text-slate-700 hover:bg-slate-200 transition"
             >
               Clear form
             </button>
           </div>
         </form>
 
-        {/* PREVIEW */}
-        <div className="bg-white/80 border border-slate-200 rounded-2xl p-4 shadow-sm flex flex-col gap-3">
-          <div className="flex items-center justify-between gap-3">
+        <!-- PREVIEW -->
+        <div class="bg-white/80 border border-slate-200 rounded-2xl p-4 shadow-sm flex flex-col gap-3">
+          <div class="flex items-center justify-between gap-3">
             <div>
-              <h3 className="text-sm font-semibold text-slate-900">
+              <h3 class="text-sm font-semibold text-slate-900">
                 Resume preview
               </h3>
-              <p className="text-[11px] text-slate-500">
-                This is a simple layout preview. You can export to PDF/DOCX from your backend.
+              <p class="text-[11px] text-slate-500">
+                Simple single-page layout preview. Export can be wired to your backend.
               </p>
             </div>
-            <span className="inline-flex items-center gap-1 rounded-full bg-slate-900 text-white px-3 py-1 text-[10px]">
+            <span class="inline-flex items-center gap-1 rounded-full bg-slate-900 text-white px-3 py-1 text-[10px]">
               Preview
             </span>
           </div>
 
-          <div className="relative flex-1 rounded-xl border border-slate-200 bg-slate-50/80 p-4 overflow-auto">
-            <div className="text-[11px] leading-relaxed text-slate-800">
-              <h1 className="text-sm font-semibold">{previewName}</h1>
-              <p className="text-[10px] text-slate-500 mb-2">
-                {contact && <span>{contact} · </span>}
-                {level} {previewRole}
+          <div class="relative flex-1 rounded-xl border border-slate-200 bg-slate-50/80 p-4 overflow-auto">
+            <div id="g-preview-empty" class="h-full flex flex-col items-center justify-center text-center text-[11px] text-slate-400">
+              <div class="mb-2 text-xl">📄</div>
+              <p>
+                Fill the form on the left and click <span class="font-semibold">Generate resume</span>.
               </p>
-
-              {summary.trim() && (
-                <>
-                  <h2 className="mt-2 text-[10px] font-semibold tracking-wide text-slate-600 uppercase">
-                    Summary
-                  </h2>
-                  <p className="text-[10px]">{summary.trim()}</p>
-                </>
-              )}
-
-              {skills.length > 0 && (
-                <>
-                  <h2 className="mt-2 text-[10px] font-semibold tracking-wide text-slate-600 uppercase">
-                    Skills
-                  </h2>
-                  <ul className="list-disc pl-4 text-[10px] space-y-0.5">
-                    {skills.map((s) => (
-                      <li key={s}>{s}</li>
-                    ))}
-                  </ul>
-                </>
-              )}
-
-              {experience.trim() && (
-                <>
-                  <h2 className="mt-2 text-[10px] font-semibold tracking-wide text-slate-600 uppercase">
-                    Experience
-                  </h2>
-                  <p className="whitespace-pre-line text-[10px]">
-                    {experience.trim()}
-                  </p>
-                </>
-              )}
-
-              {education.trim() && (
-                <>
-                  <h2 className="mt-2 text-[10px] font-semibold tracking-wide text-slate-600 uppercase">
-                    Education
-                  </h2>
-                  <p className="text-[10px]">{education.trim()}</p>
-                </>
-              )}
-
-              {!summary && skills.length === 0 && !experience && !education && (
-                <div className="h-full flex flex-col items-center justify-center text-center text-[11px] text-slate-400 mt-6">
-                  <div className="mb-2 text-xl">📄</div>
-                  <p>
-                    Fill the form on the left and click{" "}
-                    <span className="font-semibold">Generate resume</span>.
-                  </p>
-                </div>
-              )}
             </div>
+            <div id="g-preview" class="hidden text-[11px] leading-relaxed text-slate-800"></div>
           </div>
         </div>
       </div>
     </section>
-  );
-}
 
-/* ---------- ANALYZE WORKSPACE (STEP 2/3) ---------- */
-
-function AnalyzeWorkspace({ onStepChange }) {
-  const [targetRole, setTargetRole] = useState("");
-  const [hasResult, setHasResult] = useState(false);
-
-  function handleAnalyze(e) {
-    e.preventDefault();
-    setHasResult(true);
-    onStepChange(3);
-  }
-
-  function clearAnalyze() {
-    setTargetRole("");
-    setHasResult(false);
-    onStepChange(2);
-  }
-
-  const role = targetRole.trim() || "your target role";
-
-  return (
-    <section className="mb-8">
-      <div className="mb-4 flex items-center justify-between gap-3">
+    <!-- ANALYZE WORKSPACE -->
+    <section id="analyze-panel" class="mb-8 hidden">
+      <div class="mb-4 flex items-center justify-between gap-3">
         <div>
-          <h2 className="text-sm sm:text-base font-semibold text-slate-900">
+          <h2 class="text-sm sm:text-base font-semibold text-slate-900">
             Analyze Resume
           </h2>
-          <p className="text-xs sm:text-[13px] text-slate-500">
-            Upload or paste your existing resume to get an AI review.
+          <p class="text-xs sm:text-[13px] text-slate-500">
+            Upload or paste your existing resume to get a structured review.
           </p>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-        {/* FORM */}
-        <form
-          onSubmit={handleAnalyze}
-          className="space-y-4 bg-white/80 border border-slate-200 rounded-2xl p-4 shadow-sm"
-        >
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+        <!-- FORM -->
+        <form id="analyze-form" class="space-y-4 bg-white/80 border border-slate-200 rounded-2xl p-4 shadow-sm">
           <label
-            htmlFor="file-input"
-            className="flex flex-col items-center justify-center gap-1 rounded-xl border border-dashed border-slate-300 bg-slate-50 px-4 py-5 text-center text-xs text-slate-500 cursor-pointer hover:border-indigo-400 hover:bg-indigo-50/50 transition"
+            for="a-file"
+            class="flex flex-col items-center justify-center gap-1 rounded-xl border border-dashed border-slate-300 bg-slate-50 px-4 py-5 text-center text-xs text-slate-500 cursor-pointer hover:border-indigo-400 hover:bg-indigo-50/50 transition"
           >
-            <span className="text-sm">Drag & drop or click to upload</span>
-            <span className="text-[11px] text-slate-400">
+            <span class="text-sm">Drag &amp; drop or click to upload</span>
+            <span class="text-[11px] text-slate-400">
               PDF · DOCX · TXT · Max 5MB
             </span>
-            <span className="mt-1 inline-flex items-center gap-1 rounded-full bg-white px-2.5 py-1 text-[10px] text-slate-500 shadow-sm">
+            <span class="mt-1 inline-flex items-center gap-1 rounded-full bg-white px-2.5 py-1 text-[10px] text-slate-500 shadow-sm">
               Optional: you can paste the text below
             </span>
-            <input id="file-input" type="file" className="hidden" />
+            <input id="a-file" type="file" class="hidden" />
           </label>
 
           <div>
-            <label className="flex items-center justify-between text-xs font-medium text-slate-700 mb-1">
+            <label class="flex items-center justify-between text-xs font-medium text-slate-700 mb-1">
               <span>Or paste resume text</span>
             </label>
             <textarea
-              rows={6}
-              className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none"
+              id="a-text"
+              rows="6"
+              class="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none"
               placeholder="Paste your resume text here..."
-            />
+            ></textarea>
           </div>
 
           <div>
-            <label className="flex items-center justify-between text-xs font-medium text-slate-700 mb-1">
+            <label class="flex items-center justify-between text-xs font-medium text-slate-700 mb-1">
               <span>Target role (optional)</span>
             </label>
             <input
-              className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none"
+              id="a-role"
+              class="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none"
               placeholder="e.g. Product Manager"
-              value={targetRole}
-              onChange={(e) => setTargetRole(e.target.value)}
             />
           </div>
 
           <div>
-            <p className="text-xs font-medium text-slate-700 mb-1">
+            <p class="text-xs font-medium text-slate-700 mb-1">
               What to check
             </p>
-            <div className="flex flex-wrap gap-2">
-              <label className="inline-flex items-center gap-2 rounded-full bg-slate-50 px-3 py-1 text-[11px] text-slate-700 border border-slate-200">
-                <input
-                  type="checkbox"
-                  className="h-3 w-3 text-indigo-600"
-                  defaultChecked
-                />
+            <div class="flex flex-wrap gap-2">
+              <label class="inline-flex items-center gap-2 rounded-full bg-slate-50 px-3 py-1 text-[11px] text-slate-700 border border-slate-200">
+                <input type="checkbox" class="h-3 w-3 text-indigo-600" checked />
                 ATS compatibility
               </label>
-              <label className="inline-flex items-center gap-2 rounded-full bg-slate-50 px-3 py-1 text-[11px] text-slate-700 border border-slate-200">
-                <input
-                  type="checkbox"
-                  className="h-3 w-3 text-indigo-600"
-                  defaultChecked
-                />
-                Grammar & style
+              <label class="inline-flex items-center gap-2 rounded-full bg-slate-50 px-3 py-1 text-[11px] text-slate-700 border border-slate-200">
+                <input type="checkbox" class="h-3 w-3 text-indigo-600" checked />
+                Grammar &amp; style
               </label>
-              <label className="inline-flex items-center gap-2 rounded-full bg-slate-50 px-3 py-1 text-[11px] text-slate-700 border border-slate-200">
-                <input
-                  type="checkbox"
-                  className="h-3 w-3 text-indigo-600"
-                  defaultChecked
-                />
-                Achievements & impact
+              <label class="inline-flex items-center gap-2 rounded-full bg-slate-50 px-3 py-1 text-[11px] text-slate-700 border border-slate-200">
+                <input type="checkbox" class="h-3 w-3 text-indigo-600" checked />
+                Achievements &amp; impact
               </label>
             </div>
           </div>
 
-          <div className="flex flex-wrap items-center gap-3 pt-1">
+          <div class="flex flex-wrap items-center gap-3 pt-1">
             <button
               type="submit"
-              className="inline-flex items-center gap-1 rounded-full bg-indigo-600 px-4 py-2 text-xs font-semibold text-white shadow-md hover:bg-indigo-700 hover:shadow-lg transition"
+              class="inline-flex items-center gap-1 rounded-full bg-indigo-600 px-4 py-2 text-xs font-semibold text-white shadow-md hover:bg-indigo-700 hover:shadow-lg transition"
             >
               Analyze resume <span>🔍</span>
             </button>
             <button
               type="button"
-              onClick={clearAnalyze}
-              className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-3 py-2 text-[11px] text-slate-700 hover:bg-slate-200 transition"
+              id="a-clear"
+              class="inline-flex items-center gap-1 rounded-full bg-slate-100 px-3 py-2 text-[11px] text-slate-700 hover:bg-slate-200 transition"
             >
               Clear inputs
             </button>
           </div>
         </form>
 
-        {/* RESULT */}
-        <div className="bg-white/80 border border-slate-200 rounded-2xl p-4 shadow-sm flex flex-col gap-3">
-          <div className="flex items-center justify-between gap-3">
+        <!-- RESULT -->
+        <div class="bg-white/80 border border-slate-200 rounded-2xl p-4 shadow-sm flex flex-col gap-3">
+          <div class="flex items-center justify-between gap-3">
             <div>
-              <h3 className="text-sm font-semibold text-slate-900">
+              <h3 class="text-sm font-semibold text-slate-900">
                 Analysis result
               </h3>
-              <p className="text-[11px] text-slate-500">
-                When you click “Analyze resume”, a structured AI report appears here.
+              <p class="text-[11px] text-slate-500">
+                After analysis you will see strengths, issues and next steps here.
               </p>
             </div>
-            <span className="inline-flex items-center gap-1 rounded-full bg-slate-900 text-white px-3 py-1 text-[10px]">
-              AI feedback
+            <span class="inline-flex items-center gap-1 rounded-full bg-slate-900 text-white px-3 py-1 text-[10px]">
+              AI review
             </span>
           </div>
 
-          <div className="relative flex-1 rounded-xl border border-slate-200 bg-slate-50/80 p-4 overflow-auto">
-            {!hasResult ? (
-              <div className="h-full flex flex-col items-center justify-center text-center text-[11px] text-slate-400">
-                <div className="mb-2 text-xl">✨</div>
-                <p>
-                  Upload or paste your resume, then click{" "}
-                  <span className="font-semibold">Analyze resume</span>.
-                </p>
-              </div>
-            ) : (
-              <div className="text-[11px] leading-relaxed text-slate-800 space-y-3">
-                <div>
-                  <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-2.5 py-1 text-[10px] text-emerald-700 mb-2">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                    ATS score: 82 / 100 · good overall fit
-                  </p>
-                  <p className="text-[10px] text-slate-500">
-                    This is a sample structure for the analysis block. You can plug your
-                    own AI backend into this UI.
-                  </p>
-                </div>
-
-                <div>
-                  <h4 className="text-[10px] font-semibold uppercase tracking-wide text-slate-600 mb-1">
-                    Strengths
-                  </h4>
-                  <ul className="list-disc pl-4 text-[10px] space-y-0.5">
-                    <li>Clear structure and consistent formatting.</li>
-                    <li>Relevant keywords for {role} already present.</li>
-                    <li>Good balance between technical and soft skills.</li>
-                  </ul>
-                </div>
-
-                <div>
-                  <h4 className="text-[10px] font-semibold uppercase tracking-wide text-slate-600 mb-1">
-                    Issues
-                  </h4>
-                  <ul className="list-disc pl-4 text-[10px] space-y-0.5">
-                    <li>Many bullet points lack measurable impact (no numbers).</li>
-                    <li>Summary could be more targeted to {role}.</li>
-                    <li>Some sections are too long for quick scanning.</li>
-                  </ul>
-                </div>
-
-                <div>
-                  <h4 className="text-[10px] font-semibold uppercase tracking-wide text-slate-600 mb-1">
-                    Next steps
-                  </h4>
-                  <ul className="list-disc pl-4 text-[10px] space-y-0.5">
-                    <li>
-                      Add metrics (%, $, time saved) to the 3–5 most important bullet
-                      points.
-                    </li>
-                    <li>
-                      Align terminology with typical job descriptions for {role}.
-                    </li>
-                    <li>Keep the resume to one page if experience is under 7 years.</li>
-                  </ul>
-                </div>
-              </div>
-            )}
+          <div class="relative flex-1 rounded-xl border border-slate-200 bg-slate-50/80 p-4 overflow-auto">
+            <div id="a-preview-empty" class="h-full flex flex-col items-center justify-center text-center text-[11px] text-slate-400">
+              <div class="mb-2 text-xl">✨</div>
+              <p>
+                Upload or paste your resume, then click <span class="font-semibold">Analyze resume</span>.
+              </p>
+            </div>
+            <div id="a-preview" class="hidden text-[11px] leading-relaxed text-slate-800 space-y-3"></div>
           </div>
         </div>
       </div>
     </section>
-  );
-}
+  </div>
 
-/* ---------- ROOT APP ---------- */
+  <!-- SCRIPT -->
+  <script>
+    // --- Stepper ---
+    function setStep(step) {
+      var circles = document.querySelectorAll(".step-circle");
+      circles.forEach(function (circle, index) {
+        var s = index + 1;
+        circle.classList.remove(
+          "bg-indigo-500",
+          "border-indigo-500",
+          "text-white",
+          "bg-slate-900",
+          "border-slate-900",
+          "bg-white",
+          "border-slate-300",
+          "text-slate-500"
+        );
+        if (s < step) {
+          circle.classList.add("bg-slate-900", "border-slate-900", "text-white");
+        } else if (s === step) {
+          circle.classList.add("bg-indigo-500", "border-indigo-500", "text-white");
+        } else {
+          circle.classList.add("bg-white", "border-slate-300", "text-slate-500");
+        }
+      });
+    }
 
-export default function App() {
-  const [step, setStep] = useState(1);
-  const [mode, setMode] = useState(null); // "generate" | "analyze"
+    // --- Mode switching ---
+    var modeButtons = document.querySelectorAll("[data-mode]");
+    var modePicker = document.getElementById("mode-picker");
+    var generatePanel = document.getElementById("generate-panel");
+    var analyzePanel = document.getElementById("analyze-panel");
 
-  function handleModeSelect(m) {
-    setMode(m);
-    setStep(2);
-  }
+    modeButtons.forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var mode = btn.getAttribute("data-mode");
+        if (mode === "generate") {
+          generatePanel.classList.remove("hidden");
+          analyzePanel.classList.add("hidden");
+        } else {
+          analyzePanel.classList.remove("hidden");
+          generatePanel.classList.add("hidden");
+        }
+        modePicker.classList.add("opacity-60", "pointer-events-none");
+        setStep(2);
+        var panel = mode === "generate" ? generatePanel : analyzePanel;
+        panel.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+    });
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 text-slate-900">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
-        <header className="mb-6 sm:mb-8 flex items-center justify-between gap-4">
-          <div>
-            <h1 className="text-xl sm:text-2xl font-bold tracking-tight">
-              AI Resume Editor
-            </h1>
-            <p className="text-xs sm:text-sm text-slate-500">
-              Analyze an existing resume or generate a new one in three simple steps.
-            </p>
-          </div>
-        </header>
+    // --- Skills input for Generate ---
+    var skillsWrapper = document.getElementById("g-skills-wrapper");
+    var skillsInput = document.getElementById("g-skills-input");
 
-        <Stepper step={step} />
+    function updateSkillsHidden() {
+      // you can extend this if you want to send skills to backend
+    }
 
-        {!mode && <ModePicker onSelect={handleModeSelect} />}
+    skillsWrapper.addEventListener("click", function () {
+      skillsInput.focus();
+    });
 
-        {mode === "generate" && (
-          <GenerateWorkspace onStepChange={setStep} />
-        )}
+    skillsWrapper.addEventListener("click", function (e) {
+      if (e.target.classList.contains("skill-remove")) {
+        e.target.closest(".skill-tag").remove();
+        updateSkillsHidden();
+      }
+    });
 
-        {mode === "analyze" && (
-          <AnalyzeWorkspace onStepChange={setStep} />
-        )}
-      </div>
-    </div>
-  );
-}
+    skillsInput.addEventListener("keydown", function (e) {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        var value = skillsInput.value.trim();
+        if (!value) return;
+        var tag = document.createElement("span");
+        tag.className =
+          "skill-tag inline-flex items-center gap-1 rounded-full bg-slate-200/80 px-2 py-0.5 text-[11px] text-slate-700";
+        tag.innerHTML =
+          "<span>" +
+          value +
+          "</span><button type='button' class='skill-remove ml-1 text-[11px] text-slate-500 hover:text-slate-800'>×</button>";
+        skillsWrapper.insertBefore(tag, skillsInput);
+        skillsInput.value = "";
+        updateSkillsHidden();
+      }
+      if (e.key === "Backspace" && !skillsInput.value) {
+        var tags = skillsWrapper.querySelectorAll(".skill-tag");
+        if (tags.length > 0) {
+          tags[tags.length - 1].remove();
+          updateSkillsHidden();
+        }
+      }
+    });
+
+    // --- Generate form ---
+    var gForm = document.getElementById("generate-form");
+    var gPreview = document.getElementById("g-preview");
+    var gPreviewEmpty = document.getElementById("g-preview-empty");
+    var gClear = document.getElementById("g-clear");
+
+    gForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      var name = document.getElementById("g-fullname").value.trim() || "Your Name";
+      var contact = document.getElementById("g-contact").value.trim();
+      var role = document.getElementById("g-role").value.trim() || "Target Role";
+      var level = document.getElementById("g-level").value;
+      var summary = document.getElementById("g-summary").value.trim();
+      var exp = document.getElementById("g-experience").value.trim();
+      var edu = document.getElementById("g-education").value.trim();
+
+      var skillLabels = [];
+      skillsWrapper.querySelectorAll(".skill-tag span:first-child").forEach(function (el) {
+        skillLabels.push(el.textContent.trim());
+      });
+
+      var html = "";
+      html += "<h1 class='text-sm font-semibold'>" + name + "</h1>";
+      html += "<p class='text-[10px] text-slate-500 mb-2'>";
+      if (contact) html += contact + " · ";
+      html += level + " " + role + "</p>";
+
+      if (summary) {
+        html += "<h2 class='mt-2 text-[10px] font-semibold tracking-wide text-slate-600 uppercase'>Summary</h2>";
+        html += "<p class='text-[10px]'>" + summary + "</p>";
+      }
+
+      if (skillLabels.length) {
+        html += "<h2 class='mt-2 text-[10px] font-semibold tracking-wide text-slate-600 uppercase'>Skills</h2>";
+        html += "<ul class='list-disc pl-4 text-[10px] space-y-0.5'>";
+        skillLabels.forEach(function (s) {
+          html += "<li>" + s + "</li>";
+        });
+        html += "</ul>";
+      }
+
+      if (exp) {
+        html += "<h2 class='mt-2 text-[10px] font-semibold tracking-wide text-slate-600 uppercase'>Experience</h2>";
+        html += "<p class='whitespace-pre-line text-[10px]'>" + exp + "</p>";
+      }
+
+      if (edu) {
+        html += "<h2 class='mt-2 text-[10px] font-semibold tracking-wide text-slate-600 uppercase'>Education</h2>";
+        html += "<p class='text-[10px]'>" + edu + "</p>";
+      }
+
+      gPreview.innerHTML = html;
+      gPreviewEmpty.classList.add("hidden");
+      gPreview.classList.remove("hidden");
+      setStep(3);
+    });
+
+    gClear.addEventListener("click", function () {
+      gForm.reset();
+      // remove all skills except input
+      skillsWrapper.querySelectorAll(".skill-tag").forEach(function (tag) {
+        tag.remove();
+      });
+      gPreview.innerHTML = "";
+      gPreview.classList.add("hidden");
+      gPreviewEmpty.classList.remove("hidden");
+      setStep(2);
+    });
+
+    // --- Analyze form ---
+    var aForm = document.getElementById("analyze-form");
+    var aPreview = document.getElementById("a-preview");
+    var aPreviewEmpty = document.getElementById("a-preview-empty");
+    var aClear = document.getElementById("a-clear");
+
+    aForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var role = document.getElementById("a-role").value.trim() || "your target role";
+
+      var html = "";
+      html +=
+        "<div><p class='inline-flex items-center gap-2 rounded-full bg-emerald-50 px-2.5 py-1 text-[10px] text-emerald-700 mb-2'>" +
+        "<span class='w-1.5 h-1.5 rounded-full bg-emerald-500'></span>" +
+        "ATS score: 82 / 100 · good overall fit" +
+        "</p></div>";
+
+      html += "<div><h4 class='text-[10px] font-semibold uppercase tracking-wide text-slate-600 mb-1'>Strengths</h4>";
+      html += "<ul class='list-disc pl-4 text-[10px] space-y-0.5'>" +
+        "<li>Clear structure and consistent formatting.</li>" +
+        "<li>Relevant keywords for " + role + " already present.</li>" +
+        "<li>Good balance between technical and soft skills.</li>" +
+        "</ul></div>";
+
+      html += "<div><h4 class='text-[10px] font-semibold uppercase tracking-wide text-slate-600 mb-1'>Issues</h4>";
+      html += "<ul class='list-disc pl-4 text-[10px] space-y-0.5'>" +
+        "<li>Many bullet points lack measurable impact.</li>" +
+        "<li>Summary could be more targeted to " + role + ".</li>" +
+        "<li>Some sections are too long for quick scanning.</li>" +
+        "</ul></div>";
+
+      html += "<div><h4 class='text-[10px] font-semibold uppercase tracking-wide text-slate-600 mb-1'>Next steps</h4>";
+      html += "<ul class='list-disc pl-4 text-[10px] space-y-0.5'>" +
+        "<li>Add metrics (%, $, time saved) to key bullet points.</li>" +
+        "<li>Align terminology with job descriptions for " + role + ".</li>" +
+        "<li>Keep the resume to one page if experience is under 7 years.</li>" +
+        "</ul></div>";
+
+      aPreview.innerHTML = html;
+      aPreviewEmpty.classList.add("hidden");
+      aPreview.classList.remove("hidden");
+      setStep(3);
+    });
+
+    aClear.addEventListener("click", function () {
+      aForm.reset();
+      aPreview.innerHTML = "";
+      aPreview.classList.add("hidden");
+      aPreviewEmpty.classList.remove("hidden");
+      setStep(2);
+    });
+  </script>
+</body>
+</html>
