@@ -2,463 +2,619 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>AI Resume Editor</title>
+  <title>AI Resume Editor · New UX</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <style>
-    :root {
-      --bg: #f5f6fb;
-      --bg-elevated: #ffffff;
-      --accent: #4f46e5;
-      --accent-soft: rgba(79, 70, 229, 0.08);
-      --accent-border: rgba(79, 70, 229, 0.2);
-      --text-main: #111827;
-      --text-muted: #6b7280;
-      --border-subtle: #e5e7eb;
-      --danger: #ef4444;
-      --radius-lg: 16px;
-      --shadow-soft: 0 18px 45px rgba(15, 23, 42, 0.08);
+  <!-- Tailwind CDN для прототипа -->
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 text-slate-900">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
+    <!-- HEADER -->
+    <header class="mb-6 sm:mb-8 flex items-center justify-between gap-4">
+      <div>
+        <h1 class="text-xl sm:text-2xl font-bold tracking-tight">AI Resume Editor</h1>
+        <p class="text-xs sm:text-sm text-slate-500">
+          Choose your path: analyze an existing resume or generate a new one. Follow the steps above.
+        </p>
+      </div>
+      <span class="inline-flex items-center gap-1 rounded-full bg-slate-900 text-white px-3 py-1 text-[11px] shadow-lg">
+        <span class="inline-block w-2 h-2 rounded-full bg-emerald-400"></span>
+        Beta · UX refresh
+      </span>
+    </header>
+
+    <!-- STEPPER -->
+    <nav aria-label="Progress" class="mb-6">
+      <ol class="flex items-center gap-4 text-[11px] sm:text-xs font-medium text-slate-500">
+        <li data-step="1" class="flex items-center gap-2">
+          <span class="step-circle flex items-center justify-center w-6 h-6 rounded-full border border-indigo-500 bg-indigo-500 text-white text-[11px]">
+            1
+          </span>
+          <span class="step-label">Choose mode</span>
+        </li>
+        <li class="flex-1 h-px bg-slate-200"></li>
+        <li data-step="2" class="flex items-center gap-2">
+          <span class="step-circle flex items-center justify-center w-6 h-6 rounded-full border border-slate-300 bg-white text-[11px]">
+            2
+          </span>
+          <span class="step-label">Fill details</span>
+        </li>
+        <li class="flex-1 h-px bg-slate-200"></li>
+        <li data-step="3" class="flex items-center gap-2">
+          <span class="step-circle flex items-center justify-center w-6 h-6 rounded-full border border-slate-300 bg-white text-[11px]">
+            3
+          </span>
+          <span class="step-label">Review &amp; export</span>
+        </li>
+      </ol>
+    </nav>
+
+    <!-- STEP 1: MODE PICKER -->
+    <section id="mode-picker" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+      <!-- Generate card -->
+      <button
+        type="button"
+        data-mode="generate"
+        class="mode-card group relative flex flex-col items-start gap-2 rounded-2xl border border-slate-200 bg-white/80 px-4 py-4 text-left shadow-sm hover:shadow-lg hover:border-violet-200 transition"
+      >
+        <div class="inline-flex items-center gap-2 rounded-full bg-violet-50 px-2.5 py-1 text-[11px] text-violet-600">
+          <span>✨</span>
+          <span>Generate Resume</span>
+        </div>
+        <h2 class="text-sm sm:text-base font-semibold text-slate-900">
+          Create a new professional resume
+        </h2>
+        <p class="text-xs sm:text-[13px] text-slate-500">
+          Quick form + AI suggestions. Ideal when у тебя нет готового резюме или хочешь начать с нуля.
+        </p>
+        <div class="mt-2 flex flex-wrap gap-2 text-[10px] text-slate-600">
+          <span class="rounded-full bg-violet-50 px-2 py-1">AI-powered</span>
+          <span class="rounded-full bg-slate-100 px-2 py-1">ATS-friendly layout</span>
+        </div>
+        <span class="absolute right-3 top-3 text-xs text-violet-400 group-hover:translate-x-0.5 transition">
+          Start →
+        </span>
+      </button>
+
+      <!-- Analyze card -->
+      <button
+        type="button"
+        data-mode="analyze"
+        class="mode-card group relative flex flex-col items-start gap-2 rounded-2xl border border-slate-200 bg-white/80 px-4 py-4 text-left shadow-sm hover:shadow-lg hover:border-violet-200 transition"
+      >
+        <div class="inline-flex items-center gap-2 rounded-full bg-slate-900 px-2.5 py-1 text-[11px] text-slate-50">
+          <span>🔍</span>
+          <span>Analyze Resume</span>
+        </div>
+        <h2 class="text-sm sm:text-base font-semibold text-slate-900">
+          Improve an existing resume
+        </h2>
+        <p class="text-xs sm:text-[13px] text-slate-500">
+          Upload PDF/DOCX/TXT или вставь текст, получи ATS-оценку, список проблем и рекомендации.
+        </p>
+        <div class="mt-2 flex flex-wrap gap-2 text-[10px] text-slate-600">
+          <span class="rounded-full bg-slate-100 px-2 py-1">ATS check</span>
+          <span class="rounded-full bg-slate-100 px-2 py-1">Grammar &amp; style</span>
+          <span class="rounded-full bg-slate-100 px-2 py-1">Impact &amp; metrics</span>
+        </div>
+        <span class="absolute right-3 top-3 text-xs text-slate-400 group-hover:translate-x-0.5 transition">
+          Start →
+        </span>
+      </button>
+    </section>
+
+    <!-- STEP 2/3 WORKSPACE: GENERATE -->
+    <section
+      data-panel="generate"
+      class="hidden workspace-generate mb-8"
+    >
+      <div class="mb-4 flex items-center justify-between gap-3">
+        <div>
+          <h2 class="text-sm sm:text-base font-semibold text-slate-900">Generate Resume</h2>
+          <p class="text-xs sm:text-[13px] text-slate-500">
+            Заполни базовые поля, AI превратит их в аккуратное резюме. Всегда можно вернуться и поправить.
+          </p>
+        </div>
+        <button
+          type="button"
+          class="inline-flex items-center gap-1 rounded-full bg-slate-100 px-3 py-1 text-[11px] text-slate-600 hover:bg-slate-200 transition"
+          onclick="scrollTo({top:0,behavior:'smooth'})"
+        >
+          Change mode
+        </button>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+        <!-- LEFT: form -->
+        <form id="generate-form" class="space-y-4 bg-white/80 border border-slate-200 rounded-2xl p-4 shadow-sm">
+          <div>
+            <label class="flex items-center justify-between text-xs font-medium text-slate-700 mb-1">
+              <span>Contact info</span>
+              <span class="text-[11px] text-slate-400">Имя, email, LinkedIn</span>
+            </label>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <input
+                id="g-fullName"
+                type="text"
+                class="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs focus:border-violet-500 focus:ring-1 focus:ring-violet-500 outline-none"
+                placeholder="John Doe"
+              />
+              <input
+                id="g-contact"
+                type="text"
+                class="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs focus:border-violet-500 focus:ring-1 focus:ring-violet-500 outline-none"
+                placeholder="john@example.com · linkedin.com/in/john"
+              />
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            <div>
+              <label class="flex items-center justify-between text-xs font-medium text-slate-700 mb-1">
+                <span>Target role *</span>
+                <span class="text-[11px] text-slate-400">Кем хочешь работать</span>
+              </label>
+              <input
+                id="g-role"
+                required
+                type="text"
+                class="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs focus:border-violet-500 focus:ring-1 focus:ring-violet-500 outline-none"
+                placeholder="e.g. Product Manager"
+              />
+            </div>
+            <div>
+              <label class="flex items-center justify-between text-xs font-medium text-slate-700 mb-1">
+                <span>Level</span>
+              </label>
+              <select
+                id="g-level"
+                class="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs focus:border-violet-500 focus:ring-1 focus:ring-violet-500 outline-none"
+              >
+                <option>Junior</option>
+                <option selected>Mid-level</option>
+                <option>Senior</option>
+                <option>Lead</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label class="flex items-center justify-between text-xs font-medium text-slate-700 mb-1">
+              <span>Professional summary</span>
+              <span class="text-[11px] text-slate-400">2–3 предложения о тебе</span>
+            </label>
+            <textarea
+              id="g-summary"
+              rows="3"
+              class="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs focus:border-violet-500 focus:ring-1 focus:ring-violet-500 outline-none"
+              placeholder="3+ years as Software Engineer focusing on React and Node.js..."
+            ></textarea>
+          </div>
+
+          <div>
+            <label class="flex items-center justify-between text-xs font-medium text-slate-700 mb-1">
+              <span>Skills</span>
+              <span class="text-[11px] text-slate-400">Enter → добавить скилл</span>
+            </label>
+            <div
+              id="g-skills-wrapper"
+              class="flex flex-wrap items-center gap-1 rounded-xl border border-slate-200 bg-slate-50 px-2 py-1 cursor-text"
+            >
+              <!-- теги будут добавляться сюда -->
+              <input
+                id="g-skills-input"
+                type="text"
+                class="flex-1 min-w-[80px] bg-transparent border-none text-xs outline-none px-1 py-1"
+                placeholder="Add a skill…"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label class="flex items-center justify-between text-xs font-medium text-slate-700 mb-1">
+              <span>Experience (brief notes)</span>
+              <span class="text-[11px] text-slate-400">места работы + ключевые достижения</span>
+            </label>
+            <textarea
+              id="g-experience"
+              rows="4"
+              class="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs focus:border-violet-500 focus:ring-1 focus:ring-violet-500 outline-none"
+              placeholder="3 years at Company A as Software Engineer, led a team of 5..."
+            ></textarea>
+          </div>
+
+          <div>
+            <label class="flex items-center justify-between text-xs font-medium text-slate-700 mb-1">
+              <span>Education</span>
+            </label>
+            <input
+              id="g-education"
+              type="text"
+              class="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs focus:border-violet-500 focus:ring-1 focus:ring-violet-500 outline-none"
+              placeholder="BS Computer Science, University, 2024"
+            />
+          </div>
+
+          <div class="flex flex-wrap items-center gap-3 pt-1">
+            <button
+              type="submit"
+              class="inline-flex items-center gap-1 rounded-full bg-violet-600 px-4 py-2 text-xs font-semibold text-white shadow-md hover:bg-violet-700 hover:shadow-lg transition"
+            >
+              Generate resume
+              <span class="-mr-1">↻</span>
+            </button>
+            <button
+              type="button"
+              id="g-clear"
+              class="inline-flex items-center gap-1 rounded-full bg-slate-100 px-3 py-2 text-[11px] text-slate-700 hover:bg-slate-200 transition"
+            >
+              Clear form
+            </button>
+          </div>
+        </form>
+
+        <!-- RIGHT: preview -->
+        <div class="bg-white/80 border border-slate-200 rounded-2xl p-4 shadow-sm flex flex-col gap-3">
+          <div class="flex items-center justify-between gap-3">
+            <div>
+              <h3 class="text-sm font-semibold text-slate-900">Generated Resume</h3>
+              <p class="text-[11px] text-slate-500">
+                Шаг 3: смотри превью и экспортируй в PDF/DOCX в своём приложении.
+              </p>
+            </div>
+            <span class="inline-flex items-center gap-1 rounded-full bg-slate-900 text-white px-3 py-1 text-[10px]">
+              Preview
+            </span>
+          </div>
+          <div class="relative flex-1 rounded-xl border border-slate-200 bg-slate-50/80 p-4 overflow-auto">
+            <div id="g-preview-empty" class="h-full flex flex-col items-center justify-center text-center text-[11px] text-slate-400">
+              <div class="mb-2 text-xl">📄</div>
+              <p>Заполни форму слева и нажми <span class="font-semibold">Generate resume</span>.</p>
+            </div>
+            <div id="g-preview" class="hidden text-[11px] leading-relaxed text-slate-800">
+              <!-- сюда JS вставит псевдо-резюме -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- WORKSPACE: ANALYZE -->
+    <section
+      data-panel="analyze"
+      class="hidden workspace-analyze mb-8"
+    >
+      <div class="mb-4 flex items-center justify-between gap-3">
+        <div>
+          <h2 class="text-sm sm:text-base font-semibold text-slate-900">Analyze Resume</h2>
+          <p class="text-xs sm:text-[13px] text-slate-500">
+            Загрузи существующее резюме или вставь текст — AI оценит и подскажет, что улучшить.
+          </p>
+        </div>
+        <button
+          type="button"
+          class="inline-flex items-center gap-1 rounded-full bg-slate-100 px-3 py-1 text-[11px] text-slate-600 hover:bg-slate-200 transition"
+          onclick="scrollTo({top:0,behavior:'smooth'})"
+        >
+          Change mode
+        </button>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+        <!-- LEFT: analyze form -->
+        <form id="a-form" class="space-y-4 bg-white/80 border border-slate-200 rounded-2xl p-4 shadow-sm">
+          <label
+            for="a-file"
+            class="flex flex-col items-center justify-center gap-1 rounded-xl border border-dashed border-slate-300 bg-slate-50 px-4 py-5 text-center text-xs text-slate-500 cursor-pointer hover:border-violet-400 hover:bg-violet-50/50 transition"
+          >
+            <span class="text-sm">Drag &amp; drop or click to upload</span>
+            <span class="text-[11px] text-slate-400">PDF · DOCX · TXT · Max 5MB</span>
+            <span class="mt-1 inline-flex items-center gap-1 rounded-full bg-white px-2.5 py-1 text-[10px] text-slate-500 shadow-sm">
+              Optional: можно просто вставить текст ниже
+            </span>
+            <input id="a-file" type="file" class="hidden" accept=".pdf,.doc,.docx,.txt" />
+          </label>
+
+          <div>
+            <label class="flex items-center justify-between text-xs font-medium text-slate-700 mb-1">
+              <span>Or paste resume text</span>
+              <span class="text-[11px] text-slate-400">скопируй резюме сюда</span>
+            </label>
+            <textarea
+              id="a-text"
+              rows="6"
+              class="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs focus:border-violet-500 focus:ring-1 focus:ring-violet-500 outline-none"
+              placeholder="Paste your resume text here..."
+            ></textarea>
+          </div>
+
+          <div>
+            <label class="flex items-center justify-between text-xs font-medium text-slate-700 mb-1">
+              <span>Target role (optional)</span>
+              <span class="text-[11px] text-slate-400">AI проверит соответствие роли</span>
+            </label>
+            <input
+              id="a-role"
+              type="text"
+              class="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs focus:border-violet-500 focus:ring-1 focus:ring-violet-500 outline-none"
+              placeholder="e.g. Product Manager"
+            />
+          </div>
+
+          <div>
+            <p class="text-xs font-medium text-slate-700 mb-1">What to check</p>
+            <div class="flex flex-wrap gap-2">
+              <label class="inline-flex items-center gap-2 rounded-full bg-slate-50 px-3 py-1 text-[11px] text-slate-700 border border-slate-200">
+                <input type="checkbox" class="h-3 w-3 text-violet-600" checked />
+                ATS compatibility
+              </label>
+              <label class="inline-flex items-center gap-2 rounded-full bg-slate-50 px-3 py-1 text-[11px] text-slate-700 border border-slate-200">
+                <input type="checkbox" class="h-3 w-3 text-violet-600" checked />
+                Grammar &amp; style
+              </label>
+              <label class="inline-flex items-center gap-2 rounded-full bg-slate-50 px-3 py-1 text-[11px] text-slate-700 border border-slate-200">
+                <input type="checkbox" class="h-3 w-3 text-violet-600" checked />
+                Achievements &amp; impact
+              </label>
+            </div>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-3 pt-1">
+            <button
+              type="submit"
+              class="inline-flex items-center gap-1 rounded-full bg-violet-600 px-4 py-2 text-xs font-semibold text-white shadow-md hover:bg-violet-700 hover:shadow-lg transition"
+            >
+              Analyze resume
+              <span>🔍</span>
+            </button>
+            <button
+              type="button"
+              id="a-clear"
+              class="inline-flex items-center gap-1 rounded-full bg-slate-100 px-3 py-2 text-[11px] text-slate-700 hover:bg-slate-200 transition"
+            >
+              Clear inputs
+            </button>
+          </div>
+        </form>
+
+        <!-- RIGHT: analysis -->
+        <div class="bg-white/80 border border-slate-200 rounded-2xl p-4 shadow-sm flex flex-col gap-3">
+          <div class="flex items-center justify-between gap-3">
+            <div>
+              <h3 class="text-sm font-semibold text-slate-900">Analysis Result</h3>
+              <p class="text-[11px] text-slate-500">
+                Шаг 3: смотри отчет, потом можешь перейти в режим генерации и переписать резюме.
+              </p>
+            </div>
+            <span class="inline-flex items-center gap-1 rounded-full bg-slate-900 text-white px-3 py-1 text-[10px]">
+              AI feedback
+            </span>
+          </div>
+          <div class="relative flex-1 rounded-xl border border-slate-200 bg-slate-50/80 p-4 overflow-auto">
+            <div id="a-preview-empty" class="h-full flex flex-col items-center justify-center text-center text-[11px] text-slate-400">
+              <div class="mb-2 text-xl">✨</div>
+              <p>Загрузи файл или вставь текст, затем нажми <span class="font-semibold">Analyze resume</span>.</p>
+            </div>
+            <div id="a-preview" class="hidden text-[11px] leading-relaxed text-slate-800 space-y-3">
+              <!-- сюда JS вставит примерный отчет -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    // ===== Stepper =====
+    const stepEls = document.querySelectorAll("[data-step]");
+    function setStep(step) {
+      stepEls.forEach((el) => {
+        const s = Number(el.dataset.step);
+        const circle = el.querySelector(".step-circle");
+        if (!circle) return;
+        circle.classList.remove(
+          "bg-indigo-500",
+          "border-indigo-500",
+          "text-white",
+          "bg-slate-100",
+          "border-slate-300",
+          "text-slate-500"
+        );
+        if (s < step) {
+          circle.classList.add("bg-slate-900", "border-slate-900", "text-white");
+        } else if (s === step) {
+          circle.classList.add("bg-indigo-500", "border-indigo-500", "text-white");
+        } else {
+          circle.classList.add("bg-white", "border-slate-300", "text-slate-500");
+        }
+      });
     }
 
-    * {
-      box-sizing: border-box;
+    // ===== Mode picker & panels =====
+    const modeButtons = document.querySelectorAll("[data-mode]");
+    const panels = document.querySelectorAll("[data-panel]");
+    const modePicker = document.getElementById("mode-picker");
+    let currentMode = null;
+
+    function showPanel(mode) {
+      panels.forEach((p) => {
+        p.classList.toggle("hidden", p.dataset.panel !== mode);
+      });
     }
 
-    body {
-      margin: 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-        sans-serif;
-      background: radial-gradient(circle at top left, #eef2ff 0, #f9fafb 40%, #f3f4f6 100%);
-      color: var(--text-main);
+    modeButtons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        currentMode = btn.dataset.mode;
+        showPanel(currentMode);
+        modePicker.classList.add("opacity-60", "pointer-events-none");
+        setStep(2);
+        // лёгкий скролл к форме
+        setTimeout(() => {
+          const panel = document.querySelector(`[data-panel="${currentMode}"]`);
+          panel?.scrollIntoView({ behavior: "smooth", block: "start" });
+        }, 100);
+      });
+    });
+
+    // ===== Generate: skills input =====
+    const gSkillsWrapper = document.getElementById("g-skills-wrapper");
+    const gSkillsInput = document.getElementById("g-skills-input");
+
+    function addSkill(label) {
+      if (!label) return;
+      const chip = document.createElement("span");
+      chip.className =
+        "inline-flex items-center gap-1 rounded-full bg-slate-200/80 px-2 py-0.5 text-[11px] text-slate-700";
+      chip.innerHTML =
+        `<span>${label}</span>` +
+        `<button type="button" class="ml-1 text-[11px] text-slate-500 hover:text-slate-800">&times;</button>`;
+      gSkillsWrapper.insertBefore(chip, gSkillsInput);
     }
 
-    .page {
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
+    gSkillsWrapper.addEventListener("click", () => gSkillsInput.focus());
 
-    .shell {
-      max-width: 1200px;
-      width: 100%;
-      margin: 0 auto;
-      padding: 24px 16px 40px;
-    }
-
-    header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 24px;
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-weight: 700;
-      font-size: 18px;
-    }
-
-    .brand-mark {
-      width: 28px;
-      height: 28px;
-      border-radius: 10px;
-      background: linear-gradient(135deg, #4f46e5, #6366f1);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #fff;
-      font-size: 15px;
-      box-shadow: 0 10px 25px rgba(79, 70, 229, 0.45);
-    }
-
-    .badge-beta {
-      padding: 4px 10px;
-      border-radius: 999px;
-      background: rgba(15, 23, 42, 0.04);
-      font-size: 11px;
-      color: var(--text-muted);
-    }
-
-    .hero {
-      margin-bottom: 24px;
-    }
-
-    .hero-title {
-      font-size: clamp(26px, 3vw, 32px);
-      font-weight: 700;
-      letter-spacing: -0.03em;
-      margin: 0 0 8px;
-    }
-
-    .hero-subtitle {
-      margin: 0;
-      color: var(--text-muted);
-      font-size: 14px;
-      max-width: 480px;
-    }
-
-    /* MODE SWITCHER */
-
-    .mode-switcher {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 16px;
-      margin-bottom: 24px;
-    }
-
-    .mode-card {
-      position: relative;
-      padding: 16px 18px;
-      border-radius: var(--radius-lg);
-      background: rgba(255, 255, 255, 0.8);
-      border: 1px solid rgba(148, 163, 184, 0.35);
-      cursor: pointer;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      transition: border-color 0.18s ease, box-shadow 0.18s ease,
-        transform 0.12s ease, background 0.18s ease;
-    }
-
-    .mode-card:hover {
-      transform: translateY(-1px);
-      border-color: rgba(79, 70, 229, 0.35);
-      box-shadow: 0 14px 35px rgba(15, 23, 42, 0.12);
-      background: #ffffff;
-    }
-
-    .mode-card.active {
-      border: 1px solid var(--accent-border);
-      box-shadow: var(--shadow-soft);
-      background: linear-gradient(120deg, rgba(129, 140, 248, 0.03), #ffffff);
-    }
-
-    .mode-label {
-      font-size: 13px;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .mode-label span {
-      font-size: 18px;
-    }
-
-    .mode-title {
-      font-weight: 600;
-      font-size: 15px;
-    }
-
-    .mode-desc {
-      font-size: 13px;
-      color: var(--text-muted);
-    }
-
-    .mode-pills {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin-top: 6px;
-    }
-
-    .pill {
-      font-size: 11px;
-      padding: 3px 8px;
-      border-radius: 999px;
-      background: rgba(148, 163, 184, 0.14);
-      color: #4b5563;
-    }
-
-    .mode-card.active .pill.primary {
-      background: var(--accent-soft);
-      color: var(--accent);
-    }
-
-    /* LAYOUT: LEFT FORM + RIGHT PANEL */
-
-    .workspace {
-      display: grid;
-      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
-      gap: 20px;
-      align-items: flex-start;
-    }
-
-    @media (max-width: 900px) {
-      .workspace {
-        grid-template-columns: minmax(0, 1fr);
+    gSkillsWrapper.addEventListener("click", (e) => {
+      if (e.target.tagName === "BUTTON") {
+        e.target.parentElement.remove();
       }
-    }
+    });
 
-    .panel {
-      background: var(--bg-elevated);
-      border-radius: 20px;
-      padding: 20px 18px;
-      box-shadow: var(--shadow-soft);
-      border: 1px solid rgba(148, 163, 184, 0.35);
-    }
-
-    .panel-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 14px;
-      gap: 12px;
-    }
-
-    .panel-title {
-      font-size: 15px;
-      font-weight: 600;
-    }
-
-    .panel-subtitle {
-      font-size: 12px;
-      color: var(--text-muted);
-    }
-
-    .panel-chip {
-      font-size: 11px;
-      padding: 4px 9px;
-      border-radius: 999px;
-      background: var(--accent-soft);
-      color: var(--accent);
-      font-weight: 500;
-      white-space: nowrap;
-    }
-
-    .panel-body {
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-    }
-
-    /* FORMS */
-
-    .field-group {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    .field-label-row {
-      display: flex;
-      align-items: baseline;
-      justify-content: space-between;
-      gap: 10px;
-    }
-
-    .field-label {
-      font-size: 13px;
-      font-weight: 500;
-    }
-
-    .field-hint {
-      font-size: 11px;
-      color: var(--text-muted);
-    }
-
-    input[type="text"],
-    input[type="email"],
-    textarea,
-    select {
-      font: inherit;
-      border-radius: 10px;
-      border: 1px solid var(--border-subtle);
-      padding: 8px 10px;
-      background: #f9fafb;
-      outline: none;
-      transition: border-color 0.16s ease, box-shadow 0.16s ease,
-        background 0.16s ease;
-      resize: vertical;
-      min-height: 38px;
-    }
-
-    textarea {
-      min-height: 80px;
-      max-height: 220px;
-    }
-
-    input:focus,
-    textarea:focus,
-    select:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 1px rgba(79, 70, 229, 0.35);
-      background: #ffffff;
-    }
-
-    .row-2 {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 12px;
-    }
-
-    @media (max-width: 640px) {
-      .row-2 {
-        grid-template-columns: minmax(0, 1fr);
+    gSkillsInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        const value = gSkillsInput.value.trim();
+        if (value) {
+          addSkill(value);
+          gSkillsInput.value = "";
+        }
       }
-    }
+      if (e.key === "Backspace" && !gSkillsInput.value) {
+        const chips = gSkillsWrapper.querySelectorAll("span");
+        if (chips.length > 0) chips[chips.length - 1].remove();
+      }
+    });
 
-    /* SKILL TAGS */
+    // ===== Generate: preview logic (mock AI) =====
+    const gForm = document.getElementById("generate-form");
+    const gPreview = document.getElementById("g-preview");
+    const gPreviewEmpty = document.getElementById("g-preview-empty");
+    const gClear = document.getElementById("g-clear");
 
-    .skills-input-wrapper {
-      border-radius: 10px;
-      border: 1px solid var(--border-subtle);
-      padding: 6px 7px;
-      background: #f9fafb;
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 6px;
-      cursor: text;
-    }
+    gForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const fullName = document.getElementById("g-fullName").value.trim() || "Your Name";
+      const contact = document.getElementById("g-contact").value.trim();
+      const role = document.getElementById("g-role").value.trim() || "Target Role";
+      const level = document.getElementById("g-level").value;
+      const summary = document.getElementById("g-summary").value.trim();
+      const exp = document.getElementById("g-experience").value.trim();
+      const edu = document.getElementById("g-education").value.trim();
+      const skills = Array.from(
+        gSkillsWrapper.querySelectorAll("span > span:first-child")
+      ).map((el) => el.textContent.trim());
 
-    .skill-tag {
-      font-size: 11px;
-      padding: 4px 8px;
-      border-radius: 999px;
-      background: rgba(148, 163, 184, 0.24);
-      color: #374151;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
+      let html = "";
+      html += `<h1 class="text-sm font-semibold">${fullName}</h1>`;
+      html += `<p class="text-[10px] text-slate-500 mb-2">${contact ? contact + " · " : ""}${level} ${role}</p>`;
 
-    .skill-tag-remove {
-      border: none;
-      background: none;
-      padding: 0;
-      font-size: 12px;
-      cursor: pointer;
-      color: #4b5563;
-    }
+      if (summary) {
+        html += `<h2 class="mt-2 text-[10px] font-semibold tracking-wide text-slate-600 uppercase">Summary</h2>`;
+        html += `<p class="text-[10px]">${summary}</p>`;
+      }
 
-    .skills-input {
-      border: none;
-      background: transparent;
-      flex: 1;
-      min-width: 80px;
-      padding: 4px;
-      outline: none;
-      font-size: 13px;
-    }
+      if (skills.length) {
+        html += `<h2 class="mt-2 text-[10px] font-semibold tracking-wide text-slate-600 uppercase">Skills</h2>`;
+        html += `<ul class="list-disc pl-4 text-[10px] space-y-0.5">`;
+        skills.forEach((s) => (html += `<li>${s}</li>`));
+        html += `</ul>`;
+      }
 
-    .skills-input::placeholder {
-      color: #9ca3af;
-    }
+      if (exp) {
+        html += `<h2 class="mt-2 text-[10px] font-semibold tracking-wide text-slate-600 uppercase">Experience</h2>`;
+        html += `<p class="whitespace-pre-line text-[10px]">${exp}</p>`;
+      }
 
-    /* UPLOAD AREA */
+      if (edu) {
+        html += `<h2 class="mt-2 text-[10px] font-semibold tracking-wide text-slate-600 uppercase">Education</h2>`;
+        html += `<p class="text-[10px]">${edu}</p>`;
+      }
 
-    .upload-drop {
-      border-radius: 14px;
-      border: 1px dashed rgba(148, 163, 184, 0.9);
-      padding: 20px 16px;
-      text-align: center;
-      background: #f9fafb;
-      cursor: pointer;
-      transition: border-color 0.16s ease, background 0.16s ease,
-        box-shadow 0.16s ease;
-    }
+      gPreview.innerHTML = html;
+      gPreviewEmpty.classList.add("hidden");
+      gPreview.classList.remove("hidden");
 
-    .upload-drop:hover {
-      border-color: var(--accent);
-      background: #eef2ff;
-      box-shadow: 0 10px 24px rgba(148, 163, 184, 0.35);
-    }
+      setStep(3);
+    });
 
-    .upload-title {
-      font-size: 13px;
-      font-weight: 500;
-      margin-bottom: 4px;
-    }
+    gClear.addEventListener("click", () => {
+      gForm.reset();
+      Array.from(gSkillsWrapper.querySelectorAll("span")).forEach((chip) => {
+        if (chip !== gSkillsInput.parentElement) chip.remove();
+      });
+      gPreview.innerHTML = "";
+      gPreview.classList.add("hidden");
+      gPreviewEmpty.classList.remove("hidden");
+      setStep(2);
+    });
 
-    .upload-sub {
-      font-size: 11px;
-      color: var(--text-muted);
-      margin-bottom: 8px;
-    }
+    // ===== Analyze: mock analysis =====
+    const aForm = document.getElementById("a-form");
+    const aPreview = document.getElementById("a-preview");
+    const aPreviewEmpty = document.getElementById("a-preview-empty");
+    const aClear = document.getElementById("a-clear");
 
-    .upload-hint {
-      font-size: 11px;
-      color: #4b5563;
-    }
+    aForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const role = document.getElementById("a-role").value.trim() || "your target role";
 
-    .upload-hint span {
-      font-weight: 600;
-    }
+      aPreview.innerHTML = `
+        <div>
+          <p class="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-2.5 py-1 text-[10px] text-emerald-700 mb-2">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+            ATS score: 82 / 100 · Good fit
+          </p>
+          <p class="text-[10px] text-slate-500 mb-2">
+            Это пример отчёта. В реальном приложении сюда подставляешь ответ своего AI-бэкенда.
+          </p>
+        </div>
+        <div>
+          <h4 class="text-[10px] font-semibold uppercase tracking-wide text-slate-600 mb-1">Strengths</h4>
+          <ul class="list-disc pl-4 text-[10px] space-y-0.5">
+            <li>Clear structure and consistent formatting.</li>
+            <li>Relevant keywords for ${role} already present.</li>
+            <li>Good balance between technical and soft skills.</li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-[10px] font-semibold uppercase tracking-wide text-slate-600 mb-1">Issues</h4>
+          <ul class="list-disc pl-4 text-[10px] space-y-0.5">
+            <li>Many bullet points lack measurable impact (no numbers).</li>
+            <li>Summary could be more targeted to ${role}.</li>
+            <li>Some sections are too wordy for ATS.</li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-[10px] font-semibold uppercase tracking-wide text-slate-600 mb-1">Next steps</h4>
+          <ul class="list-disc pl-4 text-[10px] space-y-0.5">
+            <li>Add metrics (%, $ or time saved) to 3–5 key bullets.</li>
+            <li>Use language that matches typical job descriptions for ${role}.</li>
+            <li>Keep total length to 1 page if experience &lt; 7 years.</li>
+          </ul>
+        </div>
+      `;
 
-    .upload-input {
-      display: none;
-    }
+      aPreviewEmpty.classList.add("hidden");
+      aPreview.classList.remove("hidden");
+      setStep(3);
+    });
 
-    /* CHECKBOXES */
-
-    .checklist {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 4px;
-    }
-
-    .check-item {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 12px;
-      padding: 5px 9px;
-      border-radius: 999px;
-      background: #f9fafb;
-      border: 1px solid #e5e7eb;
-      cursor: pointer;
-    }
-
-    .check-item input {
-      accent-color: var(--accent);
-    }
-
-    /* BUTTONS */
-
-    .btn-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 2px;
-    }
-
-    .btn {
-      border-radius: 999px;
-      border: none;
-      padding: 9px 16px;
-      font-size: 13px;
-      font-weight: 500;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      transition: transform 0.12s ease, box-shadow 0.16s ease,
-        background 0.16s ease;
-      white-space: nowrap;
-    }
-
-    .btn-primary {
-      background: linear-gradient(135deg, #4f46e5, #6366f1);
-      color: #ffffff;
-      box-shadow: 0 14px 30px rgba(79, 70, 229, 0.55);
-    }
-
-    .btn-primary:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 18px 40px rgba(79, 70, 229, 0.6);
-    }
-
-    .btn-secondary {
-      background: #f3f4f6;
-      color: #374151;
-    }
-
-    .btn-secondary:hover {
-      background: #e5e7eb;
-      box-shadow: 0 8px 20px rgba(148, 163, 184, 0.55);
-    }
-
-    /* RIGHT PANEL: RESUM*
+    aClear.addEventListener("click", () => {
+      aForm.reset();
+      aPreview.innerHTML = "";
+      aPreview.classList.add("hidden");
+      aPreviewEmpty.classList.remove("hidden");
+      setStep(2);
+    });
+  </script>
+</body>
+</html>
