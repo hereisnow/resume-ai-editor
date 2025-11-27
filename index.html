@@ -4,6 +4,29 @@
   <meta charset="UTF-8" />
   <title>AI Resume Editor</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Скрываем страницу до полной загрузки -->
+  <style>
+    html.app-loading {
+      visibility: hidden;  /* Ничего не видно, нет “узкого” состояния */
+    }
+  </style>
+  <script>
+    // Помечаем документ как "загружается"
+    document.documentElement.classList.add('app-loading');
+    // Как только всё (CSS, JS, шрифты) загрузилось — показываем
+    window.addEventListener('load', function () {
+      document.documentElement.classList.remove('app-loading');
+    });
+  </script>
+
+  <!-- дальше твой основной <style> со всеми карточками -->
+  ...
+</head>
+
+  <meta charset="UTF-8" />
+  <title>AI Resume Editor</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     :root {
       --bg: #f3f4f6;
