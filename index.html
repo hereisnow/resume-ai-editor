@@ -31,30 +31,28 @@
       min-height: 100vh;
       display: flex;
       flex-direction: column;
-      overflow-x: hidden; /* чтобы ничего не вылезало по горизонтали */
     }
 
     .app-shell {
-      max-width: 2000px;
+      max-width: 1500px;           /* ШИРЕ контейнер */
       margin: 0 auto;
-      padding: 24px 16px 40px;
+      padding: 24px 24px 40px;
       display: flex;
       flex-direction: column;
-      gap: 20px;
+      gap: 24px;
     }
 
     .topbar {
       display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
+      flex-direction: column;
+      gap: 4px;
     }
 
     .title {
-      font-size: 22px;
+      font-size: 24px;
       font-weight: 800;
       letter-spacing: -0.02em;
-      margin-bottom: 4px;
+      margin-bottom: 2px;
     }
 
     .subtitle {
@@ -63,15 +61,15 @@
     }
 
     .main-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); /* обе равные */
-  gap: 32px; /* немного больше воздуха между блоками */
-  margin-top: 32px;
-  width: 100%;
-}
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); /* ДВА ШИРОКИХ БЛОКА */
+      gap: 32px;
+      margin-top: 24px;
+      width: 100%;
+    }
 
-
-    @media (max-width: 960px) {
+    @media (max-width: 1024px) {
+      .app-shell { padding-inline: 16px; }
       .main-grid { grid-template-columns: minmax(0, 1fr); }
     }
 
@@ -80,11 +78,10 @@
       border-radius: var(--radius-xl);
       box-shadow: var(--shadow-soft);
       border: 1px solid var(--border);
-      padding: 18px 18px 16px;
+      padding: 24px 24px 20px;      /* чуть больше паддинги */
       display: flex;
       flex-direction: column;
-      gap: 14px;
-      min-height: 420px; /* чтобы высота сильно не прыгала */
+      gap: 16px;
     }
 
     .card-header {
@@ -97,7 +94,7 @@
     }
 
     .card-title {
-      font-size: 14px;
+      font-size: 15px;
       font-weight: 600;
       letter-spacing: 0.02em;
     }
@@ -112,7 +109,7 @@
       background: #f5f7fb;
       border-radius: var(--radius-lg);
       border: 1px solid var(--border);
-      padding: 16px;
+      padding: 18px;
       display: flex;
       flex-direction: column;
       gap: 12px;
@@ -122,7 +119,7 @@
       border-radius: var(--radius-lg);
       border: 2px dashed var(--border);
       background: var(--panel);
-      padding: 30px 16px;
+      padding: 32px 18px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -150,7 +147,7 @@
 
     .textarea {
       width: 100%;
-      min-height: 130px;
+      min-height: 180px;            /* выше textarea */
       resize: vertical;
       padding: 10px 12px;
       border-radius: var(--radius-lg);
@@ -302,13 +299,11 @@
       background: var(--panel-soft);
       border-radius: var(--radius-lg);
       border: 1px solid var(--border);
-      min-height: 220px;
+      min-height: 260px;
       padding: 16px 14px;
       font-size: 13px;
       color: var(--text-sub);
       white-space: pre-wrap;
-      overflow-y: auto;        /* скролл только внутри результата */
-      max-height: 360px;       /* не даём правой карте разрастись до бесконечности */
     }
 
     .right-header-extra {
@@ -335,11 +330,9 @@
 <body>
   <div class="app-shell">
     <header class="topbar">
-      <div>
-        <div class="title">AI Resume Editor</div>
-        <div class="subtitle">
-          Based on real needs of Reddit users · Drag &amp; drop your existing resume and improve it with AI.
-        </div>
+      <div class="title">AI Resume Editor</div>
+      <div class="subtitle">
+        Based on real needs of Reddit users · Drag &amp; drop your existing resume and improve it with AI.
       </div>
     </header>
 
@@ -361,7 +354,8 @@
           <div class="hint">Make sure the text looks clean before sending it to AI.</div>
 
           <div class="prompt-input-row">
-            <input id="prompt" class="prompt-input" type="text" placeholder="E.g., Rewrite for a Product Manager role in Germany. Focus on achievements..." />
+            <input id="prompt" class="prompt-input" type="text"
+                   placeholder="E.g., Rewrite for a Senior Developer role, focusing on leadership..." />
             <div class="chips-row">
               <button type="button" class="chip" id="chipGrammar">Fix Grammar</button>
               <button type="button" class="chip" id="chipTone">Professional Tone</button>
@@ -387,17 +381,18 @@
                 <select id="advLevel" class="advanced-control">
                   <option value="student">Student / Entry</option>
                   <option value="mid">Mid-level</option>
-                  <option value="senior">Senior</option>
+                  <option value="senior" selected>Senior</option>
                 </select>
               </div>
               <div>
                 <div class="advanced-label">Target role (optional)</div>
-                <input id="advRole" class="advanced-control" type="text" placeholder="e.g. Product Manager" />
+                <input id="advRole" class="advanced-control" type="text"
+                       placeholder="e.g. Frontend Developer" />
               </div>
               <div>
                 <div class="advanced-label">Tone</div>
                 <select id="advTone" class="advanced-control">
-                  <option value="neutral">Neutral professional</option>
+                  <option value="neutral" selected>Neutral professional</option>
                   <option value="formal">Formal</option>
                   <option value="concise">Extra concise</option>
                 </select>
@@ -427,10 +422,14 @@
     </main>
   </div>
 
+  <!-- DOCX extractor -->
   <script src="https://unpkg.com/mammoth/mammoth.browser.min.js"></script>
+
+  <!-- MAIN SCRIPT -->
   <script type="module">
     import * as pdfjsLib from "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.2.67/pdf.min.mjs";
 
+    // URL твоего backend на Render (Gemini-версия)
     const BACKEND_URL = "https://resume-ai-editor-backend.onrender.com";
 
     const dropzone = document.getElementById('dropzone');
@@ -457,17 +456,11 @@
     const btnDownload = document.getElementById('btnDownload');
     const btnEditToSource = document.getElementById('btnEditToSource');
 
-    /* СУПЕР-КОРОТКИЙ PROMPT, чтобы не ловить MAX_TOKENS */
-    const MASTER_PROMPT = `
-Rewrite the resume in a professional, concise, ATS-friendly style.
-- Convert responsibilities into measurable achievements.
-- Add realistic metrics where possible.
-- Use strong action verbs and clear structure.
-- Keep sections: Summary, Skills, Experience, Education (and Projects if useful).
-Output only the final resume text, without comments or analysis.
-`;
+    const MASTER_PROMPT = `Переработай моё резюме по следующему ТЗ.
+Пиши максимально кратко, избегай воды. Начинай буллеты с сильных глаголов действия.
+Сфокусируйся на достижениях, цифрах и понятной структуре (Summary, Skills, Experience, Education).`;
 
-    // Advanced UI
+    // ----- Advanced UI -----
     advancedToggle.addEventListener('click', () => {
       const hidden = advancedBody.classList.toggle('hidden');
       advancedToggleLabel.textContent = hidden ? 'Show' : 'Hide';
@@ -483,7 +476,7 @@ Output only the final resume text, without comments or analysis.
     chipTone.addEventListener('click', () => appendPrompt('Use a confident, professional tone.'));
     chipMetrics.addEventListener('click', () => appendPrompt('Add concrete metrics and impact (%, $, time saved).'));
 
-    // Drag & drop
+    // ----- Drag & Drop -----
     ['dragenter','dragover'].forEach(evt => {
       dropzone.addEventListener(evt, e => {
         e.preventDefault();
@@ -535,7 +528,7 @@ Output only the final resume text, without comments or analysis.
           const page = await pdf.getPage(i);
           const content = await page.getTextContent();
           const strings = content.items.map(it => it.str);
-          text += strings.join(' ') + "\\n";
+          text += strings.join(' ') + "\n";
         }
         sourceText.value = text.trim();
       } catch (err) {
@@ -582,22 +575,19 @@ Output only the final resume text, without comments or analysis.
       return parts.join(' ');
     }
 
-    async function callOpenAI(mode) {
+    async function callAI(mode) {
       const resume = sourceText.value.trim();
       const userPrompt = promptInput.value.trim();
       const extra = buildAdvancedInstructions();
 
       const basePrompt =
         mode === "analyze"
-          ? "First briefly analyze strengths and weaknesses of this resume. Then provide an improved version following the rules below."
+          ? "Сначала коротко проанализируй сильные и слабые стороны этого резюме, затем предложи улучшенную версию."
           : MASTER_PROMPT;
 
-      let fullPrompt = (userPrompt || basePrompt) +
-        (extra ? `\\n\\nAdditional requirements:\\n${extra}` : "");
-
-      if (mode === "analyze") {
-        fullPrompt += "\\n\\nAfter the analysis, output the improved resume as final text.";
-      }
+      const prompt =
+        (userPrompt || basePrompt) +
+        (extra ? `\n\nAdditional requirements:\n${extra}` : "");
 
       if (!resume) {
         alert("Please paste or upload your resume text first.");
@@ -606,8 +596,7 @@ Output only the final resume text, without comments or analysis.
 
       const activeBtn = mode === "analyze" ? analyzeBtn : generateBtn;
       activeBtn.disabled = true;
-      activeBtn.textContent =
-        mode === "analyze" ? "Analyzing..." : "Generating...";
+      activeBtn.textContent = mode === "analyze" ? "Analyzing..." : "Generating...";
 
       aiOutput.textContent =
         mode === "analyze"
@@ -617,34 +606,29 @@ Output only the final resume text, without comments or analysis.
       try {
         const response = await fetch(`${BACKEND_URL}/api/chat`, {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ resume, prompt: fullPrompt }),
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ resume, prompt })
         });
 
         if (!response.ok) {
           const errText = await response.text();
-          console.error("Backend error:", errText);
-          aiOutput.textContent = "Backend returned an error:\\n\\n" + errText;
+          aiOutput.textContent = "Backend returned an error:\n\n" + errText;
           return;
         }
 
         const data = await response.json();
         aiOutput.textContent = data.text || "No text field in backend response.";
       } catch (err) {
-        console.error("callOpenAI exception:", err);
-        aiOutput.textContent =
-          "Network or CORS error. Try again later.";
+        console.error("callAI exception:", err);
+        aiOutput.textContent = "Network or CORS error. Try again later.";
       } finally {
         activeBtn.disabled = false;
-        activeBtn.textContent =
-          mode === "analyze" ? "🔍 Analyze" : "✨ Generate";
+        activeBtn.textContent = mode === "analyze" ? "🔍 Analyze" : "✨ Generate";
       }
     }
 
-    analyzeBtn.addEventListener('click', () => callOpenAI('analyze'));
-    generateBtn.addEventListener('click', () => callOpenAI('generate'));
+    analyzeBtn.addEventListener('click', () => callAI('analyze'));
+    generateBtn.addEventListener('click', () => callAI('generate'));
 
     // Result actions
     btnCopy.addEventListener('click', async () => {
@@ -676,7 +660,7 @@ Output only the final resume text, without comments or analysis.
       if (!text) return;
       sourceText.value = text;
       sourceText.focus();
-      // без scrollTo, чтобы экран меньше "скакал"
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     });
   </script>
 </body>
