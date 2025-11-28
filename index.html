@@ -19,15 +19,15 @@
       </p>
     </header>
 
-    <!-- MODE CARDS -->
-    <section id="mode-cards" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+    <!-- TOP MODE CARDS -->
+    <section class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
       <!-- ANALYZE CARD -->
       <button
         type="button"
         data-mode="analyze"
-        class="mode-card relative flex items-stretch gap-3 rounded-3xl border border-violet-300 bg-violet-50 px-5 py-4 text-left shadow-md transition hover:shadow-lg"
+        class="mode-card flex items-stretch gap-3 rounded-3xl border px-5 py-4 text-left transition shadow-sm bg-white border-slate-200"
       >
-        <div class="flex h-full items-start gap-3">
+        <div class="flex items-start gap-3 flex-1">
           <div class="mt-1 flex h-9 w-9 items-center justify-center rounded-2xl bg-violet-500">
             <!-- doc icon -->
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -45,17 +45,22 @@
               Upload your existing resume for a detailed analysis of strengths, weaknesses, and improvement recommendations.
             </p>
             <div class="mt-3 flex flex-wrap gap-2 text-[10px] text-slate-600">
-              <span class="rounded-full bg-white px-2.5 py-1 border border-violet-100">
+              <span class="rounded-full bg-slate-100 px-2.5 py-1 border border-slate-100">
                 PDF / DOCX / TXT
               </span>
-              <span class="rounded-full bg-white px-2.5 py-1 border border-violet-100">
+              <span class="rounded-full bg-slate-100 px-2.5 py-1 border border-slate-100">
                 ATS check
               </span>
             </div>
           </div>
         </div>
-        <div class="absolute right-4 top-4">
-          <span class="inline-flex h-7 w-7 items-center justify-center rounded-full border border-violet-300 text-[11px] text-violet-600 bg-white">
+        <div class="mt-1">
+          <!-- arrow right (inactive) -->
+          <span class="mode-arrow-right inline-flex h-8 w-8 items-center justify-center rounded-full border border-slate-300 bg-white text-xs text-slate-600">
+            →
+          </span>
+          <!-- arrow down (active) -->
+          <span class="mode-arrow-down hidden inline-flex h-8 w-8 items-center justify-center rounded-full border border-violet-300 bg-violet-50 text-xs text-violet-600">
             ↓
           </span>
         </div>
@@ -65,9 +70,9 @@
       <button
         type="button"
         data-mode="generate"
-        class="mode-card relative flex items-stretch gap-3 rounded-3xl border border-slate-200 bg-white px-5 py-4 text-left shadow-sm transition hover:shadow-md hover:border-violet-200"
+        class="mode-card flex items-stretch gap-3 rounded-3xl border px-5 py-4 text-left transition shadow-sm bg-white border-slate-200"
       >
-        <div class="flex h-full items-start gap-3">
+        <div class="flex items-start gap-3 flex-1">
           <div class="mt-1 flex h-9 w-9 items-center justify-center rounded-2xl bg-sky-500">
             <!-- spark icon -->
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -99,9 +104,12 @@
             </div>
           </div>
         </div>
-        <div class="absolute right-4 top-4">
-          <span class="inline-flex h-7 w-7 items-center justify-center rounded-full border border-slate-300 text-[11px] text-slate-600 bg-white">
+        <div class="mt-1">
+          <span class="mode-arrow-right inline-flex h-8 w-8 items-center justify-center rounded-full border border-slate-300 bg-white text-xs text-slate-600">
             →
+          </span>
+          <span class="mode-arrow-down hidden inline-flex h-8 w-8 items-center justify-center rounded-full border border-violet-300 bg-violet-50 text-xs text-violet-600">
+            ↓
           </span>
         </div>
       </button>
@@ -109,23 +117,21 @@
 
     <!-- GENERATE WORKSPACE -->
     <section id="generate-panel" class="mb-8 hidden">
-      <div class="mb-4 flex items-center justify-between gap-3">
-        <div class="flex items-center gap-3">
-          <div class="flex h-8 w-8 items-center justify-center rounded-xl bg-sky-500">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M12 2v5" />
-              <path d="M12 17v5" />
-              <circle cx="12" cy="12" r="3" />
-            </svg>
-          </div>
-          <div>
-            <h2 class="text-sm sm:text-base font-semibold text-slate-900">
-              Generate Resume
-            </h2>
-            <p class="text-xs sm:text-[13px] text-slate-500">
-              Fill the form on the left. Click “Generate resume” to update the preview on the right.
-            </p>
-          </div>
+      <div class="mb-4 flex items-center gap-3">
+        <div class="flex h-8 w-8 items-center justify-center rounded-xl bg-sky-500">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2v5" />
+            <path d="M12 17v5" />
+            <circle cx="12" cy="12" r="3" />
+          </svg>
+        </div>
+        <div>
+          <h2 class="text-sm sm:text-base font-semibold text-slate-900">
+            Generate Resume
+          </h2>
+          <p class="text-xs sm:text-[13px] text-slate-500">
+            Fill the form on the left. Click “Generate resume” to update the preview on the right.
+          </p>
         </div>
       </div>
 
@@ -200,7 +206,6 @@
               id="g-skills-wrapper"
               class="flex flex-wrap items-center gap-1 rounded-xl border border-slate-200 bg-slate-50 px-2 py-1 cursor-text"
             >
-              <!-- default tags -->
               <span class="skill-tag inline-flex items-center gap-1 rounded-full bg-slate-200/80 px-2 py-0.5 text-[11px] text-slate-700">
                 <span>JavaScript</span>
                 <button type="button" class="skill-remove ml-1 text-[11px] text-slate-500 hover:text-slate-800">×</button>
@@ -263,15 +268,13 @@
 
         <!-- PREVIEW -->
         <div class="bg-white/90 border border-slate-200 rounded-2xl p-4 shadow-sm flex flex-col gap-3">
-          <div class="flex items-center justify-between gap-3">
-            <div>
-              <h3 class="text-sm font-semibold text-slate-900">
-                Resume preview
-              </h3>
-              <p class="text-[11px] text-slate-500">
-                Simple single-page layout preview. Export can be wired to your backend.
-              </p>
-            </div>
+          <div>
+            <h3 class="text-sm font-semibold text-slate-900">
+              Resume preview
+            </h3>
+            <p class="text-[11px] text-slate-500">
+              Simple single-page layout preview. Export can be wired to your backend.
+            </p>
           </div>
 
           <div class="relative flex-1 rounded-xl border border-slate-200 bg-slate-50/80 p-4 overflow-auto">
@@ -288,24 +291,22 @@
 
     <!-- ANALYZE WORKSPACE -->
     <section id="analyze-panel" class="mb-8">
-      <div class="mb-4 flex items-center justify-between gap-3">
-        <div class="flex items-center gap-3">
-          <div class="flex h-8 w-8 items-center justify-center rounded-xl bg-violet-500">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M14 2H6a2 2 0 0 0-2 2v16c0 1.1.9 2 2 2h12a2 2 0 0 0 2-2V8z"/>
-              <path d="M14 2v6h6"/>
-              <path d="M9 13h6"/>
-              <path d="M9 17h3"/>
-            </svg>
-          </div>
-          <div>
-            <h2 class="text-sm sm:text-base font-semibold text-slate-900">
-              Analyze Resume
-            </h2>
-            <p class="text-xs sm:text-[13px] text-slate-500">
-              Upload or paste your existing resume to get a structured review.
-            </p>
-          </div>
+      <div class="mb-4 flex items-center gap-3">
+        <div class="flex h-8 w-8 items-center justify-center rounded-xl bg-violet-500">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16c0 1.1.9 2 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <path d="M14 2v6h6"/>
+            <path d="M9 13h6"/>
+            <path d="M9 17h3"/>
+          </svg>
+        </div>
+        <div>
+          <h2 class="text-sm sm:text-base font-semibold text-slate-900">
+            Analyze Resume
+          </h2>
+          <p class="text-xs sm:text-[13px] text-slate-500">
+            Upload or paste your existing resume to get a structured review.
+          </p>
         </div>
       </div>
 
@@ -388,15 +389,13 @@
 
         <!-- RESULT -->
         <div class="bg-white/90 border border-slate-200 rounded-2xl p-4 shadow-sm flex flex-col gap-3">
-          <div class="flex items-center justify-between gap-3">
-            <div>
-              <h3 class="text-sm font-semibold text-slate-900">
-                Analysis result
-              </h3>
-              <p class="text-[11px] text-slate-500">
-                After analysis you will see strengths, issues and next steps here.
-              </p>
-            </div>
+          <div>
+            <h3 class="text-sm font-semibold text-slate-900">
+              Analysis result
+            </h3>
+            <p class="text-[11px] text-slate-500">
+              After analysis you will see strengths, issues and next steps here.
+            </p>
           </div>
 
           <div class="relative flex-1 rounded-xl border border-slate-200 bg-slate-50/80 p-4 overflow-auto">
@@ -412,141 +411,130 @@
     </section>
   </div>
 
-  <!-- SCRIPT -->
+  <!-- LOGIC -->
   <script>
-    // ===== MODE SWITCHING (TOP CARDS) =====
-    var modeCards = document.querySelectorAll(".mode-card");
-    var generatePanel = document.getElementById("generate-panel");
-    var analyzePanel = document.getElementById("analyze-panel");
-
-    var activeClasses = ["border-violet-300", "bg-violet-50", "shadow-md"];
-    var inactiveBorder = "border-slate-200";
-    var inactiveBg = "bg-white";
-    var inactiveShadow = "shadow-sm";
+    // ===== TOP CARD TOGGLER =====
+    const modeCards = document.querySelectorAll(".mode-card");
+    const generatePanel = document.getElementById("generate-panel");
+    const analyzePanel = document.getElementById("analyze-panel");
 
     function setMode(mode) {
-      modeCards.forEach(function(card) {
-        var cm = card.getAttribute("data-mode");
-        card.classList.remove(inactiveBorder, inactiveBg, inactiveShadow);
-        card.classList.remove("border-violet-300", "bg-violet-50", "shadow-md");
-        if (cm === mode) {
+      modeCards.forEach(card => {
+        const cardMode = card.getAttribute("data-mode");
+        const arrowRight = card.querySelector(".mode-arrow-right");
+        const arrowDown = card.querySelector(".mode-arrow-down");
+
+        // reset
+        card.classList.remove("bg-violet-50", "border-violet-300", "shadow-md");
+        card.classList.remove("bg-slate-100");
+        card.classList.add("border-slate-200", "bg-white", "shadow-sm");
+        arrowRight.classList.remove("hidden");
+        arrowDown.classList.add("hidden");
+
+        if (cardMode === mode) {
+          card.classList.remove("border-slate-200", "bg-white", "shadow-sm");
           card.classList.add("border-violet-300", "bg-violet-50", "shadow-md");
-        } else {
-          card.classList.add(inactiveBorder, inactiveBg, inactiveShadow);
+          arrowRight.classList.add("hidden");
+          arrowDown.classList.remove("hidden");
         }
       });
 
-      if (mode === "analyze") {
-        analyzePanel.classList.remove("hidden");
-        generatePanel.classList.add("hidden");
-      } else {
+      if (mode === "generate") {
         generatePanel.classList.remove("hidden");
         analyzePanel.classList.add("hidden");
+      } else {
+        analyzePanel.classList.remove("hidden");
+        generatePanel.classList.add("hidden");
       }
     }
 
-    modeCards.forEach(function(card) {
-      card.addEventListener("click", function() {
-        var mode = card.getAttribute("data-mode");
+    modeCards.forEach(card => {
+      card.addEventListener("click", () => {
+        const mode = card.getAttribute("data-mode");
         setMode(mode);
       });
     });
 
-    // initial mode
+    // старт по умолчанию: анализ
     setMode("analyze");
 
-    // ===== GENERATE: SKILLS TAGS =====
-    var skillsWrapper = document.getElementById("g-skills-wrapper");
-    var skillsInput = document.getElementById("g-skills-input");
+    // ===== GENERATE: skills chips =====
+    const skillsWrapper = document.getElementById("g-skills-wrapper");
+    const skillsInput = document.getElementById("g-skills-input");
 
-    skillsWrapper.addEventListener("click", function () {
-      skillsInput && skillsInput.focus();
-    });
+    skillsWrapper.addEventListener("click", () => skillsInput.focus());
 
-    skillsWrapper.addEventListener("click", function (e) {
+    skillsWrapper.addEventListener("click", e => {
       if (e.target.classList.contains("skill-remove")) {
         e.target.closest(".skill-tag").remove();
       }
     });
 
-    skillsInput.addEventListener("keydown", function (e) {
+    skillsInput.addEventListener("keydown", e => {
       if (e.key === "Enter") {
         e.preventDefault();
-        var value = skillsInput.value.trim();
+        const value = skillsInput.value.trim();
         if (!value) return;
-        var tag = document.createElement("span");
-        tag.className =
-          "skill-tag inline-flex items-center gap-1 rounded-full bg-slate-200/80 px-2 py-0.5 text-[11px] text-slate-700";
+        const tag = document.createElement("span");
+        tag.className = "skill-tag inline-flex items-center gap-1 rounded-full bg-slate-200/80 px-2 py-0.5 text-[11px] text-slate-700";
         tag.innerHTML =
-          "<span>" +
-          value +
-          "</span><button type='button' class='skill-remove ml-1 text-[11px] text-slate-500 hover:text-slate-800'>×</button>";
+          "<span>" + value + "</span>" +
+          "<button type='button' class='skill-remove ml-1 text-[11px] text-slate-500 hover:text-slate-800'>×</button>";
         skillsWrapper.insertBefore(tag, skillsInput);
         skillsInput.value = "";
       }
       if (e.key === "Backspace" && !skillsInput.value) {
-        var tags = skillsWrapper.querySelectorAll(".skill-tag");
-        if (tags.length > 0) {
-          tags[tags.length - 1].remove();
-        }
+        const tags = skillsWrapper.querySelectorAll(".skill-tag");
+        if (tags.length) tags[tags.length - 1].remove();
       }
     });
 
-    // ===== GENERATE: FORM & PREVIEW =====
-    var gForm = document.getElementById("generate-form");
-    var gPreview = document.getElementById("g-preview");
-    var gPreviewEmpty = document.getElementById("g-preview-empty");
-    var gClear = document.getElementById("g-clear");
+    // ===== GENERATE: form & preview =====
+    const gForm = document.getElementById("generate-form");
+    const gPreview = document.getElementById("g-preview");
+    const gPreviewEmpty = document.getElementById("g-preview-empty");
+    const gClear = document.getElementById("g-clear");
 
-    gForm.addEventListener("submit", function (e) {
+    gForm.addEventListener("submit", e => {
       e.preventDefault();
 
-      var name = document.getElementById("g-fullname").value.trim() || "Your Name";
-      var contact = document.getElementById("g-contact").value.trim();
-      var role = document.getElementById("g-role").value.trim() || "Target Role";
-      var level = document.getElementById("g-level").value;
-      var summary = document.getElementById("g-summary").value.trim();
-      var exp = document.getElementById("g-experience").value.trim();
-      var edu = document.getElementById("g-education").value.trim();
+      const name = document.getElementById("g-fullname").value.trim() || "Your Name";
+      const contact = document.getElementById("g-contact").value.trim();
+      const role = document.getElementById("g-role").value.trim() || "Target Role";
+      const level = document.getElementById("g-level").value;
+      const summary = document.getElementById("g-summary").value.trim();
+      const exp = document.getElementById("g-experience").value.trim();
+      const edu = document.getElementById("g-education").value.trim();
 
-      var skillLabels = [];
-      skillsWrapper
-        .querySelectorAll(".skill-tag span:first-child")
-        .forEach(function (el) {
-          skillLabels.push(el.textContent.trim());
-        });
+      const skillLabels = [];
+      skillsWrapper.querySelectorAll(".skill-tag span:first-child")
+        .forEach(el => skillLabels.push(el.textContent.trim()));
 
-      var html = "";
+      let html = "";
       html += "<h1 class='text-sm font-semibold'>" + name + "</h1>";
       html += "<p class='text-[10px] text-slate-500 mb-2'>";
       if (contact) html += contact + " · ";
       html += level + " " + role + "</p>";
 
       if (summary) {
-        html +=
-          "<h2 class='mt-2 text-[10px] font-semibold tracking-wide text-slate-600 uppercase'>Summary</h2>";
+        html += "<h2 class='mt-2 text-[10px] font-semibold tracking-wide text-slate-600 uppercase'>Summary</h2>";
         html += "<p class='text-[10px]'>" + summary + "</p>";
       }
 
       if (skillLabels.length) {
-        html +=
-          "<h2 class='mt-2 text-[10px] font-semibold tracking-wide text-slate-600 uppercase'>Skills</h2>";
+        html += "<h2 class='mt-2 text-[10px] font-semibold tracking-wide text-slate-600 uppercase'>Skills</h2>";
         html += "<ul class='list-disc pl-4 text-[10px] space-y-0.5'>";
-        skillLabels.forEach(function (s) {
-          html += "<li>" + s + "</li>";
-        });
+        skillLabels.forEach(s => html += "<li>" + s + "</li>");
         html += "</ul>";
       }
 
       if (exp) {
-        html +=
-          "<h2 class='mt-2 text-[10px] font-semibold tracking-wide text-slate-600 uppercase'>Experience</h2>";
+        html += "<h2 class='mt-2 text-[10px] font-semibold tracking-wide text-slate-600 uppercase'>Experience</h2>";
         html += "<p class='whitespace-pre-line text-[10px]'>" + exp + "</p>";
       }
 
       if (edu) {
-        html +=
-          "<h2 class='mt-2 text-[10px] font-semibold tracking-wide text-slate-600 uppercase'>Education</h2>";
+        html += "<h2 class='mt-2 text-[10px] font-semibold tracking-wide text-slate-600 uppercase'>Education</h2>";
         html += "<p class='text-[10px]'>" + edu + "</p>";
       }
 
@@ -555,90 +543,82 @@
       gPreview.classList.remove("hidden");
     });
 
-    gClear.addEventListener("click", function () {
+    gClear.addEventListener("click", () => {
       gForm.reset();
-      skillsWrapper.querySelectorAll(".skill-tag").forEach(function (tag) {
-        tag.remove();
-      });
+      skillsWrapper.querySelectorAll(".skill-tag").forEach(tag => tag.remove());
       gPreview.innerHTML = "";
       gPreview.classList.add("hidden");
       gPreviewEmpty.classList.remove("hidden");
     });
 
-    // ===== ANALYZE: FILE FEEDBACK =====
-    var aFileInput = document.getElementById("a-file");
-    var aTextArea = document.getElementById("a-text");
+    // ===== ANALYZE: file feedback =====
+    const aFileInput = document.getElementById("a-file");
+    const aTextArea = document.getElementById("a-text");
 
-    aFileInput.addEventListener("change", function (e) {
-      var file = e.target.files[0];
-      var label = document.querySelector("label[for='a-file']");
+    aFileInput.addEventListener("change", e => {
+      const file = e.target.files[0];
+      const label = document.querySelector("label[for='a-file']");
       if (!file || !label) return;
 
-      var info = label.querySelector(".file-info");
+      let info = label.querySelector(".file-info");
       if (!info) {
         info = document.createElement("p");
         info.className =
           "file-info mt-2 text-[11px] text-slate-500 border-t border-dashed border-slate-200 pt-2 w-full text-center";
         label.appendChild(info);
       }
-      info.textContent =
-        "Selected file: " + file.name + " (" + Math.round(file.size / 1024) + " KB)";
+      info.textContent = "Selected file: " + file.name + " (" + Math.round(file.size / 1024) + " KB)";
 
       if (file.type === "text/plain") {
         info.textContent += " – loading content…";
-        var reader = new FileReader();
-        reader.onload = function (ev) {
+        const reader = new FileReader();
+        reader.onload = ev => {
           aTextArea.value = ev.target.result;
           info.textContent =
-            "Selected file: " +
-            file.name +
-            " (" +
-            Math.round(file.size / 1024) +
-            " KB, loaded into text area)";
+            "Selected file: " + file.name + " (" +
+            Math.round(file.size / 1024) + " KB, loaded into text area)";
         };
         reader.readAsText(file);
       }
     });
 
-    // ===== ANALYZE: HEURISTIC ANALYSIS =====
-    var aForm = document.getElementById("analyze-form");
-    var aPreview = document.getElementById("a-preview");
-    var aPreviewEmpty = document.getElementById("a-preview-empty");
-    var aClear = document.getElementById("a-clear");
+    // ===== ANALYZE: heuristic "AI" =====
+    const aForm = document.getElementById("analyze-form");
+    const aPreview = document.getElementById("a-preview");
+    const aPreviewEmpty = document.getElementById("a-preview-empty");
+    const aClear = document.getElementById("a-clear");
 
     function buildAnalysis(text, role) {
-      var cleanText = text.trim();
-      var wordCount = cleanText ? cleanText.split(/\s+/).length : 0;
-      var sentences = cleanText.match(/[.!?]/g) || [];
-      var sentenceCount = sentences.length || 1;
-      var avgSentence = Math.round(wordCount / sentenceCount);
+      const clean = text.trim();
+      const wordCount = clean ? clean.split(/\s+/).length : 0;
+      const sentences = clean.match(/[.!?]/g) || [];
+      const sentenceCount = sentences.length || 1;
+      const avgSentence = Math.round(wordCount / sentenceCount);
 
-      var bulletMatches = cleanText.match(/(^|\n)\s*[-*•]/g) || [];
-      var bulletCount = bulletMatches.length;
+      const bullets = clean.match(/(^|\n)\s*[-*•]/g) || [];
+      const bulletCount = bullets.length;
 
-      var metricMatches =
-        cleanText.match(/\d+%|\$\d+|\d+\s+(years?|months?|weeks?|days?)/gi) || [];
-      var metricCount = metricMatches.length;
+      const metrics =
+        clean.match(/\d+%|\$\d+|\d+\s+(years?|months?|weeks?|days?)/gi) || [];
+      const metricCount = metrics.length;
 
-      var strengths = [];
-      var issues = [];
-      var steps = [];
+      const strengths = [];
+      const issues = [];
+      const steps = [];
 
       if (wordCount > 0 && wordCount <= 500) {
         strengths.push("Overall length is reasonable (" + wordCount + " words).");
       } else if (wordCount > 500) {
         issues.push(
-          "Resume may be too long (" +
-            wordCount +
-            " words). Try to keep it close to one page."
+          "Resume may be too long (" + wordCount +
+          " words). Try to keep it close to one page."
         );
       }
 
       if (bulletCount >= 3) {
         strengths.push(
-          "You use bullet points (" +
-            bulletCount +
-            "), which makes the resume easier to scan."
+          "You use bullet points (" + bulletCount +
+          "), which makes the resume easier to scan."
         );
       } else if (wordCount > 0) {
         issues.push(
@@ -658,24 +638,21 @@
 
       if (avgSentence > 28) {
         issues.push(
-          "Sentences are quite long on average (" +
-            avgSentence +
-            " words). Consider shortening them."
+          "Sentences are quite long on average (" + avgSentence +
+          " words). Consider shortening them."
         );
       } else if (avgSentence > 0) {
         strengths.push(
           "Sentence length looks fine (about " +
-            avgSentence +
-            " words on average)."
+          avgSentence + " words on average)."
         );
       }
 
-      var target = role || "your target role";
+      const target = role || "your target role";
 
       steps.push(
-        "Make sure the top of the resume clearly matches \"" +
-          target +
-          "\" (title, summary, main skills)."
+        'Make sure the top of the resume clearly matches "' +
+        target + '" (title, summary, main skills).'
       );
       steps.push(
         "Turn responsibilities into impact statements using metrics where possible (for example: reduced processing time by 20%)."
@@ -684,51 +661,39 @@
         "Keep structure simple: 2–4 sections (Summary, Experience, Skills, Education) and consistent formatting."
       );
 
-      var html = "";
-
+      let html = "";
       html +=
         "<div><p class='inline-flex items-center gap-2 rounded-full bg-slate-100 px-2.5 py-1 text-[10px] text-slate-700 mb-2'>" +
-        "AI-style review based on " +
-        wordCount +
-        " words" +
+        "AI-style review based on " + wordCount + " words" +
         "</p></div>";
 
       if (strengths.length) {
-        html +=
-          "<div><h4 class='text-[10px] font-semibold uppercase tracking-wide text-slate-600 mb-1'>Strengths</h4>";
+        html += "<div><h4 class='text-[10px] font-semibold uppercase tracking-wide text-slate-600 mb-1'>Strengths</h4>";
         html += "<ul class='list-disc pl-4 text-[10px] space-y-0.5'>";
-        strengths.forEach(function (s) {
-          html += "<li>" + s + "</li>";
-        });
+        strengths.forEach(s => html += "<li>" + s + "</li>");
         html += "</ul></div>";
       }
 
       if (issues.length) {
-        html +=
-          "<div><h4 class='text-[10px] font-semibold uppercase tracking-wide text-slate-600 mb-1'>Issues</h4>";
+        html += "<div><h4 class='text-[10px] font-semibold uppercase tracking-wide text-slate-600 mb-1'>Issues</h4>";
         html += "<ul class='list-disc pl-4 text-[10px] space-y-0.5'>";
-        issues.forEach(function (s) {
-          html += "<li>" + s + "</li>";
-        });
+        issues.forEach(s => html += "<li>" + s + "</li>");
         html += "</ul></div>";
       }
 
-      html +=
-        "<div><h4 class='text-[10px] font-semibold uppercase tracking-wide text-slate-600 mb-1'>Next steps</h4>";
+      html += "<div><h4 class='text-[10px] font-semibold uppercase tracking-wide text-slate-600 mb-1'>Next steps</h4>";
       html += "<ul class='list-disc pl-4 text-[10px] space-y-0.5'>";
-      steps.forEach(function (s) {
-        html += "<li>" + s + "</li>";
-      });
+      steps.forEach(s => html += "<li>" + s + "</li>");
       html += "</ul></div>";
 
       return html;
     }
 
-    aForm.addEventListener("submit", function (e) {
+    aForm.addEventListener("submit", e => {
       e.preventDefault();
 
-      var text = aTextArea.value || "";
-      var role = document.getElementById("a-role").value.trim();
+      const text = aTextArea.value || "";
+      const role = document.getElementById("a-role").value.trim();
 
       if (!text.trim()) {
         aPreview.innerHTML =
@@ -743,13 +708,12 @@
       aPreviewEmpty.classList.add("hidden");
       aPreview.classList.remove("hidden");
 
-      setTimeout(function () {
-        var html = buildAnalysis(text, role);
-        aPreview.innerHTML = html;
+      setTimeout(() => {
+        aPreview.innerHTML = buildAnalysis(text, role);
       }, 300);
     });
 
-    aClear.addEventListener("click", function () {
+    aClear.addEventListener("click", () => {
       aForm.reset();
       aPreview.innerHTML = "";
       aPreview.classList.add("hidden");
@@ -758,3 +722,4 @@
   </script>
 </body>
 </html>
+
