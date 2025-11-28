@@ -1,15 +1,10 @@
 <!DOCTYPE html>
-  // 1) САМ ВЕРХ СКРИПТА
-  const API_BASE = "https://resume-ai-editor-backend.onrender.com";
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <title>AI Resume Editor</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-  const API_BASE = "https://resume-ai-editor-backend.onrender.com";
-
 </head>
 
 <body class="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 text-slate-900">
@@ -164,10 +159,9 @@
 
 </div>
 
-
 <script>
 /* ====== CONFIG ====== */
-const API_BASE = "https://resume-ai-editor-backend.onrender.com/";  // <--- replace this
+const API_BASE = "https://resume-ai-editor-backend.onrender.com";
 
 /* ====== MODE SWITCHING ====== */
 const modeCards = document.querySelectorAll(".mode-card");
@@ -200,7 +194,6 @@ modeCards.forEach(card => {
     card.querySelector(".mode-arrow-down").classList.remove("hidden");
   });
 });
-
 
 /* ====== ANALYZE ====== */
 const aForm = document.getElementById("aForm");
@@ -257,7 +250,6 @@ aForm.addEventListener("submit", async (e) => {
     <ul class="list-disc pl-4 text-xs">${r.next_steps.map(s => `<li>${s}</li>`).join("")}</ul>
   `;
 });
-
 
 /* ====== GENERATE ====== */
 const gForm = document.getElementById("gForm");
@@ -326,6 +318,7 @@ gForm.addEventListener("submit", async (e) => {
     `;
   });
 
+  gResult.innerHTML = html;
 });
 </script>
 
