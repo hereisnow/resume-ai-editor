@@ -2,147 +2,150 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>AI Resume Editor · New UX</title>
+  <title>AI Resume Editor</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <!-- Tailwind CDN для прототипа -->
+  <!-- Tailwind via CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 text-slate-900">
   <div class="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
     <!-- HEADER -->
-    <header class="mb-6 sm:mb-8 flex items-center justify-between gap-4">
-      <div>
-        <h1 class="text-xl sm:text-2xl font-bold tracking-tight">AI Resume Editor</h1>
-        <p class="text-xs sm:text-sm text-slate-500">
-          Choose your path: analyze an existing resume or generate a new one. Follow the steps above.
-        </p>
-      </div>
-      <span class="inline-flex items-center gap-1 rounded-full bg-slate-900 text-white px-3 py-1 text-[11px] shadow-lg">
-        <span class="inline-block w-2 h-2 rounded-full bg-emerald-400"></span>
-        Beta · UX refresh
-      </span>
+    <header class="mb-6 sm:mb-8">
+      <h1 class="text-xl sm:text-2xl font-bold tracking-tight">
+        AI Resume Editor
+      </h1>
+      <p class="mt-1 text-xs sm:text-sm text-slate-500">
+        Choose your path: analyze an existing resume or generate a new one.
+      </p>
     </header>
 
-    <!-- STEPPER -->
-    <nav aria-label="Progress" class="mb-6">
-      <ol class="flex items-center gap-4 text-[11px] sm:text-xs font-medium text-slate-500">
-        <li data-step="1" class="flex items-center gap-2">
-          <span class="step-circle flex items-center justify-center w-6 h-6 rounded-full border border-indigo-500 bg-indigo-500 text-white text-[11px]">
-            1
-          </span>
-          <span class="step-label">Choose mode</span>
-        </li>
-        <li class="flex-1 h-px bg-slate-200"></li>
-        <li data-step="2" class="flex items-center gap-2">
-          <span class="step-circle flex items-center justify-center w-6 h-6 rounded-full border border-slate-300 bg-white text-[11px]">
-            2
-          </span>
-          <span class="step-label">Fill details</span>
-        </li>
-        <li class="flex-1 h-px bg-slate-200"></li>
-        <li data-step="3" class="flex items-center gap-2">
-          <span class="step-circle flex items-center justify-center w-6 h-6 rounded-full border border-slate-300 bg-white text-[11px]">
-            3
-          </span>
-          <span class="step-label">Review &amp; export</span>
-        </li>
-      </ol>
-    </nav>
-
-    <!-- STEP 1: MODE PICKER -->
-    <section id="mode-picker" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-      <!-- Generate card -->
-      <button
-        type="button"
-        data-mode="generate"
-        class="mode-card group relative flex flex-col items-start gap-2 rounded-2xl border border-slate-200 bg-white/80 px-4 py-4 text-left shadow-sm hover:shadow-lg hover:border-violet-200 transition"
-      >
-        <div class="inline-flex items-center gap-2 rounded-full bg-violet-50 px-2.5 py-1 text-[11px] text-violet-600">
-          <span>✨</span>
-          <span>Generate Resume</span>
-        </div>
-        <h2 class="text-sm sm:text-base font-semibold text-slate-900">
-          Create a new professional resume
-        </h2>
-        <p class="text-xs sm:text-[13px] text-slate-500">
-          Quick form + AI suggestions. Ideal when у тебя нет готового резюме или хочешь начать с нуля.
-        </p>
-        <div class="mt-2 flex flex-wrap gap-2 text-[10px] text-slate-600">
-          <span class="rounded-full bg-violet-50 px-2 py-1">AI-powered</span>
-          <span class="rounded-full bg-slate-100 px-2 py-1">ATS-friendly layout</span>
-        </div>
-        <span class="absolute right-3 top-3 text-xs text-violet-400 group-hover:translate-x-0.5 transition">
-          Start →
-        </span>
-      </button>
-
-      <!-- Analyze card -->
+    <!-- MODE CARDS -->
+    <section id="mode-cards" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+      <!-- ANALYZE CARD -->
       <button
         type="button"
         data-mode="analyze"
-        class="mode-card group relative flex flex-col items-start gap-2 rounded-2xl border border-slate-200 bg-white/80 px-4 py-4 text-left shadow-sm hover:shadow-lg hover:border-violet-200 transition"
+        class="mode-card relative flex items-stretch gap-3 rounded-3xl border border-violet-300 bg-violet-50 px-5 py-4 text-left shadow-md transition hover:shadow-lg"
       >
-        <div class="inline-flex items-center gap-2 rounded-full bg-slate-900 px-2.5 py-1 text-[11px] text-slate-50">
-          <span>🔍</span>
-          <span>Analyze Resume</span>
+        <div class="flex h-full items-start gap-3">
+          <div class="mt-1 flex h-9 w-9 items-center justify-center rounded-2xl bg-violet-500">
+            <!-- doc icon -->
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16c0 1.1.9 2 2 2h12a2 2 0 0 0 2-2V8z"/>
+              <path d="M14 2v6h6"/>
+              <path d="M9 13h6"/>
+              <path d="M9 17h3"/>
+            </svg>
+          </div>
+          <div class="flex-1">
+            <h2 class="text-sm sm:text-base font-semibold text-slate-900">
+              Analyze Resume
+            </h2>
+            <p class="mt-1 text-xs sm:text-[13px] text-slate-600">
+              Upload your existing resume for a detailed analysis of strengths, weaknesses, and improvement recommendations.
+            </p>
+            <div class="mt-3 flex flex-wrap gap-2 text-[10px] text-slate-600">
+              <span class="rounded-full bg-white px-2.5 py-1 border border-violet-100">
+                PDF / DOCX / TXT
+              </span>
+              <span class="rounded-full bg-white px-2.5 py-1 border border-violet-100">
+                ATS check
+              </span>
+            </div>
+          </div>
         </div>
-        <h2 class="text-sm sm:text-base font-semibold text-slate-900">
-          Improve an existing resume
-        </h2>
-        <p class="text-xs sm:text-[13px] text-slate-500">
-          Upload PDF/DOCX/TXT или вставь текст, получи ATS-оценку, список проблем и рекомендации.
-        </p>
-        <div class="mt-2 flex flex-wrap gap-2 text-[10px] text-slate-600">
-          <span class="rounded-full bg-slate-100 px-2 py-1">ATS check</span>
-          <span class="rounded-full bg-slate-100 px-2 py-1">Grammar &amp; style</span>
-          <span class="rounded-full bg-slate-100 px-2 py-1">Impact &amp; metrics</span>
+        <div class="absolute right-4 top-4">
+          <span class="inline-flex h-7 w-7 items-center justify-center rounded-full border border-violet-300 text-[11px] text-violet-600 bg-white">
+            ↓
+          </span>
         </div>
-        <span class="absolute right-3 top-3 text-xs text-slate-400 group-hover:translate-x-0.5 transition">
-          Start →
-        </span>
+      </button>
+
+      <!-- GENERATE CARD -->
+      <button
+        type="button"
+        data-mode="generate"
+        class="mode-card relative flex items-stretch gap-3 rounded-3xl border border-slate-200 bg-white px-5 py-4 text-left shadow-sm transition hover:shadow-md hover:border-violet-200"
+      >
+        <div class="flex h-full items-start gap-3">
+          <div class="mt-1 flex h-9 w-9 items-center justify-center rounded-2xl bg-sky-500">
+            <!-- spark icon -->
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2v5" />
+              <path d="M12 17v5" />
+              <path d="M4.22 4.22 7.5 7.5" />
+              <path d="M16.5 16.5 19.78 19.78" />
+              <path d="M2 12h5" />
+              <path d="M17 12h5" />
+              <path d="M4.22 19.78 7.5 16.5" />
+              <path d="M16.5 7.5 19.78 4.22" />
+              <circle cx="12" cy="12" r="3" />
+            </svg>
+          </div>
+          <div class="flex-1">
+            <h2 class="text-sm sm:text-base font-semibold text-slate-900">
+              Generate Resume
+            </h2>
+            <p class="mt-1 text-xs sm:text-[13px] text-slate-600">
+              Create a professional resume from scratch with AI-powered suggestions and formatting.
+            </p>
+            <div class="mt-3 flex flex-wrap gap-2 text-[10px] text-slate-600">
+              <span class="rounded-full bg-slate-100 px-2.5 py-1 border border-slate-100">
+                Simple form
+              </span>
+              <span class="rounded-full bg-slate-100 px-2.5 py-1 border border-slate-100">
+                AI-powered
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="absolute right-4 top-4">
+          <span class="inline-flex h-7 w-7 items-center justify-center rounded-full border border-slate-300 text-[11px] text-slate-600 bg-white">
+            →
+          </span>
+        </div>
       </button>
     </section>
 
-    <!-- STEP 2/3 WORKSPACE: GENERATE -->
-    <section
-      data-panel="generate"
-      class="hidden workspace-generate mb-8"
-    >
+    <!-- GENERATE WORKSPACE -->
+    <section id="generate-panel" class="mb-8 hidden">
       <div class="mb-4 flex items-center justify-between gap-3">
-        <div>
-          <h2 class="text-sm sm:text-base font-semibold text-slate-900">Generate Resume</h2>
-          <p class="text-xs sm:text-[13px] text-slate-500">
-            Заполни базовые поля, AI превратит их в аккуратное резюме. Всегда можно вернуться и поправить.
-          </p>
+        <div class="flex items-center gap-3">
+          <div class="flex h-8 w-8 items-center justify-center rounded-xl bg-sky-500">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2v5" />
+              <path d="M12 17v5" />
+              <circle cx="12" cy="12" r="3" />
+            </svg>
+          </div>
+          <div>
+            <h2 class="text-sm sm:text-base font-semibold text-slate-900">
+              Generate Resume
+            </h2>
+            <p class="text-xs sm:text-[13px] text-slate-500">
+              Fill the form on the left. Click “Generate resume” to update the preview on the right.
+            </p>
+          </div>
         </div>
-        <button
-          type="button"
-          class="inline-flex items-center gap-1 rounded-full bg-slate-100 px-3 py-1 text-[11px] text-slate-600 hover:bg-slate-200 transition"
-          onclick="scrollTo({top:0,behavior:'smooth'})"
-        >
-          Change mode
-        </button>
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
-        <!-- LEFT: form -->
-        <form id="generate-form" class="space-y-4 bg-white/80 border border-slate-200 rounded-2xl p-4 shadow-sm">
+        <!-- FORM -->
+        <form id="generate-form" class="space-y-4 bg-white/90 border border-slate-200 rounded-2xl p-4 shadow-sm">
           <div>
             <label class="flex items-center justify-between text-xs font-medium text-slate-700 mb-1">
               <span>Contact info</span>
-              <span class="text-[11px] text-slate-400">Имя, email, LinkedIn</span>
+              <span class="text-[11px] text-slate-400">Name, email, LinkedIn</span>
             </label>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
               <input
-                id="g-fullName"
-                type="text"
-                class="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs focus:border-violet-500 focus:ring-1 focus:ring-violet-500 outline-none"
+                id="g-fullname"
+                class="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none"
                 placeholder="John Doe"
               />
               <input
                 id="g-contact"
-                type="text"
-                class="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs focus:border-violet-500 focus:ring-1 focus:ring-violet-500 outline-none"
+                class="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none"
                 placeholder="john@example.com · linkedin.com/in/john"
               />
             </div>
@@ -152,13 +155,11 @@
             <div>
               <label class="flex items-center justify-between text-xs font-medium text-slate-700 mb-1">
                 <span>Target role *</span>
-                <span class="text-[11px] text-slate-400">Кем хочешь работать</span>
               </label>
               <input
                 id="g-role"
                 required
-                type="text"
-                class="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs focus:border-violet-500 focus:ring-1 focus:ring-violet-500 outline-none"
+                class="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none"
                 placeholder="e.g. Product Manager"
               />
             </div>
@@ -168,7 +169,7 @@
               </label>
               <select
                 id="g-level"
-                class="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs focus:border-violet-500 focus:ring-1 focus:ring-violet-500 outline-none"
+                class="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none"
               >
                 <option>Junior</option>
                 <option selected>Mid-level</option>
@@ -181,29 +182,39 @@
           <div>
             <label class="flex items-center justify-between text-xs font-medium text-slate-700 mb-1">
               <span>Professional summary</span>
-              <span class="text-[11px] text-slate-400">2–3 предложения о тебе</span>
             </label>
             <textarea
               id="g-summary"
               rows="3"
-              class="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs focus:border-violet-500 focus:ring-1 focus:ring-violet-500 outline-none"
-              placeholder="3+ years as Software Engineer focusing on React and Node.js..."
+              class="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none"
+              placeholder="Short 2–3 sentence summary about your background and goals."
             ></textarea>
           </div>
 
           <div>
             <label class="flex items-center justify-between text-xs font-medium text-slate-700 mb-1">
               <span>Skills</span>
-              <span class="text-[11px] text-slate-400">Enter → добавить скилл</span>
+              <span class="text-[11px] text-slate-400">Press Enter to add a skill</span>
             </label>
             <div
               id="g-skills-wrapper"
               class="flex flex-wrap items-center gap-1 rounded-xl border border-slate-200 bg-slate-50 px-2 py-1 cursor-text"
             >
-              <!-- теги будут добавляться сюда -->
+              <!-- default tags -->
+              <span class="skill-tag inline-flex items-center gap-1 rounded-full bg-slate-200/80 px-2 py-0.5 text-[11px] text-slate-700">
+                <span>JavaScript</span>
+                <button type="button" class="skill-remove ml-1 text-[11px] text-slate-500 hover:text-slate-800">×</button>
+              </span>
+              <span class="skill-tag inline-flex items-center gap-1 rounded-full bg-slate-200/80 px-2 py-0.5 text-[11px] text-slate-700">
+                <span>React</span>
+                <button type="button" class="skill-remove ml-1 text-[11px] text-slate-500 hover:text-slate-800">×</button>
+              </span>
+              <span class="skill-tag inline-flex items-center gap-1 rounded-full bg-slate-200/80 px-2 py-0.5 text-[11px] text-slate-700">
+                <span>SQL</span>
+                <button type="button" class="skill-remove ml-1 text-[11px] text-slate-500 hover:text-slate-800">×</button>
+              </span>
               <input
                 id="g-skills-input"
-                type="text"
                 class="flex-1 min-w-[80px] bg-transparent border-none text-xs outline-none px-1 py-1"
                 placeholder="Add a skill…"
               />
@@ -213,13 +224,12 @@
           <div>
             <label class="flex items-center justify-between text-xs font-medium text-slate-700 mb-1">
               <span>Experience (brief notes)</span>
-              <span class="text-[11px] text-slate-400">места работы + ключевые достижения</span>
             </label>
             <textarea
               id="g-experience"
               rows="4"
-              class="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs focus:border-violet-500 focus:ring-1 focus:ring-violet-500 outline-none"
-              placeholder="3 years at Company A as Software Engineer, led a team of 5..."
+              class="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none"
+              placeholder="Companies, roles, responsibilities and key achievements."
             ></textarea>
           </div>
 
@@ -229,19 +239,17 @@
             </label>
             <input
               id="g-education"
-              type="text"
-              class="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs focus:border-violet-500 focus:ring-1 focus:ring-violet-500 outline-none"
-              placeholder="BS Computer Science, University, 2024"
+              class="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none"
+              placeholder="e.g. BSc Computer Science, University, 2024"
             />
           </div>
 
           <div class="flex flex-wrap items-center gap-3 pt-1">
             <button
               type="submit"
-              class="inline-flex items-center gap-1 rounded-full bg-violet-600 px-4 py-2 text-xs font-semibold text-white shadow-md hover:bg-violet-700 hover:shadow-lg transition"
+              class="inline-flex items-center gap-1 rounded-full bg-indigo-600 px-4 py-2 text-xs font-semibold text-white shadow-md hover:bg-indigo-700 hover:shadow-lg transition"
             >
               Generate resume
-              <span class="-mr-1">↻</span>
             </button>
             <button
               type="button"
@@ -253,77 +261,79 @@
           </div>
         </form>
 
-        <!-- RIGHT: preview -->
-        <div class="bg-white/80 border border-slate-200 rounded-2xl p-4 shadow-sm flex flex-col gap-3">
+        <!-- PREVIEW -->
+        <div class="bg-white/90 border border-slate-200 rounded-2xl p-4 shadow-sm flex flex-col gap-3">
           <div class="flex items-center justify-between gap-3">
             <div>
-              <h3 class="text-sm font-semibold text-slate-900">Generated Resume</h3>
+              <h3 class="text-sm font-semibold text-slate-900">
+                Resume preview
+              </h3>
               <p class="text-[11px] text-slate-500">
-                Шаг 3: смотри превью и экспортируй в PDF/DOCX в своём приложении.
+                Simple single-page layout preview. Export can be wired to your backend.
               </p>
             </div>
-            <span class="inline-flex items-center gap-1 rounded-full bg-slate-900 text-white px-3 py-1 text-[10px]">
-              Preview
-            </span>
           </div>
+
           <div class="relative flex-1 rounded-xl border border-slate-200 bg-slate-50/80 p-4 overflow-auto">
             <div id="g-preview-empty" class="h-full flex flex-col items-center justify-center text-center text-[11px] text-slate-400">
-              <div class="mb-2 text-xl">📄</div>
-              <p>Заполни форму слева и нажми <span class="font-semibold">Generate resume</span>.</p>
+              <p>
+                Fill the form on the left and click <span class="font-semibold">Generate resume</span>.
+              </p>
             </div>
-            <div id="g-preview" class="hidden text-[11px] leading-relaxed text-slate-800">
-              <!-- сюда JS вставит псевдо-резюме -->
-            </div>
+            <div id="g-preview" class="hidden text-[11px] leading-relaxed text-slate-800"></div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- WORKSPACE: ANALYZE -->
-    <section
-      data-panel="analyze"
-      class="hidden workspace-analyze mb-8"
-    >
+    <!-- ANALYZE WORKSPACE -->
+    <section id="analyze-panel" class="mb-8">
       <div class="mb-4 flex items-center justify-between gap-3">
-        <div>
-          <h2 class="text-sm sm:text-base font-semibold text-slate-900">Analyze Resume</h2>
-          <p class="text-xs sm:text-[13px] text-slate-500">
-            Загрузи существующее резюме или вставь текст — AI оценит и подскажет, что улучшить.
-          </p>
+        <div class="flex items-center gap-3">
+          <div class="flex h-8 w-8 items-center justify-center rounded-xl bg-violet-500">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16c0 1.1.9 2 2 2h12a2 2 0 0 0 2-2V8z"/>
+              <path d="M14 2v6h6"/>
+              <path d="M9 13h6"/>
+              <path d="M9 17h3"/>
+            </svg>
+          </div>
+          <div>
+            <h2 class="text-sm sm:text-base font-semibold text-slate-900">
+              Analyze Resume
+            </h2>
+            <p class="text-xs sm:text-[13px] text-slate-500">
+              Upload or paste your existing resume to get a structured review.
+            </p>
+          </div>
         </div>
-        <button
-          type="button"
-          class="inline-flex items-center gap-1 rounded-full bg-slate-100 px-3 py-1 text-[11px] text-slate-600 hover:bg-slate-200 transition"
-          onclick="scrollTo({top:0,behavior:'smooth'})"
-        >
-          Change mode
-        </button>
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
-        <!-- LEFT: analyze form -->
-        <form id="a-form" class="space-y-4 bg-white/80 border border-slate-200 rounded-2xl p-4 shadow-sm">
+        <!-- FORM -->
+        <form id="analyze-form" class="space-y-4 bg-white/90 border border-slate-200 rounded-2xl p-4 shadow-sm">
           <label
             for="a-file"
-            class="flex flex-col items-center justify-center gap-1 rounded-xl border border-dashed border-slate-300 bg-slate-50 px-4 py-5 text-center text-xs text-slate-500 cursor-pointer hover:border-violet-400 hover:bg-violet-50/50 transition"
+            class="flex flex-col items-center justify-center gap-1 rounded-xl border border-dashed border-violet-200 bg-slate-50 px-4 py-5 text-center text-xs text-slate-500 cursor-pointer hover:border-violet-400 hover:bg-violet-50/60 transition"
           >
-            <span class="text-sm">Drag &amp; drop or click to upload</span>
-            <span class="text-[11px] text-slate-400">PDF · DOCX · TXT · Max 5MB</span>
-            <span class="mt-1 inline-flex items-center gap-1 rounded-full bg-white px-2.5 py-1 text-[10px] text-slate-500 shadow-sm">
-              Optional: можно просто вставить текст ниже
+            <span class="text-xs font-medium text-slate-700">Drag &amp; drop or click to upload</span>
+            <span class="text-[11px] text-slate-400">
+              PDF · DOCX · TXT · Max 5MB
             </span>
-            <input id="a-file" type="file" class="hidden" accept=".pdf,.doc,.docx,.txt" />
+            <span class="mt-1 inline-flex items-center gap-1 rounded-full bg-white px-2.5 py-1 text-[10px] text-slate-500 shadow-sm">
+              Optional: you can paste the text below
+            </span>
+            <input id="a-file" type="file" class="hidden" />
           </label>
 
           <div>
             <label class="flex items-center justify-between text-xs font-medium text-slate-700 mb-1">
               <span>Or paste resume text</span>
-              <span class="text-[11px] text-slate-400">скопируй резюме сюда</span>
             </label>
             <textarea
               id="a-text"
               rows="6"
-              class="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs focus:border-violet-500 focus:ring-1 focus:ring-violet-500 outline-none"
+              class="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none"
               placeholder="Paste your resume text here..."
             ></textarea>
           </div>
@@ -331,29 +341,29 @@
           <div>
             <label class="flex items-center justify-between text-xs font-medium text-slate-700 mb-1">
               <span>Target role (optional)</span>
-              <span class="text-[11px] text-slate-400">AI проверит соответствие роли</span>
             </label>
             <input
               id="a-role"
-              type="text"
-              class="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs focus:border-violet-500 focus:ring-1 focus:ring-violet-500 outline-none"
+              class="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none"
               placeholder="e.g. Product Manager"
             />
           </div>
 
           <div>
-            <p class="text-xs font-medium text-slate-700 mb-1">What to check</p>
+            <p class="text-xs font-medium text-slate-700 mb-1">
+              What to check
+            </p>
             <div class="flex flex-wrap gap-2">
               <label class="inline-flex items-center gap-2 rounded-full bg-slate-50 px-3 py-1 text-[11px] text-slate-700 border border-slate-200">
-                <input type="checkbox" class="h-3 w-3 text-violet-600" checked />
+                <input type="checkbox" class="h-3 w-3 text-indigo-600" checked />
                 ATS compatibility
               </label>
               <label class="inline-flex items-center gap-2 rounded-full bg-slate-50 px-3 py-1 text-[11px] text-slate-700 border border-slate-200">
-                <input type="checkbox" class="h-3 w-3 text-violet-600" checked />
+                <input type="checkbox" class="h-3 w-3 text-indigo-600" checked />
                 Grammar &amp; style
               </label>
               <label class="inline-flex items-center gap-2 rounded-full bg-slate-50 px-3 py-1 text-[11px] text-slate-700 border border-slate-200">
-                <input type="checkbox" class="h-3 w-3 text-violet-600" checked />
+                <input type="checkbox" class="h-3 w-3 text-indigo-600" checked />
                 Achievements &amp; impact
               </label>
             </div>
@@ -362,10 +372,9 @@
           <div class="flex flex-wrap items-center gap-3 pt-1">
             <button
               type="submit"
-              class="inline-flex items-center gap-1 rounded-full bg-violet-600 px-4 py-2 text-xs font-semibold text-white shadow-md hover:bg-violet-700 hover:shadow-lg transition"
+              class="inline-flex items-center gap-1 rounded-full bg-indigo-600 px-4 py-2 text-xs font-semibold text-white shadow-md hover:bg-indigo-700 hover:shadow-lg transition"
             >
               Analyze resume
-              <span>🔍</span>
             </button>
             <button
               type="button"
@@ -377,243 +386,374 @@
           </div>
         </form>
 
-        <!-- RIGHT: analysis -->
-        <div class="bg-white/80 border border-slate-200 rounded-2xl p-4 shadow-sm flex flex-col gap-3">
+        <!-- RESULT -->
+        <div class="bg-white/90 border border-slate-200 rounded-2xl p-4 shadow-sm flex flex-col gap-3">
           <div class="flex items-center justify-between gap-3">
             <div>
-              <h3 class="text-sm font-semibold text-slate-900">Analysis Result</h3>
+              <h3 class="text-sm font-semibold text-slate-900">
+                Analysis result
+              </h3>
               <p class="text-[11px] text-slate-500">
-                Шаг 3: смотри отчет, потом можешь перейти в режим генерации и переписать резюме.
+                After analysis you will see strengths, issues and next steps here.
               </p>
             </div>
-            <span class="inline-flex items-center gap-1 rounded-full bg-slate-900 text-white px-3 py-1 text-[10px]">
-              AI feedback
-            </span>
           </div>
+
           <div class="relative flex-1 rounded-xl border border-slate-200 bg-slate-50/80 p-4 overflow-auto">
             <div id="a-preview-empty" class="h-full flex flex-col items-center justify-center text-center text-[11px] text-slate-400">
-              <div class="mb-2 text-xl">✨</div>
-              <p>Загрузи файл или вставь текст, затем нажми <span class="font-semibold">Analyze resume</span>.</p>
+              <p>
+                Upload or paste your resume, then click <span class="font-semibold">Analyze resume</span>.
+              </p>
             </div>
-            <div id="a-preview" class="hidden text-[11px] leading-relaxed text-slate-800 space-y-3">
-              <!-- сюда JS вставит примерный отчет -->
-            </div>
+            <div id="a-preview" class="hidden text-[11px] leading-relaxed text-slate-800 space-y-3"></div>
           </div>
         </div>
       </div>
     </section>
   </div>
 
+  <!-- SCRIPT -->
   <script>
-    // ===== Stepper =====
-    const stepEls = document.querySelectorAll("[data-step]");
-    function setStep(step) {
-      stepEls.forEach((el) => {
-        const s = Number(el.dataset.step);
-        const circle = el.querySelector(".step-circle");
-        if (!circle) return;
-        circle.classList.remove(
-          "bg-indigo-500",
-          "border-indigo-500",
-          "text-white",
-          "bg-slate-100",
-          "border-slate-300",
-          "text-slate-500"
-        );
-        if (s < step) {
-          circle.classList.add("bg-slate-900", "border-slate-900", "text-white");
-        } else if (s === step) {
-          circle.classList.add("bg-indigo-500", "border-indigo-500", "text-white");
+    // ===== MODE SWITCHING (TOP CARDS) =====
+    var modeCards = document.querySelectorAll(".mode-card");
+    var generatePanel = document.getElementById("generate-panel");
+    var analyzePanel = document.getElementById("analyze-panel");
+
+    var activeClasses = ["border-violet-300", "bg-violet-50", "shadow-md"];
+    var inactiveBorder = "border-slate-200";
+    var inactiveBg = "bg-white";
+    var inactiveShadow = "shadow-sm";
+
+    function setMode(mode) {
+      modeCards.forEach(function(card) {
+        var cm = card.getAttribute("data-mode");
+        card.classList.remove(inactiveBorder, inactiveBg, inactiveShadow);
+        card.classList.remove("border-violet-300", "bg-violet-50", "shadow-md");
+        if (cm === mode) {
+          card.classList.add("border-violet-300", "bg-violet-50", "shadow-md");
         } else {
-          circle.classList.add("bg-white", "border-slate-300", "text-slate-500");
+          card.classList.add(inactiveBorder, inactiveBg, inactiveShadow);
         }
       });
+
+      if (mode === "analyze") {
+        analyzePanel.classList.remove("hidden");
+        generatePanel.classList.add("hidden");
+      } else {
+        generatePanel.classList.remove("hidden");
+        analyzePanel.classList.add("hidden");
+      }
     }
 
-    // ===== Mode picker & panels =====
-    const modeButtons = document.querySelectorAll("[data-mode]");
-    const panels = document.querySelectorAll("[data-panel]");
-    const modePicker = document.getElementById("mode-picker");
-    let currentMode = null;
-
-    function showPanel(mode) {
-      panels.forEach((p) => {
-        p.classList.toggle("hidden", p.dataset.panel !== mode);
-      });
-    }
-
-    modeButtons.forEach((btn) => {
-      btn.addEventListener("click", () => {
-        currentMode = btn.dataset.mode;
-        showPanel(currentMode);
-        modePicker.classList.add("opacity-60", "pointer-events-none");
-        setStep(2);
-        // лёгкий скролл к форме
-        setTimeout(() => {
-          const panel = document.querySelector(`[data-panel="${currentMode}"]`);
-          panel?.scrollIntoView({ behavior: "smooth", block: "start" });
-        }, 100);
+    modeCards.forEach(function(card) {
+      card.addEventListener("click", function() {
+        var mode = card.getAttribute("data-mode");
+        setMode(mode);
       });
     });
 
-    // ===== Generate: skills input =====
-    const gSkillsWrapper = document.getElementById("g-skills-wrapper");
-    const gSkillsInput = document.getElementById("g-skills-input");
+    // initial mode
+    setMode("analyze");
 
-    function addSkill(label) {
-      if (!label) return;
-      const chip = document.createElement("span");
-      chip.className =
-        "inline-flex items-center gap-1 rounded-full bg-slate-200/80 px-2 py-0.5 text-[11px] text-slate-700";
-      chip.innerHTML =
-        `<span>${label}</span>` +
-        `<button type="button" class="ml-1 text-[11px] text-slate-500 hover:text-slate-800">&times;</button>`;
-      gSkillsWrapper.insertBefore(chip, gSkillsInput);
-    }
+    // ===== GENERATE: SKILLS TAGS =====
+    var skillsWrapper = document.getElementById("g-skills-wrapper");
+    var skillsInput = document.getElementById("g-skills-input");
 
-    gSkillsWrapper.addEventListener("click", () => gSkillsInput.focus());
+    skillsWrapper.addEventListener("click", function () {
+      skillsInput && skillsInput.focus();
+    });
 
-    gSkillsWrapper.addEventListener("click", (e) => {
-      if (e.target.tagName === "BUTTON") {
-        e.target.parentElement.remove();
+    skillsWrapper.addEventListener("click", function (e) {
+      if (e.target.classList.contains("skill-remove")) {
+        e.target.closest(".skill-tag").remove();
       }
     });
 
-    gSkillsInput.addEventListener("keydown", (e) => {
+    skillsInput.addEventListener("keydown", function (e) {
       if (e.key === "Enter") {
         e.preventDefault();
-        const value = gSkillsInput.value.trim();
-        if (value) {
-          addSkill(value);
-          gSkillsInput.value = "";
-        }
+        var value = skillsInput.value.trim();
+        if (!value) return;
+        var tag = document.createElement("span");
+        tag.className =
+          "skill-tag inline-flex items-center gap-1 rounded-full bg-slate-200/80 px-2 py-0.5 text-[11px] text-slate-700";
+        tag.innerHTML =
+          "<span>" +
+          value +
+          "</span><button type='button' class='skill-remove ml-1 text-[11px] text-slate-500 hover:text-slate-800'>×</button>";
+        skillsWrapper.insertBefore(tag, skillsInput);
+        skillsInput.value = "";
       }
-      if (e.key === "Backspace" && !gSkillsInput.value) {
-        const chips = gSkillsWrapper.querySelectorAll("span");
-        if (chips.length > 0) chips[chips.length - 1].remove();
+      if (e.key === "Backspace" && !skillsInput.value) {
+        var tags = skillsWrapper.querySelectorAll(".skill-tag");
+        if (tags.length > 0) {
+          tags[tags.length - 1].remove();
+        }
       }
     });
 
-    // ===== Generate: preview logic (mock AI) =====
-    const gForm = document.getElementById("generate-form");
-    const gPreview = document.getElementById("g-preview");
-    const gPreviewEmpty = document.getElementById("g-preview-empty");
-    const gClear = document.getElementById("g-clear");
+    // ===== GENERATE: FORM & PREVIEW =====
+    var gForm = document.getElementById("generate-form");
+    var gPreview = document.getElementById("g-preview");
+    var gPreviewEmpty = document.getElementById("g-preview-empty");
+    var gClear = document.getElementById("g-clear");
 
-    gForm.addEventListener("submit", (e) => {
+    gForm.addEventListener("submit", function (e) {
       e.preventDefault();
-      const fullName = document.getElementById("g-fullName").value.trim() || "Your Name";
-      const contact = document.getElementById("g-contact").value.trim();
-      const role = document.getElementById("g-role").value.trim() || "Target Role";
-      const level = document.getElementById("g-level").value;
-      const summary = document.getElementById("g-summary").value.trim();
-      const exp = document.getElementById("g-experience").value.trim();
-      const edu = document.getElementById("g-education").value.trim();
-      const skills = Array.from(
-        gSkillsWrapper.querySelectorAll("span > span:first-child")
-      ).map((el) => el.textContent.trim());
 
-      let html = "";
-      html += `<h1 class="text-sm font-semibold">${fullName}</h1>`;
-      html += `<p class="text-[10px] text-slate-500 mb-2">${contact ? contact + " · " : ""}${level} ${role}</p>`;
+      var name = document.getElementById("g-fullname").value.trim() || "Your Name";
+      var contact = document.getElementById("g-contact").value.trim();
+      var role = document.getElementById("g-role").value.trim() || "Target Role";
+      var level = document.getElementById("g-level").value;
+      var summary = document.getElementById("g-summary").value.trim();
+      var exp = document.getElementById("g-experience").value.trim();
+      var edu = document.getElementById("g-education").value.trim();
+
+      var skillLabels = [];
+      skillsWrapper
+        .querySelectorAll(".skill-tag span:first-child")
+        .forEach(function (el) {
+          skillLabels.push(el.textContent.trim());
+        });
+
+      var html = "";
+      html += "<h1 class='text-sm font-semibold'>" + name + "</h1>";
+      html += "<p class='text-[10px] text-slate-500 mb-2'>";
+      if (contact) html += contact + " · ";
+      html += level + " " + role + "</p>";
 
       if (summary) {
-        html += `<h2 class="mt-2 text-[10px] font-semibold tracking-wide text-slate-600 uppercase">Summary</h2>`;
-        html += `<p class="text-[10px]">${summary}</p>`;
+        html +=
+          "<h2 class='mt-2 text-[10px] font-semibold tracking-wide text-slate-600 uppercase'>Summary</h2>";
+        html += "<p class='text-[10px]'>" + summary + "</p>";
       }
 
-      if (skills.length) {
-        html += `<h2 class="mt-2 text-[10px] font-semibold tracking-wide text-slate-600 uppercase">Skills</h2>`;
-        html += `<ul class="list-disc pl-4 text-[10px] space-y-0.5">`;
-        skills.forEach((s) => (html += `<li>${s}</li>`));
-        html += `</ul>`;
+      if (skillLabels.length) {
+        html +=
+          "<h2 class='mt-2 text-[10px] font-semibold tracking-wide text-slate-600 uppercase'>Skills</h2>";
+        html += "<ul class='list-disc pl-4 text-[10px] space-y-0.5'>";
+        skillLabels.forEach(function (s) {
+          html += "<li>" + s + "</li>";
+        });
+        html += "</ul>";
       }
 
       if (exp) {
-        html += `<h2 class="mt-2 text-[10px] font-semibold tracking-wide text-slate-600 uppercase">Experience</h2>`;
-        html += `<p class="whitespace-pre-line text-[10px]">${exp}</p>`;
+        html +=
+          "<h2 class='mt-2 text-[10px] font-semibold tracking-wide text-slate-600 uppercase'>Experience</h2>";
+        html += "<p class='whitespace-pre-line text-[10px]'>" + exp + "</p>";
       }
 
       if (edu) {
-        html += `<h2 class="mt-2 text-[10px] font-semibold tracking-wide text-slate-600 uppercase">Education</h2>`;
-        html += `<p class="text-[10px]">${edu}</p>`;
+        html +=
+          "<h2 class='mt-2 text-[10px] font-semibold tracking-wide text-slate-600 uppercase'>Education</h2>";
+        html += "<p class='text-[10px]'>" + edu + "</p>";
       }
 
       gPreview.innerHTML = html;
       gPreviewEmpty.classList.add("hidden");
       gPreview.classList.remove("hidden");
-
-      setStep(3);
     });
 
-    gClear.addEventListener("click", () => {
+    gClear.addEventListener("click", function () {
       gForm.reset();
-      Array.from(gSkillsWrapper.querySelectorAll("span")).forEach((chip) => {
-        if (chip !== gSkillsInput.parentElement) chip.remove();
+      skillsWrapper.querySelectorAll(".skill-tag").forEach(function (tag) {
+        tag.remove();
       });
       gPreview.innerHTML = "";
       gPreview.classList.add("hidden");
       gPreviewEmpty.classList.remove("hidden");
-      setStep(2);
     });
 
-    // ===== Analyze: mock analysis =====
-    const aForm = document.getElementById("a-form");
-    const aPreview = document.getElementById("a-preview");
-    const aPreviewEmpty = document.getElementById("a-preview-empty");
-    const aClear = document.getElementById("a-clear");
+    // ===== ANALYZE: FILE FEEDBACK =====
+    var aFileInput = document.getElementById("a-file");
+    var aTextArea = document.getElementById("a-text");
 
-    aForm.addEventListener("submit", (e) => {
+    aFileInput.addEventListener("change", function (e) {
+      var file = e.target.files[0];
+      var label = document.querySelector("label[for='a-file']");
+      if (!file || !label) return;
+
+      var info = label.querySelector(".file-info");
+      if (!info) {
+        info = document.createElement("p");
+        info.className =
+          "file-info mt-2 text-[11px] text-slate-500 border-t border-dashed border-slate-200 pt-2 w-full text-center";
+        label.appendChild(info);
+      }
+      info.textContent =
+        "Selected file: " + file.name + " (" + Math.round(file.size / 1024) + " KB)";
+
+      if (file.type === "text/plain") {
+        info.textContent += " – loading content…";
+        var reader = new FileReader();
+        reader.onload = function (ev) {
+          aTextArea.value = ev.target.result;
+          info.textContent =
+            "Selected file: " +
+            file.name +
+            " (" +
+            Math.round(file.size / 1024) +
+            " KB, loaded into text area)";
+        };
+        reader.readAsText(file);
+      }
+    });
+
+    // ===== ANALYZE: HEURISTIC ANALYSIS =====
+    var aForm = document.getElementById("analyze-form");
+    var aPreview = document.getElementById("a-preview");
+    var aPreviewEmpty = document.getElementById("a-preview-empty");
+    var aClear = document.getElementById("a-clear");
+
+    function buildAnalysis(text, role) {
+      var cleanText = text.trim();
+      var wordCount = cleanText ? cleanText.split(/\s+/).length : 0;
+      var sentences = cleanText.match(/[.!?]/g) || [];
+      var sentenceCount = sentences.length || 1;
+      var avgSentence = Math.round(wordCount / sentenceCount);
+
+      var bulletMatches = cleanText.match(/(^|\n)\s*[-*•]/g) || [];
+      var bulletCount = bulletMatches.length;
+
+      var metricMatches =
+        cleanText.match(/\d+%|\$\d+|\d+\s+(years?|months?|weeks?|days?)/gi) || [];
+      var metricCount = metricMatches.length;
+
+      var strengths = [];
+      var issues = [];
+      var steps = [];
+
+      if (wordCount > 0 && wordCount <= 500) {
+        strengths.push("Overall length is reasonable (" + wordCount + " words).");
+      } else if (wordCount > 500) {
+        issues.push(
+          "Resume may be too long (" +
+            wordCount +
+            " words). Try to keep it close to one page."
+        );
+      }
+
+      if (bulletCount >= 3) {
+        strengths.push(
+          "You use bullet points (" +
+            bulletCount +
+            "), which makes the resume easier to scan."
+        );
+      } else if (wordCount > 0) {
+        issues.push(
+          "Add bullet points for responsibilities and achievements to improve readability."
+        );
+      }
+
+      if (metricCount > 0) {
+        strengths.push(
+          "You include numbers and metrics (" + metricCount + " occurrences)."
+        );
+      } else if (wordCount > 0) {
+        issues.push(
+          "Add concrete numbers (%, revenue, time saved) to show impact."
+        );
+      }
+
+      if (avgSentence > 28) {
+        issues.push(
+          "Sentences are quite long on average (" +
+            avgSentence +
+            " words). Consider shortening them."
+        );
+      } else if (avgSentence > 0) {
+        strengths.push(
+          "Sentence length looks fine (about " +
+            avgSentence +
+            " words on average)."
+        );
+      }
+
+      var target = role || "your target role";
+
+      steps.push(
+        "Make sure the top of the resume clearly matches \"" +
+          target +
+          "\" (title, summary, main skills)."
+      );
+      steps.push(
+        "Turn responsibilities into impact statements using metrics where possible (for example: reduced processing time by 20%)."
+      );
+      steps.push(
+        "Keep structure simple: 2–4 sections (Summary, Experience, Skills, Education) and consistent formatting."
+      );
+
+      var html = "";
+
+      html +=
+        "<div><p class='inline-flex items-center gap-2 rounded-full bg-slate-100 px-2.5 py-1 text-[10px] text-slate-700 mb-2'>" +
+        "AI-style review based on " +
+        wordCount +
+        " words" +
+        "</p></div>";
+
+      if (strengths.length) {
+        html +=
+          "<div><h4 class='text-[10px] font-semibold uppercase tracking-wide text-slate-600 mb-1'>Strengths</h4>";
+        html += "<ul class='list-disc pl-4 text-[10px] space-y-0.5'>";
+        strengths.forEach(function (s) {
+          html += "<li>" + s + "</li>";
+        });
+        html += "</ul></div>";
+      }
+
+      if (issues.length) {
+        html +=
+          "<div><h4 class='text-[10px] font-semibold uppercase tracking-wide text-slate-600 mb-1'>Issues</h4>";
+        html += "<ul class='list-disc pl-4 text-[10px] space-y-0.5'>";
+        issues.forEach(function (s) {
+          html += "<li>" + s + "</li>";
+        });
+        html += "</ul></div>";
+      }
+
+      html +=
+        "<div><h4 class='text-[10px] font-semibold uppercase tracking-wide text-slate-600 mb-1'>Next steps</h4>";
+      html += "<ul class='list-disc pl-4 text-[10px] space-y-0.5'>";
+      steps.forEach(function (s) {
+        html += "<li>" + s + "</li>";
+      });
+      html += "</ul></div>";
+
+      return html;
+    }
+
+    aForm.addEventListener("submit", function (e) {
       e.preventDefault();
-      const role = document.getElementById("a-role").value.trim() || "your target role";
 
-      aPreview.innerHTML = `
-        <div>
-          <p class="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-2.5 py-1 text-[10px] text-emerald-700 mb-2">
-            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-            ATS score: 82 / 100 · Good fit
-          </p>
-          <p class="text-[10px] text-slate-500 mb-2">
-            Это пример отчёта. В реальном приложении сюда подставляешь ответ своего AI-бэкенда.
-          </p>
-        </div>
-        <div>
-          <h4 class="text-[10px] font-semibold uppercase tracking-wide text-slate-600 mb-1">Strengths</h4>
-          <ul class="list-disc pl-4 text-[10px] space-y-0.5">
-            <li>Clear structure and consistent formatting.</li>
-            <li>Relevant keywords for ${role} already present.</li>
-            <li>Good balance between technical and soft skills.</li>
-          </ul>
-        </div>
-        <div>
-          <h4 class="text-[10px] font-semibold uppercase tracking-wide text-slate-600 mb-1">Issues</h4>
-          <ul class="list-disc pl-4 text-[10px] space-y-0.5">
-            <li>Many bullet points lack measurable impact (no numbers).</li>
-            <li>Summary could be more targeted to ${role}.</li>
-            <li>Some sections are too wordy for ATS.</li>
-          </ul>
-        </div>
-        <div>
-          <h4 class="text-[10px] font-semibold uppercase tracking-wide text-slate-600 mb-1">Next steps</h4>
-          <ul class="list-disc pl-4 text-[10px] space-y-0.5">
-            <li>Add metrics (%, $ or time saved) to 3–5 key bullets.</li>
-            <li>Use language that matches typical job descriptions for ${role}.</li>
-            <li>Keep total length to 1 page if experience &lt; 7 years.</li>
-          </ul>
-        </div>
-      `;
+      var text = aTextArea.value || "";
+      var role = document.getElementById("a-role").value.trim();
 
+      if (!text.trim()) {
+        aPreview.innerHTML =
+          "<p class='text-[11px] text-slate-500'>Please upload a resume file (TXT recommended) or paste the resume text before running analysis.</p>";
+        aPreviewEmpty.classList.add("hidden");
+        aPreview.classList.remove("hidden");
+        return;
+      }
+
+      aPreview.innerHTML =
+        "<p class='text-[11px] text-slate-500'>Analyzing resume…</p>";
       aPreviewEmpty.classList.add("hidden");
       aPreview.classList.remove("hidden");
-      setStep(3);
+
+      setTimeout(function () {
+        var html = buildAnalysis(text, role);
+        aPreview.innerHTML = html;
+      }, 300);
     });
 
-    aClear.addEventListener("click", () => {
+    aClear.addEventListener("click", function () {
       aForm.reset();
       aPreview.innerHTML = "";
       aPreview.classList.add("hidden");
       aPreviewEmpty.classList.remove("hidden");
-      setStep(2);
     });
   </script>
 </body>
