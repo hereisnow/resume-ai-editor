@@ -55,9 +55,8 @@
         data-mode="generate"
         class="mode-card group relative flex flex-col items-start gap-2 rounded-2xl border border-slate-200 bg-white/80 px-4 py-4 text-left shadow-sm hover:shadow-md hover:border-indigo-200 transition"
       >
-        <div class="inline-flex items-center gap-2 rounded-full bg-indigo-50 px-2.5 py-1 text-[11px] text-indigo-600">
-          <span>✨</span>
-          <span>Generate Resume</span>
+        <div class="inline-flex items-center gap-2 rounded-full bg-slate-100 px-2.5 py-1 text-[11px] text-slate-700">
+          <span>Generate resume</span>
         </div>
         <h2 class="text-sm sm:text-base font-semibold text-slate-900">
           Create a new professional resume
@@ -66,7 +65,7 @@
           Fill a short form and let AI create a clean, ATS-friendly resume.
         </p>
         <div class="mt-2 flex flex-wrap gap-2 text-[10px] text-slate-600">
-          <span class="rounded-full bg-indigo-50 px-2 py-1">AI-assisted</span>
+          <span class="rounded-full bg-slate-100 px-2 py-1">AI-assisted</span>
           <span class="rounded-full bg-slate-100 px-2 py-1">Best for starting from scratch</span>
         </div>
         <span class="absolute right-3 top-3 text-xs text-indigo-400 group-hover:translate-x-0.5 transition">
@@ -80,9 +79,8 @@
         data-mode="analyze"
         class="mode-card group relative flex flex-col items-start gap-2 rounded-2xl border border-slate-200 bg-white/80 px-4 py-4 text-left shadow-sm hover:shadow-md hover:border-indigo-200 transition"
       >
-        <div class="inline-flex items-center gap-2 rounded-full bg-slate-900 px-2.5 py-1 text-[11px] text-slate-50">
-          <span>🔍</span>
-          <span>Analyze Resume</span>
+        <div class="inline-flex items-center gap-2 rounded-full bg-slate-100 px-2.5 py-1 text-[11px] text-slate-700">
+          <span>Analyze resume</span>
         </div>
         <h2 class="text-sm sm:text-base font-semibold text-slate-900">
           Improve an existing resume
@@ -234,7 +232,7 @@
               type="submit"
               class="inline-flex items-center gap-1 rounded-full bg-indigo-600 px-4 py-2 text-xs font-semibold text-white shadow-md hover:bg-indigo-700 hover:shadow-lg transition"
             >
-              Generate resume <span class="-mr-1">↻</span>
+              Generate resume
             </button>
             <button
               type="button"
@@ -257,14 +255,10 @@
                 Simple single-page layout preview. Export can be wired to your backend.
               </p>
             </div>
-            <span class="inline-flex items-center gap-1 rounded-full bg-slate-900 text-white px-3 py-1 text-[10px]">
-              Preview
-            </span>
           </div>
 
           <div class="relative flex-1 rounded-xl border border-slate-200 bg-slate-50/80 p-4 overflow-auto">
             <div id="g-preview-empty" class="h-full flex flex-col items-center justify-center text-center text-[11px] text-slate-400">
-              <div class="mb-2 text-xl">📄</div>
               <p>
                 Fill the form on the left and click <span class="font-semibold">Generate resume</span>.
               </p>
@@ -353,7 +347,7 @@
               type="submit"
               class="inline-flex items-center gap-1 rounded-full bg-indigo-600 px-4 py-2 text-xs font-semibold text-white shadow-md hover:bg-indigo-700 hover:shadow-lg transition"
             >
-              Analyze resume <span>🔍</span>
+              Analyze resume
             </button>
             <button
               type="button"
@@ -376,14 +370,10 @@
                 After analysis you will see strengths, issues and next steps here.
               </p>
             </div>
-            <span class="inline-flex items-center gap-1 rounded-full bg-slate-900 text-white px-3 py-1 text-[10px]">
-              AI review
-            </span>
           </div>
 
           <div class="relative flex-1 rounded-xl border border-slate-200 bg-slate-50/80 p-4 overflow-auto">
             <div id="a-preview-empty" class="h-full flex flex-col items-center justify-center text-center text-[11px] text-slate-400">
-              <div class="mb-2 text-xl">✨</div>
               <p>
                 Upload or paste your resume, then click <span class="font-semibold">Analyze resume</span>.
               </p>
@@ -449,10 +439,6 @@
     var skillsWrapper = document.getElementById("g-skills-wrapper");
     var skillsInput = document.getElementById("g-skills-input");
 
-    function updateSkillsHidden() {
-      // you can extend this if you want to send skills to backend
-    }
-
     skillsWrapper.addEventListener("click", function () {
       skillsInput.focus();
     });
@@ -460,7 +446,6 @@
     skillsWrapper.addEventListener("click", function (e) {
       if (e.target.classList.contains("skill-remove")) {
         e.target.closest(".skill-tag").remove();
-        updateSkillsHidden();
       }
     });
 
@@ -478,13 +463,11 @@
           "</span><button type='button' class='skill-remove ml-1 text-[11px] text-slate-500 hover:text-slate-800'>×</button>";
         skillsWrapper.insertBefore(tag, skillsInput);
         skillsInput.value = "";
-        updateSkillsHidden();
       }
       if (e.key === "Backspace" && !skillsInput.value) {
         var tags = skillsWrapper.querySelectorAll(".skill-tag");
         if (tags.length > 0) {
           tags[tags.length - 1].remove();
-          updateSkillsHidden();
         }
       }
     });
@@ -549,7 +532,6 @@
 
     gClear.addEventListener("click", function () {
       gForm.reset();
-      // remove all skills except input
       skillsWrapper.querySelectorAll(".skill-tag").forEach(function (tag) {
         tag.remove();
       });
